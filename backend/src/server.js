@@ -27,6 +27,17 @@ if (process.env.NODE_ENV === 'development') {
 // Routes
 app.use('/api/scan', require('./routes/scanRoutes'));
 
+// Root route
+app.get('/', (req, res) => {
+    res.json({
+        message: '🚀 KITA_HACK Backend API is running',
+        endpoints: {
+            health: '/api/health',
+            scan: '/api/scan'
+        }
+    });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({

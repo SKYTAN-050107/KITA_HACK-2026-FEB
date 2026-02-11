@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-kita-green: #10b981;
+  --color-kita-blue: #3b82f6;
+}
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

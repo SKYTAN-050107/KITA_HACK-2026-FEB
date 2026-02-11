@@ -5,17 +5,21 @@ import CameraScanner from '../components/CameraScanner';
 
 export default function ScannerPage() {
   return (
-    <div className="relative h-screen">
-      {/* Back Button */}
-      <Link 
-        to="/"
-        className="absolute top-6 left-6 z-20 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full font-medium hover:bg-white/30 transition-colors shadow-lg"
-      >
-        ← Back to Home
-      </Link>
-      
-      {/* Camera Component */}
-      <CameraScanner />
+    <div className="h-screen bg-black relative flex flex-col">
+      {/* Minimal Top Bar */}
+      <div className="absolute top-0 left-0 right-0 z-40 p-6 flex justify-end">
+        <Link
+          to="/"
+          className="bg-white/10 backdrop-blur-md text-white/80 px-5 py-2 rounded-full text-xs font-bold border border-white/10 hover:bg-white/20 hover:text-white transition-all"
+        >
+          ✕ CLOSE
+        </Link>
+      </div>
+
+      {/* Full Screen Scanner */}
+      <div className="flex-1 overflow-hidden relative">
+        <CameraScanner />
+      </div>
     </div>
   );
 }

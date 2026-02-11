@@ -4,124 +4,88 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-6">
-      <div className="max-w-4xl mx-auto py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-lg">
-            KITA_HACK
-          </h1>
-          <p className="text-2xl text-white/90 font-medium">
-            Smart Waste Management System
-          </p>
-          <p className="text-lg text-white/80 mt-2">
-            Scan • Classify • Recycle Right
-          </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Hero Section */}
+      <div className="text-center mb-16">
+        <h1 className="text-7xl font-extrabold text-white mb-6 drop-shadow-2xl tracking-tighter uppercase italic">
+          KITA<span className="text-green-400 font-black">HACK</span>
+        </h1>
+        <p className="text-3xl text-white/90 font-light mb-4">
+          Smart Waste Management for Johor
+        </p>
+        <div className="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white/80 text-sm font-medium border border-white/10 ring-1 ring-white/20">
+          SDG 12.5 • Responsible Consumption & Production
         </div>
-        
-        {/* Main Features Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Waste Scanner Card */}
-          <Link to="/scanner" className="group">
-            <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl p-10 text-center hover:scale-105 hover:bg-white/25 transition-all duration-300 shadow-2xl">
-              <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform">
+      </div>
+
+      {/* Action Cards */}
+      <div className="grid md:grid-cols-2 gap-10 mb-16">
+        {/* Waste Scanner Card */}
+        <Link to="/scanner" className="group">
+          <div className="relative overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-12 text-center hover:scale-[1.02] hover:bg-white/15 transition-all duration-500 shadow-2xl group-hover:ring-2 group-hover:ring-green-400/50">
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+              <span className="text-9xl">📸</span>
+            </div>
+            <div className="relative z-10">
+              <div className="text-8xl mb-8 transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
                 📸
               </div>
-              <h2 className="text-3xl font-bold text-white mb-4">
+              <h2 className="text-4xl font-bold text-white mb-6 tracking-tight">
                 Waste Scanner
               </h2>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Point camera at any waste item and get instant classification with disposal instructions
+              <p className="text-xl text-white/80 leading-relaxed mb-8">
+                Point your camera at any item to instantly identify its waste type and get disposal guidance.
               </p>
-              <div className="mt-6 inline-block bg-white/20 px-6 py-2 rounded-full text-white font-medium">
-                Start Scanning →
+              <div className="inline-flex items-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-xl transition-all active:scale-95 group-hover:bg-green-400 group-hover:text-green-900">
+                Launch Scanner <span>→</span>
               </div>
             </div>
-          </Link>
-          
-          {/* Bin Verifier Card */}
-          <Link to="/scanner" className="group">
-            <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl p-10 text-center hover:scale-105 hover:bg-white/25 transition-all duration-300 shadow-2xl">
-              <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform">
+          </div>
+        </Link>
+
+        {/* Bin Verifier Card */}
+        <Link to="/scanner" className="group">
+          <div className="relative overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-12 text-center hover:scale-[1.02] hover:bg-white/15 transition-all duration-500 shadow-2xl group-hover:ring-2 group-hover:ring-blue-400/50">
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+              <span className="text-9xl">🗑️</span>
+            </div>
+            <div className="relative z-10">
+              <div className="text-8xl mb-8 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                 🗑️
               </div>
-              <h2 className="text-3xl font-bold text-white mb-4">
+              <h2 className="text-4xl font-bold text-white mb-6 tracking-tight">
                 Bin Verifier
               </h2>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Scan any recycling bin to see what items belong and verify your waste disposal
+              <p className="text-xl text-white/80 leading-relaxed mb-8">
+                Verify if a bin is the correct one for your waste or check what items a specific bin accepts.
               </p>
-              <div className="mt-6 inline-block bg-white/20 px-6 py-2 rounded-full text-white font-medium">
-                Verify Bin →
+              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-all active:scale-95 group-hover:border-blue-400/50">
+                Identify Bin <span>→</span>
               </div>
-            </div>
-          </Link>
-        </div>
-        
-        {/* SDG Impact Section */}
-        <div className="bg-white/15 backdrop-blur-xl border border-white/30 rounded-3xl p-8 shadow-2xl">
-          <div className="text-center">
-            <h3 className="text-3xl font-bold text-white mb-4">
-              🌍 SDG 12.5 Impact
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6 mt-6">
-              <div className="bg-white/10 rounded-2xl p-6">
-                <div className="text-4xl font-bold text-red-300 mb-2">
-                  65.6%
-                </div>
-                <p className="text-white/90 text-sm">
-                  Johor residents avoid recycling due to confusion
-                </p>
-              </div>
-              
-              <div className="bg-white/10 rounded-2xl p-6">
-                <div className="text-4xl font-bold text-yellow-300 mb-2">
-                  3.8M
-                </div>
-                <p className="text-white/90 text-sm">
-                  Tonnes of waste generated annually in Malaysia
-                </p>
-              </div>
-              
-              <div className="bg-white/10 rounded-2xl p-6">
-                <div className="text-4xl font-bold text-green-300 mb-2">
-                  Real-time
-                </div>
-                <p className="text-white/90 text-sm">
-                  Education through instant AI classification
-                </p>
-              </div>
-            </div>
-            
-            <p className="text-white/80 mt-8 text-lg">
-              KITA_HACK reduces contamination and increases recycling rates through instant, accurate waste identification
-            </p>
-          </div>
-        </div>
-        
-        {/* How It Works */}
-        <div className="mt-12 bg-white/10 backdrop-blur-xl border border-white/30 rounded-3xl p-8">
-          <h3 className="text-2xl font-bold text-white mb-6 text-center">
-            How It Works
-          </h3>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-4xl mb-3">1️⃣</div>
-              <p className="text-white text-sm">Open Camera Scanner</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-3">2️⃣</div>
-              <p className="text-white text-sm">Point at Waste or Bin</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-3">3️⃣</div>
-              <p className="text-white text-sm">Get Instant Classification</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-3">4️⃣</div>
-              <p className="text-white text-sm">Dispose Correctly!</p>
             </div>
           </div>
+        </Link>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-3xl p-8 text-center hover:border-white/20 transition-colors">
+          <div className="text-5xl font-black text-white/60 mb-2 italic tracking-tighter">65%</div>
+          <p className="text-white/70 text-sm font-medium leading-snug">
+            Confusion-driven contamination in local recycling streams
+          </p>
+        </div>
+        <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-3xl p-8 text-center ring-2 ring-white/10 hover:ring-white/20 transition-all">
+          <div className="text-5xl font-black text-green-400 mb-2 italic tracking-tighter">AI AGENT</div>
+          <p className="text-white/70 text-sm font-medium leading-snug">
+            Automated sorting via Google Cloud Vision API
+          </p>
+        </div>
+        <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-3xl p-8 text-center hover:border-white/20 transition-colors">
+          <div className="text-5xl font-black text-white/60 mb-2 italic tracking-tighter">SDG 12.5</div>
+          <p className="text-white/70 text-sm font-medium leading-snug">
+            Reducing waste through prevention and instant education
+          </p>
         </div>
       </div>
     </div>
