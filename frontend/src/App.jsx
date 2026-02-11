@@ -1,6 +1,7 @@
 // src/App.jsx
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import ScannerPage from './pages/ScannerPage';
 import MainLayout from './components/MainLayout';
@@ -9,8 +10,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <MainLayout text-kita-green>
               <Dashboard />

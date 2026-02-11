@@ -3,6 +3,14 @@
 @theme {
   --color-kita-green: #10b981;
   --color-kita-blue: #3b82f6;
+
+  /* Landing Page Theme */
+  --color-primary: #13ec13;
+  --color-background-light: #f6f8f6;
+  --color-background-dark: #102210;
+  --font-display: "Public Sans", sans-serif;
+  --font-sans: "Public Sans", sans-serif;
+  /* Set as default sans too as per example body style */
 }
 
 /* Custom scrollbar */
