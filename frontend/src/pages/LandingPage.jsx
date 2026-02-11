@@ -24,13 +24,13 @@ const LandingPage = () => {
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => navigate('/dashboard')}
+                                onClick={() => navigate('/auth')}
                                 className="hidden sm:block text-emerald-800 dark:text-emerald-200 font-semibold hover:opacity-80"
                             >
                                 Login
                             </button>
                             <button
-                                onClick={() => navigate('/dashboard')}
+                                onClick={() => navigate('/auth')}
                                 className="bg-primary text-emerald-950 px-6 py-2.5 rounded-lg font-bold hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer"
                             >
                                 Start Recycling

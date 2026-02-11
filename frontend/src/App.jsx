@@ -2,8 +2,10 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import ScannerPage from './pages/ScannerPage';
+import MapPage from './pages/MapPage';
 import MainLayout from './components/MainLayout';
 
 function App() {
@@ -11,6 +13,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route
           path="/dashboard"
           element={
@@ -27,6 +30,7 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path="/map" element={<MapPage />} />
       </Routes>
     </BrowserRouter>
   );
