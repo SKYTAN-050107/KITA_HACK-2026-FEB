@@ -2,8 +2,11 @@
 
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import useDarkMode from '../hooks/useDarkMode';
 
 export default function Navbar() {
+    const { isDark, toggleDarkMode } = useDarkMode();
+
     return (
         <motion.nav
             initial={{ y: -100 }}
@@ -28,6 +31,25 @@ export default function Navbar() {
                         </Link>
                     </div>
                     <div className="flex items-center gap-5">
+                        {/* Dark Mode Toggle */}
+                        <motion.button
+                            whileHover={{ scale: 1.1, rotate: 15 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={toggleDarkMode}
+                            className="bg-primary/10 dark:bg-primary/20 text-primary p-2.5 rounded-full transition-all border border-primary/20 dark:border-primary/30 flex items-center justify-center cursor-pointer"
+                            aria-label="Toggle dark mode"
+                        >
+                            <motion.span
+                                key={isDark ? 'dark' : 'light'}
+                                initial={{ rotate: -90, opacity: 0 }}
+                                animate={{ rotate: 0, opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                                className="material-icons-round text-[1.3rem]"
+                            >
+                                {isDark ? 'light_mode' : 'dark_mode'}
+                            </motion.span>
+                        </motion.button>
+
                         <Link
                             to="/scanner"
                         >

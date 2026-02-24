@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import useDarkMode from '../hooks/useDarkMode';
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const { isDark, toggleDarkMode } = useDarkMode();
 
     const fadeUp = {
         hidden: { opacity: 0, y: 50 },
@@ -46,6 +48,23 @@ const LandingPage = () => {
                             animate={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-4"
                         >
+                            <motion.button
+                                whileHover={{ scale: 1.1, rotate: 15 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={toggleDarkMode}
+                                className="bg-primary/10 dark:bg-primary/20 text-primary p-2 rounded-full border border-primary/20 dark:border-primary/30 cursor-pointer transition-all"
+                                aria-label="Toggle dark mode"
+                            >
+                                <motion.span
+                                    key={isDark ? 'dark' : 'light'}
+                                    initial={{ rotate: -90, opacity: 0 }}
+                                    animate={{ rotate: 0, opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="material-icons-round text-lg"
+                                >
+                                    {isDark ? 'light_mode' : 'dark_mode'}
+                                </motion.span>
+                            </motion.button>
                             <button
                                 onClick={() => navigate('/auth')}
                                 className="hidden sm:block text-emerald-800 dark:text-emerald-200 font-bold hover:text-primary transition-colors duration-500 cursor-pointer"

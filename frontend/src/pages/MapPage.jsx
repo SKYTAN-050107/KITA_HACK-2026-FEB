@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import useDarkMode from '../hooks/useDarkMode';
 
 const MapPage = () => {
     const navigate = useNavigate();
+    const { isDark, toggleDarkMode } = useDarkMode();
     const [searchParams] = useSearchParams();
     const filterType = searchParams.get('type') || 'all';
 
@@ -100,7 +102,23 @@ const MapPage = () => {
                     </span>
                 </div>
 
-                <div className="w-12"></div> {/* Spacer */}
+                <motion.button
+                    whileHover={{ scale: 1.1, rotate: 15 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={toggleDarkMode}
+                    className="bg-white/60 dark:bg-white/10 backdrop-blur-md text-primary w-12 h-12 rounded-full flex items-center justify-center border border-emerald-900/10 dark:border-white/10 shadow-lg pointer-events-auto cursor-pointer transition-colors duration-500"
+                    aria-label="Toggle dark mode"
+                >
+                    <motion.span
+                        key={isDark ? 'dark' : 'light'}
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="material-icons-round"
+                    >
+                        {isDark ? 'light_mode' : 'dark_mode'}
+                    </motion.span>
+                </motion.button>
             </motion.div>
 
             {/* Loading Overlay */}

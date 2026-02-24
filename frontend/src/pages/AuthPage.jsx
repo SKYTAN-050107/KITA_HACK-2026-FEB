@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import useDarkMode from '../hooks/useDarkMode';
 
 const AuthPage = () => {
     const navigate = useNavigate();
+    const { isDark, toggleDarkMode } = useDarkMode();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,6 +17,28 @@ const AuthPage = () => {
 
     return (
         <div className="min-h-screen relative overflow-hidden font-sans flex items-center justify-center p-4 bg-emerald-50 dark:bg-emerald-950 transition-colors duration-500">
+            {/* Dark Mode Toggle */}
+            <motion.button
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+                whileHover={{ scale: 1.1, rotate: 15 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleDarkMode}
+                className="fixed top-6 right-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-primary p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
+                aria-label="Toggle dark mode"
+            >
+                <motion.span
+                    key={isDark ? 'dark' : 'light'}
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="material-icons-round text-xl"
+                >
+                    {isDark ? 'light_mode' : 'dark_mode'}
+                </motion.span>
+            </motion.button>
+
             {/* Background Image */}
             <motion.div
                 initial={{ opacity: 0, scale: 1.1 }}

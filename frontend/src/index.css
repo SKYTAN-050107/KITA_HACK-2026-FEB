@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-kita-green: #10b981;
   --color-kita-blue: #3b82f6;
@@ -31,19 +33,14 @@
   background: #555;
 }
 
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-track {
-    background: #064e3b;
-    /* emerald-900 */
-  }
+.dark ::-webkit-scrollbar-track {
+  background: #064e3b;
+}
 
-  ::-webkit-scrollbar-thumb {
-    background: #10b981;
-    /* primary */
-  }
+.dark ::-webkit-scrollbar-thumb {
+  background: #10b981;
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #059669;
-    /* emerald-600 */
-  }
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #059669;
 }
