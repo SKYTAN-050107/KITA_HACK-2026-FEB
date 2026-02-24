@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useDarkMode from '../hooks/useDarkMode';
 
-export default function Navbar() {
+export default function Navbar({ showHamburger = false, onHamburgerClick }) {
     const { isDark, toggleDarkMode } = useDarkMode();
 
     return (
@@ -16,7 +16,19 @@ export default function Navbar() {
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-3">
+                        {/* Mobile hamburger */}
+                        {showHamburger && (
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={onHamburgerClick}
+                                className="bg-primary/10 dark:bg-primary/20 text-primary p-2.5 rounded-full transition-all border border-primary/20 dark:border-primary/30 flex items-center justify-center cursor-pointer"
+                                aria-label="Open menu"
+                            >
+                                <span className="material-icons-round text-[1.3rem]">menu</span>
+                            </motion.button>
+                        )}
                         <Link to="/dashboard" className="flex items-center gap-2 group">
                             <motion.div
                                 whileHover={{ rotate: 180 }}
