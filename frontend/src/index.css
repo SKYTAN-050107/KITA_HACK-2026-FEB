@@ -30,3 +30,20 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #064e3b;
+    /* emerald-900 */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #10b981;
+    /* primary */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+    /* emerald-600 */
+  }
+}
