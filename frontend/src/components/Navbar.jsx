@@ -51,7 +51,7 @@ export default function Navbar() {
                         </motion.button>
 
                         <Link
-                            to="/scanner"
+                            to="/dashboard/scanner"
                         >
                             <motion.div
                                 whileHover={{ scale: 1.1, backgroundColor: 'rgba(16,185,129,0.2)' }}

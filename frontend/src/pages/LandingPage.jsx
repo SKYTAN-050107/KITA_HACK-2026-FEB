@@ -66,7 +66,7 @@ const LandingPage = () => {
                                 </motion.span>
                             </motion.button>
                             <button
-                                onClick={() => navigate('/auth')}
+                                onClick={() => navigate('/login')}
                                 className="hidden sm:block text-emerald-800 dark:text-emerald-200 font-bold hover:text-primary transition-colors duration-500 cursor-pointer"
                             >
                                 Login
@@ -74,7 +74,7 @@ const LandingPage = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/auth')}
+                                onClick={() => navigate('/login')}
                                 className="bg-primary text-emerald-950 px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/40 transition-all cursor-pointer border border-primary/50"
                             >
                                 Get Started
@@ -111,7 +111,7 @@ const LandingPage = () => {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => navigate('/auth')}
+                                    onClick={() => navigate('/login')}
                                     className="bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 px-8 py-4 rounded-2xl font-extrabold text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 cursor-pointer border border-emerald-50 dark:border-white/20"
                                 >
                                     Join the Movement <span className="material-icons-round">arrow_forward</span>
@@ -206,7 +206,7 @@ const LandingPage = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/auth')}
+                                onClick={() => navigate('/login')}
                                 className="bg-emerald-950 text-white px-10 py-5 rounded-2xl font-extrabold text-xl shadow-2xl hover:shadow-black/50 transition-all cursor-pointer border border-emerald-800"
                             >
                                 Join Currently

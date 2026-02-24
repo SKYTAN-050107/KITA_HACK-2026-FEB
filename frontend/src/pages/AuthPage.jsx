@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import useDarkMode from '../hooks/useDarkMode';
 
-const AuthPage = () => {
+const AuthPage = ({ defaultMode = 'login' }) => {
     const navigate = useNavigate();
     const { isDark, toggleDarkMode } = useDarkMode();
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(defaultMode === 'login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 

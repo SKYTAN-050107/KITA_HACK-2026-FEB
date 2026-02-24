@@ -53,7 +53,7 @@ export default function Dashboard() {
         <motion.div
           variants={itemVariants}
           className="lg:col-span-2 relative group cursor-pointer"
-          onClick={() => navigate('/scanner')}
+          onClick={() => navigate('/dashboard/scanner')}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-emerald-600/5 dark:from-primary/30 dark:to-emerald-600/10 rounded-[2.5rem] blur-2xl group-hover:blur-3xl group-hover:from-primary/30 dark:group-hover:from-primary/40 transition-all duration-700"></div>
           <motion.div
@@ -105,7 +105,7 @@ export default function Dashboard() {
             whileHover={{ scale: 1.03, y: -5 }}
             whileTap={{ scale: 0.98 }}
             className="flex-1 bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-emerald-900/10 dark:border-white/10 rounded-[2rem] p-8 shadow-xl shadow-black/5 dark:shadow-black/20 group cursor-pointer relative overflow-hidden transition-colors duration-500"
-            onClick={() => navigate('/map')}
+            onClick={() => navigate('/dashboard/map')}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10">
