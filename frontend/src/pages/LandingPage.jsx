@@ -114,7 +114,15 @@ const LandingPage = () => {
                                     onClick={() => navigate('/login')}
                                     className="bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 px-8 py-4 rounded-2xl font-extrabold text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 cursor-pointer border border-emerald-50 dark:border-white/20"
                                 >
-                                    Join the Movement <span className="material-icons-round">arrow_forward</span>
+                                    Get Started <span className="material-icons-round">arrow_forward</span>
+                                </motion.button>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => navigate('/dashboard/guidelines')}
+                                    className="bg-white/60 dark:bg-white/10 backdrop-blur-xl text-emerald-900 dark:text-white px-8 py-4 rounded-2xl font-extrabold text-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-emerald-200 dark:border-white/20 hover:border-primary dark:hover:border-primary"
+                                >
+                                    Learn More <span className="material-icons-round">menu_book</span>
                                 </motion.button>
                             </motion.div>
                         </motion.div>
@@ -147,6 +155,52 @@ const LandingPage = () => {
                     </div>
                 </div>
             </header>
+
+            {/* SDG 12 Impact Stats */}
+            <section className="py-20 relative z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-80px" }}
+                        variants={staggerContainer}
+                        className="text-center mb-12"
+                    >
+                        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-emerald-800 dark:text-primary text-xs font-bold mb-4 tracking-wide uppercase transition-colors duration-500">
+                            <span className="material-icons-round text-sm">public</span>
+                            SDG 12 · Responsible Consumption
+                        </motion.div>
+                        <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-extrabold text-emerald-900 dark:text-white tracking-tight transition-colors duration-500">
+                            Why It Matters
+                        </motion.h2>
+                    </motion.div>
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-80px" }}
+                        variants={staggerContainer}
+                        className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                    >
+                        {[
+                            { value: '65%', label: 'JB Non-Recycling Rate', icon: 'delete', color: 'text-red-500' },
+                            { value: '8M+', label: 'Tonnes Waste / Year (MY)', icon: 'warning', color: 'text-amber-500' },
+                            { value: '70%', label: 'Boost With Proper Sorting', icon: 'trending_up', color: 'text-primary' },
+                            { value: '∞', label: 'Glass Is Infinitely Recyclable', icon: 'recycling', color: 'text-primary' },
+                        ].map((stat, i) => (
+                            <motion.div
+                                key={i}
+                                variants={fadeUp}
+                                whileHover={{ y: -6, scale: 1.02 }}
+                                className="p-8 rounded-3xl border border-emerald-100 dark:border-white/10 bg-white/60 dark:bg-white/5 backdrop-blur-xl text-center transition-all duration-500"
+                            >
+                                <span className={`material-icons-round text-3xl mb-3 ${stat.color}`}>{stat.icon}</span>
+                                <p className="text-4xl font-black text-emerald-900 dark:text-white tracking-tight transition-colors duration-500">{stat.value}</p>
+                                <p className="text-sm font-bold text-emerald-700 dark:text-emerald-100/60 mt-2 transition-colors duration-500">{stat.label}</p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
 
             {/* Key Benefits Section */}
             <section className="py-24 bg-white dark:bg-black/20 border-y border-emerald-100 dark:border-white/5 relative z-10 transition-colors duration-500">
