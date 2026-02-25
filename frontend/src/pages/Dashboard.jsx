@@ -3,9 +3,21 @@
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'User';
+
+  const handleLogout = async () => {
+    navigate('/');
+    try {
+      await logout();
+    } catch {
+      // Already on landing page
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -33,14 +45,14 @@ export default function Dashboard() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-4xl font-extrabold text-emerald-950 dark:text-white mb-1 tracking-tight transition-colors duration-500"
           >
-            Good Evening, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary dark:from-emerald-400 dark:to-primary">Sky</span>
+            Good Evening, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary dark:from-emerald-400 dark:to-primary">{displayName}</span>
           </motion.h1>
           <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">Ready to make an impact today?</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.05, backgroundColor: 'rgba(16,185,129,0.1)' }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/')}
+          onClick={handleLogout}
           className="bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-emerald-900/10 dark:border-white/10 shadow-lg backdrop-blur-md hover:dark:bg-white/10"
         >
           Logout

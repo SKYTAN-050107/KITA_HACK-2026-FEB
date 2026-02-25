@@ -44,11 +44,11 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   }, [isMobile, mobileOpen, onMobileClose]);
 
   const handleLogout = async () => {
+    navigate('/');
     try {
       await logout();
-      navigate('/');
     } catch {
-      navigate('/');
+      // Already on landing page
     }
   };
 
