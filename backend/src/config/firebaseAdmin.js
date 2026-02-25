@@ -10,10 +10,14 @@ const serviceAccountPath = path.resolve(__dirname, '../../service-account-key.js
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(require(serviceAccountPath)),
+        storageBucket: 'kitahack-487005.firebasestorage.app',
     });
 }
 
 // Firestore instance
 const db = admin.firestore();
 
-module.exports = { admin, db };
+// Cloud Storage bucket
+const bucket = admin.storage().bucket();
+
+module.exports = { admin, db, bucket };

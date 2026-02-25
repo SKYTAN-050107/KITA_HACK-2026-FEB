@@ -5,6 +5,7 @@ const router = express.Router();
 const { admin, db } = require('../config/firebaseAdmin');
 const { WASTE_RULES, ESTIMATED_WEIGHTS, CO2_FACTOR } = require('../config/wasteRulesBackend');
 const { RECYCLING_CENTRES } = require('../config/recyclingCentres');
+const { uploadScanImage } = require('../services/storageService');
 
 /**
  * POST /api/v1/scans
@@ -22,6 +23,7 @@ router.post('/scans', async (req, res) => {
             rules,
             checklist,
             imageHash,
+            imageData, // optional base64 image for GCS upload
             location, // optional { lat, lng }
         } = req.body;
 
@@ -67,6 +69,19 @@ router.post('/scans', async (req, res) => {
             };
         }
 
+        // Pre-generate scan ID so we can use it for the image path
+        const scanRef = db.collection('scans').doc();
+
+        // Upload image to GCS if provided
+        let imageUrl = null;
+        if (imageData) {
+            try {
+                imageUrl = await uploadScanImage(imageData, uid, scanRef.id);
+            } catch (uploadErr) {
+                console.warn('Image upload failed (scan will proceed without image):', uploadErr.message);
+            }
+        }
+
         // Create scan document
         const scanDoc = {
             userId: uid,
@@ -79,6 +94,7 @@ router.post('/scans', async (req, res) => {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             location: location || null,
             imageHash: imageHash || null,
+            imageUrl,
             pointsEarned,
             impactKg: parseFloat(estKg.toFixed(2)),
             // Disposal tracking
@@ -89,7 +105,6 @@ router.post('/scans', async (req, res) => {
         };
 
         // Atomic: create scan + increment user stats
-        const scanRef = db.collection('scans').doc();
         const userRef = db.collection('users').doc(uid);
 
         await db.runTransaction(async (tx) => {
@@ -108,6 +123,7 @@ router.post('/scans', async (req, res) => {
             scanId: scanRef.id,
             pointsEarned,
             impactKg: parseFloat(estKg.toFixed(2)),
+            imageUrl,
             targetCentre,
         });
     } catch (err) {
