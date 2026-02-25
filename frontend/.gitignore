@@ -24,3 +24,26 @@ dev-dist
 *.sln
 *.sw?
 .vercel
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Secrets / credentials
+*secret*
+*SECRET*
+*private*
+*PRIVATE*
+*credential*
+*CREDENTIAL*
+*service-account*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der

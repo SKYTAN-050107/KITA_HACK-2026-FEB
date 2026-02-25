@@ -2,3 +2,21 @@ node_modules/
 .env
 service-account-key.json
 *.log
+
+# Secrets / credentials
+*secret*
+*SECRET*
+*private*
+*PRIVATE*
+*credential*
+*CREDENTIAL*
+*service-account*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
