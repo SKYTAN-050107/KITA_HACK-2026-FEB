@@ -62,16 +62,23 @@ export default function CameraScanner() {
     }
   };
 
-  // ── Capture frame as base64 (640x480) ──
+  // ── Capture frame as base64 (1280×1024 for Vertex AI accuracy) ──
+  // Enforces < 5MB for GCS storage. Falls back to lower quality if needed.
+  const MAX_BASE64_SIZE = 5 * 1024 * 1024 * 1.37; // ~6.85MB base64 ≈ 5MB raw
   const captureFrame = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) return null;
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    canvas.width = 640;
-    canvas.height = 480;
+    canvas.width = 1280;
+    canvas.height = 1024;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.8);
+    let dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    // Safety: if >5MB, re-encode at lower quality
+    if (dataUrl.length > MAX_BASE64_SIZE) {
+      dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+    }
+    return dataUrl;
   }, []);
 
   // ── Scan frame → backend ──
