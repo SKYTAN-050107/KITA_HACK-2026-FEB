@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
+import { useAuth } from '../contexts/AuthContext';
 
 // APP_FLOW.md §2 — 5 nav items
 const NAV_ITEMS = [
@@ -23,6 +24,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   // Auto-dismiss mobile drawer on nav
   useEffect(() => {
@@ -41,9 +43,13 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [isMobile, mobileOpen, onMobileClose]);
 
-  const handleLogout = () => {
-    // TODO (Step 4): signOut(auth) → /
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch {
+      navigate('/');
+    }
   };
 
   const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
@@ -128,7 +134,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
         </div>
         {showLabels && (
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-emerald-950 dark:text-white truncate transition-colors duration-500">User</p>
+            <p className="text-sm font-bold text-emerald-950 dark:text-white truncate transition-colors duration-500">{user?.displayName || 'User'}</p>
             <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 transition-colors duration-500">Eco Warrior</p>
           </div>
         )}

@@ -3,9 +3,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useDarkMode from '../hooks/useDarkMode';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar({ showHamburger = false, onHamburgerClick }) {
     const { isDark, toggleDarkMode } = useDarkMode();
+    const { user } = useAuth();
 
     return (
         <motion.nav
@@ -79,7 +81,11 @@ export default function Navbar({ showHamburger = false, onHamburgerClick }) {
                             className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-emerald-400 p-0.5 shadow-lg shadow-primary/30 cursor-pointer"
                         >
                             <div className="w-full h-full bg-emerald-50 dark:bg-emerald-950 rounded-full flex items-center justify-center border-[3px] border-emerald-50 dark:border-emerald-950 relative overflow-hidden group transition-colors duration-500">
-                                <span className="material-icons-round text-primary text-base group-hover:scale-110 transition-transform">person</span>
+                                {user?.photoURL ? (
+                                    <img src={user.photoURL} alt="" className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
+                                ) : (
+                                    <span className="material-icons-round text-primary text-base group-hover:scale-110 transition-transform">person</span>
+                                )}
                             </div>
                         </motion.div>
                     </div>
