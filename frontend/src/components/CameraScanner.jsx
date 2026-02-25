@@ -541,7 +541,7 @@ export default function CameraScanner() {
                     className={`w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${savedSuccess ? 'bg-primary/20 text-primary border border-primary/30' : 'bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 shadow-lg shadow-primary/20'}`}
                   >
                     {savingToHistory ? (
-                      <><motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="material-icons-round text-lg">progress_activity</motion.span> Saving...</>
+                      <>Saving...</>
                     ) : savedSuccess ? (
                       <><span className="material-icons-round text-lg">check_circle</span> Saved to History!</>
                     ) : (
