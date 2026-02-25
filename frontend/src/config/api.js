@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export const endpoints = {
   health: `${API_URL}/api/health`,
   scan: `${API_URL}/api/scan`,
-  validate: `${API_URL}/api/validate`,
+  validate: `${API_URL}/api/scan/validate`,
   verify: `${API_URL}/api/v1/verify`,
   userStats: `${API_URL}/api/v1/user/stats`,
   scansWeekly: `${API_URL}/api/v1/scans/weekly`,
