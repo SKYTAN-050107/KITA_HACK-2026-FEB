@@ -1,4 +1,4 @@
-// src/pages/HistoryPage.jsx — Step 8.1–8.3, 8.5: Scan history with expand, filter, search
+// src/pages/HistoryPage.jsx — Step D: Image-grid scan history with expandable modal + DisposalCheckbox
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { endpoints } from '../config/api';
 import { WASTE_RULES } from '../config/wasteRules';
 import useDarkMode from '../hooks/useDarkMode';
+import DisposalCheckbox, { STATUS_CONFIG } from '../components/DisposalCheckbox';
 
 const PAGE_SIZE = 20;
 
@@ -39,42 +40,46 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [lastDoc, setLastDoc] = useState(null);
-  const [expandedId, setExpandedId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastDoc, setLastDoc] = useState(null); // Firestore fallback pagination
+  const [selectedScan, setSelectedScan] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
 
-  // ── 8.1 Firestore scans query (timestamp DESC) ──
+  // ── Fetch scans (page-based API pagination, Firestore fallback) ──
   useEffect(() => {
     if (!user) return;
-    fetchScans();
+    fetchScans(1);
   }, [user]);
 
-  const fetchScans = async (after = null) => {
+  const fetchScans = async (pageNum = 1) => {
     if (!user) return;
-    const isLoadMore = !!after;
+    const isLoadMore = pageNum > 1;
     if (isLoadMore) setLoadingMore(true); else setLoading(true);
 
     try {
-      // Get fresh Firebase ID token (authMiddleware verifies this directly)
       let idToken = null;
       try { idToken = await user.getIdToken(); } catch { /* proceed to fallback */ }
       let fetched = false;
 
-      if (idToken && !after) {
+      if (idToken) {
         try {
-          const res = await fetch(`${endpoints.scans}?page=1&limit=${PAGE_SIZE}`, {
+          const res = await fetch(`${endpoints.scans}?page=${pageNum}&limit=${PAGE_SIZE}`, {
             headers: { Authorization: `Bearer ${idToken}` },
           });
           if (res.ok) {
             const data = await res.json();
             if (data.success && data.scans) {
-              setScans(data.scans);
+              // Map scanId → id for consistent keying (bug fix: backend returns scanId not id)
+              const mapped = data.scans.map(s => ({ ...s, id: s.scanId || s.id }));
+              if (isLoadMore) setScans(prev => [...prev, ...mapped]);
+              else setScans(mapped);
               setHasMore(data.hasMore || false);
+              setCurrentPage(pageNum);
               fetched = true;
             }
           }
-        } catch { /* fallback */ }
+        } catch { /* fallback to direct Firestore */ }
       }
 
       // Fallback: direct Firestore
@@ -85,7 +90,9 @@ export default function HistoryPage() {
           orderBy('timestamp', 'desc'),
           limit(PAGE_SIZE)
         );
-        if (after) q = query(collection(db, 'scans'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), startAfter(after), limit(PAGE_SIZE));
+        if (isLoadMore && lastDoc) {
+          q = query(collection(db, 'scans'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
+        }
 
         const snap = await getDocs(q);
         const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -95,6 +102,7 @@ export default function HistoryPage() {
 
         setHasMore(snap.docs.length === PAGE_SIZE);
         setLastDoc(snap.docs.length > 0 ? snap.docs[snap.docs.length - 1] : null);
+        setCurrentPage(pageNum);
       }
     } catch (err) {
       console.error('Failed to load scan history:', err);
@@ -104,7 +112,15 @@ export default function HistoryPage() {
     }
   };
 
-  // ── 8.5 Search + Filter ──
+  // ── DisposalCheckbox status change handler (Step 13) ──
+  const handleStatusChange = (scanId, newStatus) => {
+    setScans(prev => prev.map(s => s.id === scanId ? { ...s, disposalStatus: newStatus } : s));
+    if (selectedScan?.id === scanId) {
+      setSelectedScan(prev => prev ? { ...prev, disposalStatus: newStatus } : prev);
+    }
+  };
+
+  // ── Search + Filter ──
   const filteredScans = useMemo(() => {
     let result = scans;
     if (filterType !== 'all') {
@@ -131,12 +147,13 @@ export default function HistoryPage() {
     return ['all', ...Array.from(types)];
   }, [scans]);
 
-  const toggleExpand = (id) => setExpandedId(prev => prev === id ? null : id);
+  // ── Expanded modal derived data ──
+  const modalRule = selectedScan ? (WASTE_RULES[selectedScan.wasteType] || WASTE_RULES.general_waste) : null;
+  const modalConfPercent = selectedScan ? Math.round((selectedScan.confidence || 0) * 100) : 0;
 
   return (
-    <div
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500"
-    >
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
+
       {/* ── Header ── */}
       <div className="flex items-center gap-4 mb-8">
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400/10 to-orange-600/10 dark:from-orange-400/20 dark:to-orange-600/20 flex items-center justify-center text-orange-500 dark:text-orange-400 border border-orange-400/20 shadow-inner">
@@ -246,199 +263,67 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* ── 8.2 Scan Cards List ── */}
+      {/* ── Image Grid (Step 12) ── */}
       {!loading && filteredScans.length > 0 && (
-        <div className="space-y-4">
-          <AnimatePresence initial={false}>
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {filteredScans.map((scan, index) => {
               const rule = WASTE_RULES[scan.wasteType] || WASTE_RULES.general_waste;
-              const isExpanded = expandedId === scan.id;
-              const confPercent = Math.round((scan.confidence || 0) * 100);
+              const statusConfig = STATUS_CONFIG[scan.disposalStatus] || STATUS_CONFIG.pending;
 
               return (
                 <motion.div
                   key={scan.id || index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ delay: index * 0.03 }}
-                  layout
-                  className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-3xl shadow-lg shadow-emerald-900/5 dark:shadow-emerald-900/30 overflow-hidden transition-colors duration-500"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.02 }}
+                  onClick={() => setSelectedScan(scan)}
+                  className="relative aspect-square rounded-2xl overflow-hidden cursor-pointer group border border-emerald-900/10 dark:border-white/10 shadow-lg shadow-emerald-900/5 dark:shadow-emerald-900/30"
                 >
-                  {/* ── Card Header (always visible) ── */}
-                  <motion.button
-                    onClick={() => toggleExpand(scan.id || index)}
-                    className="w-full p-5 sm:p-6 flex items-center gap-4 cursor-pointer text-left hover:bg-white/40 dark:hover:bg-white/5 transition-colors"
-                  >
-                    {/* Waste Type Icon */}
+                  {/* Image or fallback placeholder */}
+                  {scan.imageUrl ? (
+                    <img
+                      src={scan.imageUrl}
+                      alt={rule.displayName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  ) : (
                     <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 border shadow-inner"
-                      style={{
-                        backgroundColor: `${rule.color}15`,
-                        borderColor: `${rule.color}30`,
-                      }}
+                      className="w-full h-full flex items-center justify-center bg-white/60 dark:bg-white/5"
+                      style={{ backgroundColor: `${rule.color}10` }}
                     >
-                      {rule.icon}
+                      <span className="text-5xl opacity-50">{rule.icon}</span>
                     </div>
+                  )}
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="text-lg font-bold text-emerald-950 dark:text-white truncate transition-colors duration-500">
-                          {rule.displayName}
-                        </h3>
-                        <span
-                          className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full border"
-                          style={{ color: rule.color, borderColor: `${rule.color}40`, backgroundColor: `${rule.color}10` }}
-                        >
-                          {rule.category}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-emerald-800/50 dark:text-emerald-200/40 font-medium">
-                        <span className="flex items-center gap-1">
-                          <span className="material-icons-round text-xs">schedule</span>
-                          {relativeTime(scan.timestamp)}
-                        </span>
-                        {confPercent > 0 && (
-                          <span className="flex items-center gap-1">
-                            <span className="material-icons-round text-xs">insights</span>
-                            {confPercent}% confidence
-                          </span>
-                        )}
-                        {scan.pointsEarned && (
-                          <span className="flex items-center gap-1 text-primary">
-                            <span className="material-icons-round text-xs">star</span>
-                            +{scan.pointsEarned}pts
-                          </span>
-                        )}
-                      </div>
+                  {/* Status indicator (top-right) */}
+                  <div className="absolute top-2 right-2 z-10">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-md border border-white/20"
+                      title={statusConfig.label}
+                    >
+                      <span className="material-icons-round text-xs" style={{ color: statusConfig.color }}>
+                        {statusConfig.icon}
+                      </span>
                     </div>
+                  </div>
 
-                    {/* Bin Match Status (8.2) */}
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                      {scan.binMatch !== null && scan.binMatch !== undefined && (
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${scan.binMatch ? 'bg-primary/15 text-primary' : 'bg-red-500/15 text-red-500'}`}>
-                          <span className="material-icons-round text-lg">
-                            {scan.binMatch ? 'check_circle' : 'cancel'}
-                          </span>
-                        </div>
-                      )}
-                      <motion.span
-                        animate={{ rotate: isExpanded ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="material-icons-round text-emerald-800/30 dark:text-emerald-200/30 text-xl"
-                      >
-                        expand_more
-                      </motion.span>
+                  {/* Bottom overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-8">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-sm">{rule.icon}</span>
+                      <span className="text-white text-xs font-bold truncate">{rule.displayName}</span>
                     </div>
-                  </motion.button>
+                    <span className="text-white/60 text-[10px] font-medium">{relativeTime(scan.timestamp)}</span>
+                  </div>
 
-                  {/* ── 8.3 Expanded Detail ── */}
-                  <AnimatePresence initial={false}>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-5 sm:px-6 pb-6 border-t border-emerald-900/5 dark:border-white/5 pt-5 space-y-5">
-                          {/* Scan Details */}
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Date</p>
-                              <p className="text-xs font-bold text-emerald-950 dark:text-white">{formatDate(scan.timestamp)}</p>
-                            </div>
-                            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Disposal</p>
-                              <p className="text-xs font-bold text-emerald-950 dark:text-white capitalize">{scan.disposalMethod || rule.disposalMethod}</p>
-                            </div>
-                            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Confidence</p>
-                              <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-emerald-900/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
-                                  <div className="h-full rounded-full" style={{ width: `${confPercent}%`, backgroundColor: rule.color }} />
-                                </div>
-                                <span className="text-xs font-bold" style={{ color: rule.color }}>{confPercent}%</span>
-                              </div>
-                            </div>
-                            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Correct Bin</p>
-                              <p className="text-xs font-bold text-emerald-950 dark:text-white">{rule.correctBin.symbol} {rule.correctBin.name.split(' ').slice(0, 2).join(' ')}</p>
-                            </div>
-                          </div>
-
-                          {/* Short Rules from scan data or fallback to WASTE_RULES */}
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">Quick Rules</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {(scan.rules || rule.shortRules).map((r, i) => (
-                                <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/40 dark:bg-white/5 border border-emerald-900/5 dark:border-white/5">
-                                  <span className="material-icons-round text-sm mt-0.5" style={{ color: rule.color }}>check_circle</span>
-                                  <span className="text-xs font-medium text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed">{r}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Checklist from scan data or fallback */}
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">
-                              Preparation Checklist
-                              {scan.checklistCompleted && (
-                                <span className="ml-2 text-primary">✓ Completed</span>
-                              )}
-                            </p>
-                            <div className="space-y-2">
-                              {(scan.checklist || rule.checklist).map((item, i) => {
-                                const step = typeof item === 'string' ? item : item.step;
-                                const completed = typeof item === 'object' ? item.completed : false;
-                                return (
-                                  <div
-                                    key={i}
-                                    className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${completed
-                                      ? 'bg-primary/10 dark:bg-primary/10 border-primary/20'
-                                      : 'bg-white/40 dark:bg-white/5 border-emerald-900/5 dark:border-white/5'
-                                    }`}
-                                  >
-                                    <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 ${completed ? 'bg-primary' : 'border-2 border-emerald-900/15 dark:border-white/15'}`}>
-                                      {completed && <span className="material-icons-round text-white text-xs">check</span>}
-                                    </div>
-                                    <span className={`text-xs font-medium ${completed ? 'text-primary line-through' : 'text-emerald-900/70 dark:text-emerald-100/70'}`}>
-                                      {step}
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex gap-3 pt-2">
-                            <motion.button
-                              whileTap={{ scale: 0.98 }}
-                              onClick={() => navigate('/dashboard/scanner')}
-                              className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-primary/10 dark:bg-primary/15 text-primary border border-primary/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/20 transition-all"
-                            >
-                              <span className="material-icons-round text-sm">qr_code_scanner</span> Scan Again
-                            </motion.button>
-                            <motion.button
-                              whileTap={{ scale: 0.98 }}
-                              onClick={() => navigate('/dashboard/map')}
-                              className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-blue-500/10 dark:bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
-                            >
-                              <span className="material-icons-round text-sm">map</span> Find Bin
-                            </motion.button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
                 </motion.div>
               );
             })}
-          </AnimatePresence>
+          </div>
 
           {/* Load More */}
           {hasMore && (
@@ -446,7 +331,7 @@ export default function HistoryPage() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => fetchScans(lastDoc)}
+                onClick={() => fetchScans(currentPage + 1)}
                 disabled={loadingMore}
                 className="px-8 py-3 bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-emerald-900/10 dark:border-white/10 rounded-2xl text-sm font-bold text-emerald-950 dark:text-white flex items-center gap-2 cursor-pointer hover:bg-white/80 dark:hover:bg-white/10 transition-all"
               >
@@ -460,6 +345,179 @@ export default function HistoryPage() {
           )}
         </div>
       )}
+
+      {/* ── Expanded Scan Detail Modal ── */}
+      <AnimatePresence>
+        {selectedScan && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="history-modal-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedScan(null)}
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Slide-up panel */}
+            <motion.div
+              key="history-modal-panel"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="fixed bottom-0 left-0 right-0 z-50 max-h-[90vh] overflow-y-auto bg-white/95 dark:bg-emerald-950/95 backdrop-blur-2xl border-t border-emerald-900/10 dark:border-white/10 rounded-t-[2.5rem] shadow-2xl"
+            >
+              <div className="max-w-lg mx-auto p-6 pb-12">
+                {/* Drag handle */}
+                <div className="flex justify-center mb-4">
+                  <div className="w-12 h-1.5 bg-emerald-900/10 dark:bg-white/20 rounded-full"></div>
+                </div>
+
+                {/* Close button */}
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={() => setSelectedScan(null)}
+                    className="w-8 h-8 rounded-full bg-emerald-900/5 dark:bg-white/5 flex items-center justify-center cursor-pointer hover:bg-emerald-900/10 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <span className="material-icons-round text-emerald-800/60 dark:text-emerald-200/60 text-lg">close</span>
+                  </button>
+                </div>
+
+                {/* Full image */}
+                {selectedScan.imageUrl && (
+                  <div className="mb-6 rounded-2xl overflow-hidden border border-emerald-900/10 dark:border-white/10">
+                    <img src={selectedScan.imageUrl} alt={modalRule?.displayName} className="w-full h-48 sm:h-56 object-cover" />
+                  </div>
+                )}
+
+                {/* Header: waste type + confidence */}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">{modalRule?.icon}</span>
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full border"
+                        style={{ color: modalRule?.color, borderColor: `${modalRule?.color}40`, backgroundColor: `${modalRule?.color}10` }}
+                      >
+                        {modalRule?.category}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-bold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">{modalRule?.displayName}</h2>
+                    <p className="text-emerald-800/50 dark:text-emerald-100/50 text-xs mt-1">{modalRule?.examples}</p>
+                  </div>
+                  {modalConfPercent > 0 && (
+                    <div className="text-right flex-shrink-0 ml-4">
+                      <span className="text-lg font-black" style={{ color: modalRule?.color }}>{modalConfPercent}%</span>
+                      <p className="text-[10px] text-emerald-800/40 dark:text-emerald-200/30 font-bold uppercase tracking-widest">Confidence</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Disposal Status with DisposalCheckbox (Step 13) */}
+                <div className="mb-5 flex items-center justify-between p-3 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/5 dark:border-white/5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30">Disposal Status</p>
+                  <DisposalCheckbox
+                    scanId={selectedScan.id}
+                    currentStatus={selectedScan.disposalStatus || 'pending'}
+                    disposalMethod={selectedScan.disposalMethod || modalRule?.disposalMethod}
+                    onStatusChange={handleStatusChange}
+                  />
+                </div>
+
+                {/* Detail Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+                  <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Date</p>
+                    <p className="text-xs font-bold text-emerald-950 dark:text-white">{formatDate(selectedScan.timestamp)}</p>
+                  </div>
+                  <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Disposal</p>
+                    <p className="text-xs font-bold text-emerald-950 dark:text-white capitalize">{selectedScan.disposalMethod || modalRule?.disposalMethod}</p>
+                  </div>
+                  <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Confidence</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-emerald-900/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${modalConfPercent}%`, backgroundColor: modalRule?.color }} />
+                      </div>
+                      <span className="text-xs font-bold" style={{ color: modalRule?.color }}>{modalConfPercent}%</span>
+                    </div>
+                  </div>
+                  <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 border border-emerald-900/5 dark:border-white/5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-1">Correct Bin</p>
+                    <p className="text-xs font-bold text-emerald-950 dark:text-white">{modalRule?.correctBin.symbol} {modalRule?.correctBin.name.split(' ').slice(0, 2).join(' ')}</p>
+                  </div>
+                </div>
+
+                {/* Short Rules */}
+                <div className="mb-5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">Quick Rules</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {(selectedScan.rules || modalRule?.shortRules || []).map((r, i) => (
+                      <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/40 dark:bg-white/5 border border-emerald-900/5 dark:border-white/5">
+                        <span className="material-icons-round text-sm mt-0.5" style={{ color: modalRule?.color }}>check_circle</span>
+                        <span className="text-xs font-medium text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed">{r}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Checklist */}
+                <div className="mb-5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">
+                    Preparation Checklist
+                    {selectedScan.checklistCompleted && (
+                      <span className="ml-2 text-primary">✓ Completed</span>
+                    )}
+                  </p>
+                  <div className="space-y-2">
+                    {(selectedScan.checklist || modalRule?.checklist || []).map((item, i) => {
+                      const step = typeof item === 'string' ? item : item.step;
+                      const completed = typeof item === 'object' ? item.completed : false;
+                      return (
+                        <div
+                          key={i}
+                          className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${completed
+                            ? 'bg-primary/10 dark:bg-primary/10 border-primary/20'
+                            : 'bg-white/40 dark:bg-white/5 border-emerald-900/5 dark:border-white/5'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 ${completed ? 'bg-primary' : 'border-2 border-emerald-900/15 dark:border-white/15'}`}>
+                            {completed && <span className="material-icons-round text-white text-xs">check</span>}
+                          </div>
+                          <span className={`text-xs font-medium ${completed ? 'text-primary line-through' : 'text-emerald-900/70 dark:text-emerald-100/70'}`}>
+                            {step}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-2">
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => { setSelectedScan(null); navigate('/dashboard/scanner'); }}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-primary/10 dark:bg-primary/15 text-primary border border-primary/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/20 transition-all"
+                  >
+                    <span className="material-icons-round text-sm">qr_code_scanner</span> Scan Again
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => { setSelectedScan(null); navigate('/dashboard/map'); }}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-blue-500/10 dark:bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
+                  >
+                    <span className="material-icons-round text-sm">map</span> Find Bin
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
