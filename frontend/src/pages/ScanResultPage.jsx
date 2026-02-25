@@ -16,9 +16,10 @@ export default function ScanResultPage() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Extract scan result from navigation state
+  // Extract scan result and captured image from navigation state
   const scanResult = location.state?.scanResult;
   const result = scanResult?.result;
+  const imageData = location.state?.imageData || null;
 
   // Derive waste data
   const wasteType = result?.wasteType || 'general_waste';
@@ -67,6 +68,7 @@ export default function ScanResultPage() {
               disposalMethod: ruleData.disposalMethod,
               rules: ruleData.shortRules,
               checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
+              imageData: imageData,
               imageHash: result?.imageHash || null,
             }),
           });
@@ -86,6 +88,7 @@ export default function ScanResultPage() {
           checklistCompleted: checklist.every(c => c.completed),
           timestamp: serverTimestamp(),
           location: null,
+          imageUrl: null,
           imageHash: result?.imageHash || null,
           pointsEarned: 5,
         });
@@ -145,6 +148,22 @@ export default function ScanResultPage() {
           </div>
           <span className="text-white/60 text-sm font-bold uppercase tracking-widest group-hover:text-white transition-colors">Back to Scanner</span>
         </motion.button>
+
+        {/* ── Captured Image Preview ── */}
+        {imageData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mb-6 rounded-2xl overflow-hidden border border-white/10"
+          >
+            <img
+              src={imageData}
+              alt="Scanned waste"
+              className="w-full h-48 object-cover"
+            />
+          </motion.div>
+        )}
 
         {/* ── Header: Waste type + confidence ── */}
         <motion.div

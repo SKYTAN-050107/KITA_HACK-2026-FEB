@@ -28,6 +28,7 @@ export default function CameraScanner() {
   // Scan results
   const [scannedWaste, setScannedWaste] = useState(null);
   const [confidence, setConfidence] = useState(0);
+  const [capturedImage, setCapturedImage] = useState(null);
 
   // Results modal
   const [showResultsModal, setShowResultsModal] = useState(false);
@@ -104,6 +105,7 @@ export default function CameraScanner() {
 
       setScannedWaste({ ...data.result, wasteType, ruleData });
       setConfidence(conf);
+      setCapturedImage(imageData);
       setChecklist(ruleData.checklist.map(c => ({ ...c, completed: false })));
 
       // Stop scanning after lock
@@ -137,6 +139,7 @@ export default function CameraScanner() {
   const resetScan = () => {
     setScannedWaste(null);
     setConfidence(0);
+    setCapturedImage(null);
     setShowResultsModal(false);
     setChecklist([]);
     setSavedSuccess(false);
@@ -158,21 +161,25 @@ export default function CameraScanner() {
     setSavingToHistory(true);
     try {
       const ruleData = scannedWaste.ruleData || WASTE_RULES[scannedWaste.wasteType] || WASTE_RULES.general_waste;
-      const jwt = localStorage.getItem('jwt');
+
+      // Get fresh Firebase ID token (authMiddleware verifies this directly)
+      let idToken = null;
+      try { idToken = await user.getIdToken(); } catch { /* proceed to fallback */ }
 
       // Try backend API first
       let saved = false;
-      if (jwt) {
+      if (idToken) {
         try {
           const res = await fetch(endpoints.scans, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
             body: JSON.stringify({
               wasteType: scannedWaste.wasteType,
               confidence,
               disposalMethod: ruleData.disposalMethod,
               rules: ruleData.shortRules,
               checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
+              imageData: capturedImage || null,
               imageHash: null,
             }),
           });
@@ -192,6 +199,7 @@ export default function CameraScanner() {
           checklistCompleted: checklist.every(c => c.completed),
           timestamp: serverTimestamp(),
           location: null,
+          imageUrl: null,
           imageHash: null,
           pointsEarned: 5,
         });
@@ -451,6 +459,17 @@ export default function CameraScanner() {
                 <div className="flex justify-center mb-4">
                   <div className="w-12 h-1.5 bg-white/20 rounded-full"></div>
                 </div>
+
+                {/* ── Captured Image Preview ── */}
+                {capturedImage && (
+                  <div className="mb-4 rounded-2xl overflow-hidden border border-white/10">
+                    <img
+                      src={capturedImage}
+                      alt="Scanned waste"
+                      className="w-full h-40 object-cover"
+                    />
+                  </div>
+                )}
 
                 {/* ── Header: Waste type + confidence ── */}
                 <div className="flex items-start justify-between mb-6">
