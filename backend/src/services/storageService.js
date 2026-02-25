@@ -4,12 +4,17 @@ const { bucket } = require('../config/firebaseAdmin');
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+// Signed URL valid for ~10 years (effectively permanent for an app)
+const SIGNED_URL_EXPIRY_MS = 10 * 365 * 24 * 60 * 60 * 1000;
+
 /**
- * Upload a scan image to GCS.
+ * Upload a scan image to GCS and return a signed download URL.
+ * Uses V2 getSignedUrl() — works regardless of bucket access control mode
+ * and does not require makePublic() or Firebase Storage security rules.
  * @param {string} base64Data - Base64 string (with or without data URI prefix)
  * @param {string} uid - User ID (used as folder path)
  * @param {string} scanId - Scan document ID (used as filename)
- * @returns {Promise<string>} Public URL of the uploaded image
+ * @returns {Promise<string>} Signed download URL of the uploaded image
  */
 async function uploadScanImage(base64Data, uid, scanId) {
     // Strip data URI prefix if present
@@ -28,15 +33,20 @@ async function uploadScanImage(base64Data, uid, scanId) {
     const file = bucket.file(filePath);
 
     await file.save(buffer, {
+        contentType: 'image/jpeg',
         metadata: {
-            contentType: 'image/jpeg',
-            cacheControl: 'public, max-age=31536000', // 1 year cache
+            cacheControl: 'public, max-age=31536000',
         },
-        public: true,
     });
 
-    // Public URL
-    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+    // V2 signed URL — signed locally using the service-account key,
+    // no IAM API call needed, no bucket-level public access required.
+    const [imageUrl] = await file.getSignedUrl({
+        version: 'v2',
+        action: 'read',
+        expires: Date.now() + SIGNED_URL_EXPIRY_MS,
+    });
+
     return imageUrl;
 }
 

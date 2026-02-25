@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { doc, addDoc, collection, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { endpoints } from '../config/api';
-import { SCAN_INTERVAL, CAMERA_CONSTRAINTS } from '../config/constants';
+import { CAMERA_CONSTRAINTS } from '../config/constants';
 import { WASTE_RULES } from '../config/wasteRules';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
@@ -17,7 +17,6 @@ export default function CameraScanner() {
   // Refs
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const scanIntervalRef = useRef(null);
 
   // Camera & scanning state
   const [isScanning, setIsScanning] = useState(false);
@@ -32,7 +31,6 @@ export default function CameraScanner() {
 
   // Results modal
   const [showResultsModal, setShowResultsModal] = useState(false);
-  const [checklist, setChecklist] = useState([]);
   const [savingToHistory, setSavingToHistory] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
@@ -57,7 +55,6 @@ export default function CameraScanner() {
   };
 
   const cleanup = () => {
-    if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
     if (videoRef.current?.srcObject) {
       videoRef.current.srcObject.getTracks().forEach(t => t.stop());
     }
@@ -106,11 +103,6 @@ export default function CameraScanner() {
       setScannedWaste({ ...data.result, wasteType, ruleData });
       setConfidence(conf);
       setCapturedImage(imageData);
-      setChecklist(ruleData.checklist.map(c => ({ ...c, completed: false })));
-
-      // Stop scanning after lock
-      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-      setIsScanning(false);
 
       // Auto-open results modal
       setShowResultsModal(true);
@@ -120,19 +112,15 @@ export default function CameraScanner() {
       setError('Scan failed. Point camera at a waste item and try again.');
     } finally {
       setLoading(false);
+      setIsScanning(false);
     }
   }, [cameraActive, loading, captureFrame]);
 
-  // ── Toggle scanning on/off ──
-  const toggleScanning = () => {
-    if (isScanning) {
-      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-      setIsScanning(false);
-    } else {
-      scanFrame();
-      scanIntervalRef.current = setInterval(scanFrame, SCAN_INTERVAL);
-      setIsScanning(true);
-    }
+  // ── Single-shot scan ──
+  const handleScan = () => {
+    if (loading || scannedWaste) return;
+    setIsScanning(true);
+    scanFrame();
   };
 
   // ── Reset all state ──
@@ -141,18 +129,9 @@ export default function CameraScanner() {
     setConfidence(0);
     setCapturedImage(null);
     setShowResultsModal(false);
-    setChecklist([]);
     setSavedSuccess(false);
     setError(null);
-    if (isScanning) {
-      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-      setIsScanning(false);
-    }
-  };
-
-  // ── Toggle checklist item ──
-  const toggleChecklistItem = (idx) => {
-    setChecklist(prev => prev.map((item, i) => i === idx ? { ...item, completed: !item.completed } : item));
+    setIsScanning(false);
   };
 
   // ── Save scan to Firestore history (Step 6.7) ──
@@ -161,6 +140,10 @@ export default function CameraScanner() {
     setSavingToHistory(true);
     try {
       const ruleData = scannedWaste.ruleData || WASTE_RULES[scannedWaste.wasteType] || WASTE_RULES.general_waste;
+      const checklistPayload = (ruleData.checklist || []).map((item) => ({
+        step: typeof item === 'string' ? item : item.step,
+        completed: false,
+      }));
 
       // Get fresh Firebase ID token (authMiddleware verifies this directly)
       let idToken = null;
@@ -178,7 +161,7 @@ export default function CameraScanner() {
               confidence,
               disposalMethod: ruleData.disposalMethod,
               rules: ruleData.shortRules,
-              checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
+              checklist: checklistPayload,
               imageData: capturedImage || null,
               imageHash: null,
             }),
@@ -195,8 +178,8 @@ export default function CameraScanner() {
           confidence,
           disposalMethod: ruleData.disposalMethod,
           rules: ruleData.shortRules,
-          checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
-          checklistCompleted: checklist.every(c => c.completed),
+          checklist: checklistPayload,
+          checklistCompleted: false,
           timestamp: serverTimestamp(),
           location: null,
           imageUrl: null,
@@ -359,7 +342,7 @@ export default function CameraScanner() {
                     {ruleData.icon} {ruleData.category}
                   </span>
                   <h3 className="text-3xl font-black text-white drop-shadow-md">{ruleData.displayName}</h3>
-                  <p className="text-emerald-100/70 text-sm font-medium mt-2 leading-relaxed">Tap to view rules & checklist →</p>
+                  <p className="text-emerald-100/70 text-sm font-medium mt-2 leading-relaxed">Tap to view quick rules →</p>
                 </div>
               </motion.div>
             )}
@@ -404,18 +387,11 @@ export default function CameraScanner() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
-              onClick={toggleScanning}
-              className={`relative w-24 h-24 rounded-full flex items-center justify-center border-[6px] transition-all cursor-pointer shadow-2xl ${isScanning ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'bg-white/10 border-white/30 backdrop-blur-md hover:border-white/50'}`}
+              onClick={handleScan}
+              disabled={loading || !!scannedWaste}
+              className={`relative w-24 h-24 rounded-full flex items-center justify-center border-[6px] transition-all cursor-pointer shadow-2xl ${isScanning ? 'bg-primary/20 border-primary shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'bg-white/10 border-white/30 backdrop-blur-md hover:border-white/50'} ${(loading || scannedWaste) ? 'opacity-50' : ''}`}
             >
-              {isScanning ? (
-                <motion.div
-                  initial={{ borderRadius: '50%' }}
-                  animate={{ borderRadius: '20%' }}
-                  className="w-10 h-10 bg-primary shadow-inner"
-                />
-              ) : (
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-emerald-500 rounded-full border-4 border-white shadow-inner" />
-              )}
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-emerald-500 rounded-full border-4 border-white shadow-inner" />
             </motion.button>
           </div>
 
@@ -552,33 +528,6 @@ export default function CameraScanner() {
                       </motion.div>
                     ))}
                   </div>
-                </div>
-
-                {/* ── Reminder Checklist (6.6) ── */}
-                <div className="mb-6">
-                  <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-3">Preparation Checklist</p>
-                  <div className="space-y-2">
-                    {checklist.map((item, i) => (
-                      <motion.button
-                        key={i}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.05 * i }}
-                        onClick={() => toggleChecklistItem(i)}
-                        className={`w-full flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all text-left ${item.completed ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5 hover:bg-white/8'}`}
-                      >
-                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${item.completed ? 'bg-primary' : 'border-2 border-white/20'}`}>
-                          {item.completed && <span className="material-icons-round text-white text-sm">check</span>}
-                        </div>
-                        <span className={`text-sm font-medium transition-all ${item.completed ? 'text-primary line-through' : 'text-white/80'}`}>
-                          {item.step}
-                        </span>
-                      </motion.button>
-                    ))}
-                  </div>
-                  <p className="text-white/30 text-xs font-medium mt-2 text-center">
-                    {checklist.filter(c => c.completed).length}/{checklist.length} completed
-                  </p>
                 </div>
 
                 {/* ── Action Buttons (6.7) ── */}

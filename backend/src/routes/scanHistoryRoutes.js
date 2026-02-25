@@ -15,16 +15,36 @@ router.get('/scans', async (req, res) => {
         const limit = Math.min(parseInt(req.query.limit) || 20, 50);
         const offset = (page - 1) * limit;
 
-        let query = db.collection('scans')
-            .where('userId', '==', uid)
-            .orderBy('timestamp', 'desc');
+        let snap;
+        try {
+            // Primary: ordered query (requires composite index on userId + timestamp)
+            let query = db.collection('scans')
+                .where('userId', '==', uid)
+                .orderBy('timestamp', 'desc');
 
-        // Use offset for pagination (simple approach)
-        if (offset > 0) {
-            query = query.offset(offset);
+            if (offset > 0) {
+                query = query.offset(offset);
+            }
+
+            snap = await query.limit(limit + 1).get();
+        } catch (indexErr) {
+            // Fallback: unordered query (no composite index needed), sort in memory
+            console.warn('Composite index not ready, using fallback query:', indexErr.message?.substring(0, 80));
+            const fallbackSnap = await db.collection('scans')
+                .where('userId', '==', uid)
+                .get();
+
+            // Sort by timestamp descending in memory
+            const allDocs = fallbackSnap.docs.sort((a, b) => {
+                const tsA = a.data().timestamp?.toMillis?.() || 0;
+                const tsB = b.data().timestamp?.toMillis?.() || 0;
+                return tsB - tsA;
+            });
+
+            // Manual pagination
+            const sliced = allDocs.slice(offset, offset + limit + 1);
+            snap = { docs: sliced, size: sliced.length };
         }
-
-        const snap = await query.limit(limit + 1).get();
 
         const scans = snap.docs.slice(0, limit).map(doc => ({
             scanId: doc.id,

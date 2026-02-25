@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { collection, query, where, orderBy, getDocs, limit, startAfter } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, limit, startAfter, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { endpoints } from '../config/api';
@@ -79,23 +79,44 @@ export default function HistoryPage() {
               fetched = true;
             }
           }
-        } catch { /* fallback to direct Firestore */ }
+        } catch (apiErr) {
+          console.warn('API fetch failed:', apiErr);
+          /* fallback to direct Firestore */
+        }
       }
 
       // Fallback: direct Firestore
       if (!fetched) {
-        let q = query(
-          collection(db, 'scans'),
-          where('userId', '==', user.uid),
-          orderBy('timestamp', 'desc'),
-          limit(PAGE_SIZE)
-        );
-        if (isLoadMore && lastDoc) {
-          q = query(collection(db, 'scans'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
+        let snap;
+        try {
+          // Try ordered query (needs composite index)
+          let q = query(
+            collection(db, 'scans'),
+            where('userId', '==', user.uid),
+            orderBy('timestamp', 'desc'),
+            limit(PAGE_SIZE)
+          );
+          if (isLoadMore && lastDoc) {
+            q = query(collection(db, 'scans'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
+          }
+          snap = await getDocs(q);
+        } catch {
+          // Index not ready — fallback to unordered query, sort client-side
+          console.warn('Composite index not ready, using unordered query');
+          const unorderedQ = query(
+            collection(db, 'scans'),
+            where('userId', '==', user.uid),
+          );
+          snap = await getDocs(unorderedQ);
         }
 
-        const snap = await getDocs(q);
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const docs = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => {
+            const tsA = a.timestamp?.toMillis?.() || (a.timestamp ? new Date(a.timestamp).getTime() : 0);
+            const tsB = b.timestamp?.toMillis?.() || (b.timestamp ? new Date(b.timestamp).getTime() : 0);
+            return tsB - tsA;
+          });
 
         if (isLoadMore) setScans(prev => [...prev, ...docs]);
         else setScans(docs);
@@ -114,9 +135,66 @@ export default function HistoryPage() {
 
   // ── DisposalCheckbox status change handler (Step 13) ──
   const handleStatusChange = (scanId, newStatus) => {
-    setScans(prev => prev.map(s => s.id === scanId ? { ...s, disposalStatus: newStatus } : s));
-    if (selectedScan?.id === scanId) {
+    setScans(prev => prev.map(s => (s.id === scanId || s.scanId === scanId) ? { ...s, disposalStatus: newStatus } : s));
+    if (selectedScan && (selectedScan.id === scanId || selectedScan.scanId === scanId)) {
       setSelectedScan(prev => prev ? { ...prev, disposalStatus: newStatus } : prev);
+    }
+  };
+
+  const toggleChecklistItem = async (scanId, itemIndex) => {
+    let nextChecklist = [];
+
+    setScans(prev => prev.map((scan) => {
+      if (scan.id !== scanId && scan.scanId !== scanId) return scan;
+
+      const sourceChecklist = Array.isArray(scan.checklist) ? scan.checklist : [];
+      const normalized = sourceChecklist.map((item) => {
+        if (typeof item === 'string') return { step: item, completed: false };
+        return { step: item?.step || '', completed: !!item?.completed };
+      });
+
+      nextChecklist = normalized.map((item, idx) => (
+        idx === itemIndex ? { ...item, completed: !item.completed } : item
+      ));
+
+      return {
+        ...scan,
+        checklist: nextChecklist,
+        checklistCompleted: nextChecklist.length > 0 && nextChecklist.every((item) => item.completed),
+      };
+    }));
+
+    setSelectedScan(prev => {
+      if (!prev || (prev.id !== scanId && prev.scanId !== scanId)) return prev;
+
+      const sourceChecklist = Array.isArray(prev.checklist) ? prev.checklist : [];
+      const normalized = sourceChecklist.map((item) => {
+        if (typeof item === 'string') return { step: item, completed: false };
+        return { step: item?.step || '', completed: !!item?.completed };
+      });
+
+      const updatedChecklist = normalized.map((item, idx) => (
+        idx === itemIndex ? { ...item, completed: !item.completed } : item
+      ));
+
+      if (!nextChecklist.length) nextChecklist = updatedChecklist;
+
+      return {
+        ...prev,
+        checklist: updatedChecklist,
+        checklistCompleted: updatedChecklist.length > 0 && updatedChecklist.every((item) => item.completed),
+      };
+    });
+
+    if (!nextChecklist.length) return;
+
+    try {
+      await updateDoc(doc(db, 'scans', scanId), {
+        checklist: nextChecklist,
+        checklistCompleted: nextChecklist.every((item) => item.completed),
+      });
+    } catch (err) {
+      console.warn('Checklist update persistence failed:', err);
     }
   };
 
@@ -287,15 +365,24 @@ export default function HistoryPage() {
                       alt={rule.displayName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
+                      onError={(e) => {
+                        // Replace broken image with icon placeholder
+                        e.target.onerror = null;
+                        e.target.style.display = 'none';
+                        e.target.nextSibling && (e.target.nextSibling.style.display = 'flex');
+                      }}
                     />
-                  ) : (
-                    <div
-                      className="w-full h-full flex items-center justify-center bg-white/60 dark:bg-white/5"
-                      style={{ backgroundColor: `${rule.color}10` }}
-                    >
-                      <span className="text-5xl opacity-50">{rule.icon}</span>
-                    </div>
-                  )}
+                  ) : null}
+                  {/* Always render placeholder, hidden when image loads */}
+                  <div
+                    className="w-full h-full flex items-center justify-center bg-white/60 dark:bg-white/5 absolute inset-0"
+                    style={{
+                      backgroundColor: `${rule.color}10`,
+                      display: scan.imageUrl ? 'none' : 'flex',
+                    }}
+                  >
+                    <span className="text-5xl opacity-50">{rule.icon}</span>
+                  </div>
 
                   {/* Status indicator (top-right) */}
                   <div className="absolute top-2 right-2 z-10">
@@ -388,7 +475,12 @@ export default function HistoryPage() {
                 {/* Full image */}
                 {selectedScan.imageUrl && (
                   <div className="mb-6 rounded-2xl overflow-hidden border border-emerald-900/10 dark:border-white/10">
-                    <img src={selectedScan.imageUrl} alt={modalRule?.displayName} className="w-full h-48 sm:h-56 object-cover" />
+                    <img
+                      src={selectedScan.imageUrl}
+                      alt={modalRule?.displayName}
+                      className="w-full h-48 sm:h-56 object-cover"
+                      onError={(e) => { e.target.onerror = null; e.target.parentElement.style.display = 'none'; }}
+                    />
                   </div>
                 )}
 
@@ -419,7 +511,7 @@ export default function HistoryPage() {
                 <div className="mb-5 flex items-center justify-between p-3 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/5 dark:border-white/5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30">Disposal Status</p>
                   <DisposalCheckbox
-                    scanId={selectedScan.id}
+                    scanId={selectedScan.id || selectedScan.scanId}
                     currentStatus={selectedScan.disposalStatus || 'pending'}
                     disposalMethod={selectedScan.disposalMethod || modalRule?.disposalMethod}
                     onStatusChange={handleStatusChange}
@@ -451,19 +543,6 @@ export default function HistoryPage() {
                   </div>
                 </div>
 
-                {/* Short Rules */}
-                <div className="mb-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">Quick Rules</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {(selectedScan.rules || modalRule?.shortRules || []).map((r, i) => (
-                      <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/40 dark:bg-white/5 border border-emerald-900/5 dark:border-white/5">
-                        <span className="material-icons-round text-sm mt-0.5" style={{ color: modalRule?.color }}>check_circle</span>
-                        <span className="text-xs font-medium text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed">{r}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Checklist */}
                 <div className="mb-5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800/40 dark:text-emerald-200/30 mb-3">
@@ -477,11 +556,12 @@ export default function HistoryPage() {
                       const step = typeof item === 'string' ? item : item.step;
                       const completed = typeof item === 'object' ? item.completed : false;
                       return (
-                        <div
+                        <button
                           key={i}
+                          onClick={() => toggleChecklistItem(selectedScan.id || selectedScan.scanId, i)}
                           className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${completed
                             ? 'bg-primary/10 dark:bg-primary/10 border-primary/20'
-                            : 'bg-white/40 dark:bg-white/5 border-emerald-900/5 dark:border-white/5'
+                            : 'bg-white/40 dark:bg-white/5 border-emerald-900/5 dark:border-white/5 hover:bg-white/60 dark:hover:bg-white/10'
                           }`}
                         >
                           <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 ${completed ? 'bg-primary' : 'border-2 border-emerald-900/15 dark:border-white/15'}`}>
@@ -490,7 +570,7 @@ export default function HistoryPage() {
                           <span className={`text-xs font-medium ${completed ? 'text-primary line-through' : 'text-emerald-900/70 dark:text-emerald-100/70'}`}>
                             {step}
                           </span>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
