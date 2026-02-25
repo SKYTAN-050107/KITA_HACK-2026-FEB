@@ -44,19 +44,17 @@ if (process.env.NODE_ENV === 'development') {
 // ── Public Routes (no auth required) ──
 app.use('/api/scan', require('./routes/scanRoutes'));
 
-// ── Protected Routes (auth required) ──
-// All /api/v1/* routes go through authMiddleware
-// NOTE: authRoutes handles /api/v1/verify which does its own token verification
-//       so it should NOT be behind authMiddleware
-// Future route mounts will be added here per phase:
-// app.use('/api/v1', authMiddleware, require('./routes/authRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/scanSaveRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/scanHistoryRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/userRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/checkinRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/weeklyRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/nearbyRoutes'));
-// app.use('/api/v1', authMiddleware, require('./routes/guidelinesRoutes'));
+// ── Auth Route (does its own token verification) ──
+app.use('/api/v1', require('./routes/authRoutes'));
+
+// ── Protected Routes (all require auth middleware) ──
+app.use('/api/v1', authMiddleware, require('./routes/scanSaveRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/scanHistoryRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/userRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/checkinRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/weeklyRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/nearbyRoutes'));
+app.use('/api/v1', authMiddleware, require('./routes/guidelinesRoutes'));
 
 // ── Root route ──
 app.get('/', (req, res) => {
