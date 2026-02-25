@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { doc, addDoc, collection, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { endpoints } from '../config/api';
-import { SCAN_MODES, SCAN_INTERVAL, CAMERA_CONSTRAINTS } from '../config/constants';
+import { SCAN_INTERVAL, CAMERA_CONSTRAINTS } from '../config/constants';
 import { WASTE_RULES } from '../config/wasteRules';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../config/firebase';
@@ -20,7 +20,6 @@ export default function CameraScanner() {
   const scanIntervalRef = useRef(null);
 
   // Camera & scanning state
-  const [scanMode, setScanMode] = useState(SCAN_MODES.WASTE);
   const [isScanning, setIsScanning] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,8 +28,6 @@ export default function CameraScanner() {
   // Scan results
   const [scannedWaste, setScannedWaste] = useState(null);
   const [confidence, setConfidence] = useState(0);
-  const [scannedBin, setScannedBin] = useState(null);
-  const [validationResult, setValidationResult] = useState(null);
 
   // Results modal
   const [showResultsModal, setShowResultsModal] = useState(false);
@@ -88,57 +85,34 @@ export default function CameraScanner() {
       const response = await fetch(endpoints.scan, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData, scanMode }),
+        body: JSON.stringify({ image: imageData }),
       });
 
       if (!response.ok) throw new Error('Scan failed');
       const data = await response.json();
 
-      if (scanMode === SCAN_MODES.WASTE) {
-        const wasteType = data.result?.wasteType || 'general_waste';
-        const ruleData = WASTE_RULES[wasteType] || WASTE_RULES.general_waste;
-        const conf = data.result?.confidence ?? (0.75 + Math.random() * 0.2);
+      const wasteType = data.result?.wasteType || 'general_waste';
+      const ruleData = WASTE_RULES[wasteType] || WASTE_RULES.general_waste;
+      const conf = data.result?.confidence ?? (0.75 + Math.random() * 0.2);
 
-        setScannedWaste({ ...data.result, wasteType, ruleData });
-        setConfidence(conf);
-        setChecklist(ruleData.checklist.map(c => ({ ...c, completed: false })));
+      setScannedWaste({ ...data.result, wasteType, ruleData });
+      setConfidence(conf);
+      setChecklist(ruleData.checklist.map(c => ({ ...c, completed: false })));
 
-        // Stop scanning after lock
-        if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-        setIsScanning(false);
+      // Stop scanning after lock
+      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
+      setIsScanning(false);
 
-        // Auto-open results modal
-        setShowResultsModal(true);
+      // Auto-open results modal
+      setShowResultsModal(true);
 
-        // If bin already scanned, validate
-        if (scannedBin) validateWasteInBin(scannedBin.binType, wasteType);
-      } else {
-        setScannedBin(data.result);
-        if (scannedWaste) validateWasteInBin(data.result.binType, scannedWaste.wasteType);
-        // Stop after bin lock
-        if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-        setIsScanning(false);
-      }
       setError(null);
     } catch {
       setError('Scan failed. Point camera at a waste item and try again.');
     } finally {
       setLoading(false);
     }
-  }, [cameraActive, loading, scanMode, scannedBin, scannedWaste, captureFrame]);
-
-  // ── Validate waste in bin ──
-  const validateWasteInBin = async (binType, wasteType) => {
-    try {
-      const response = await fetch(endpoints.validate, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ binType, wasteType }),
-      });
-      const data = await response.json();
-      setValidationResult(data.validation);
-    } catch { /* silent */ }
-  };
+  }, [cameraActive, loading, captureFrame]);
 
   // ── Toggle scanning on/off ──
   const toggleScanning = () => {
@@ -152,21 +126,10 @@ export default function CameraScanner() {
     }
   };
 
-  // ── Switch waste/bin mode ──
-  const switchMode = () => {
-    setScanMode(prev => prev === SCAN_MODES.WASTE ? SCAN_MODES.BIN : SCAN_MODES.WASTE);
-    if (isScanning) {
-      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-      setIsScanning(false);
-    }
-  };
-
   // ── Reset all state ──
   const resetScan = () => {
     setScannedWaste(null);
-    setScannedBin(null);
     setConfidence(0);
-    setValidationResult(null);
     setShowResultsModal(false);
     setChecklist([]);
     setSavedSuccess(false);
@@ -201,7 +164,6 @@ export default function CameraScanner() {
               wasteType: scannedWaste.wasteType,
               confidence,
               disposalMethod: ruleData.disposalMethod,
-              binType: scannedBin?.binType || null,
               rules: ruleData.shortRules,
               checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
               imageHash: null,
@@ -218,8 +180,6 @@ export default function CameraScanner() {
           wasteType: scannedWaste.wasteType,
           confidence,
           disposalMethod: ruleData.disposalMethod,
-          binType: scannedBin?.binType || null,
-          binMatch: validationResult?.isCorrect ?? null,
           rules: ruleData.shortRules,
           checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
           checklistCompleted: checklist.every(c => c.completed),
@@ -290,7 +250,7 @@ export default function CameraScanner() {
               <span className={`relative inline-flex rounded-full h-3 w-3 ${cameraActive ? 'bg-primary' : 'bg-red-500'}`}></span>
             </div>
             <span className="text-white text-xs font-black uppercase tracking-widest drop-shadow-md">
-              {scanMode === SCAN_MODES.WASTE ? 'Identifying Waste' : 'Verifying Bin'}
+              Identifying Waste
             </span>
           </div>
           <p className="text-primary/70 text-[10px] font-mono tracking-widest uppercase ml-6">AI_VISION_OS v2.4</p>
@@ -388,22 +348,6 @@ export default function CameraScanner() {
                 </div>
               </motion.div>
             )}
-
-            {validationResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className={`p-5 rounded-2xl shadow-2xl border backdrop-blur-xl text-center flex items-center justify-center gap-3 ${validationResult.isCorrect ? 'bg-emerald-900/80 border-primary' : 'bg-red-950/80 border-red-500'}`}
-              >
-                <span className={`material-icons-round text-3xl ${validationResult.isCorrect ? 'text-primary' : 'text-red-400'}`}>
-                  {validationResult.isCorrect ? 'verified' : 'error'}
-                </span>
-                <span className="font-black text-lg text-white">
-                  {validationResult.message}
-                </span>
-              </motion.div>
-            )}
           </div>
         </AnimatePresence>
       </div>
@@ -416,21 +360,17 @@ export default function CameraScanner() {
         className="absolute bottom-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-3xl border-t border-white/10 p-8 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] rounded-t-[3rem]"
       >
         <div className="max-w-md mx-auto flex items-center justify-between gap-6 px-4">
-          {/* Switch Mode (Bin Scan Toggle — 6.7) */}
+          {/* Guidelines shortcut */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={switchMode}
+            onClick={() => navigate('/dashboard/guidelines')}
             className="flex flex-col items-center gap-3 flex-1 cursor-pointer group"
           >
-            <div className={`w-16 h-16 backdrop-blur-md rounded-full flex items-center justify-center border transition-all shadow-inner ${scanMode === SCAN_MODES.BIN ? 'bg-blue-500/20 border-blue-400/40' : 'bg-white/5 border-white/10 group-hover:bg-white/10 group-hover:border-white/20'}`}>
-              <span className="material-icons-round text-3xl text-white group-hover:text-primary transition-colors">
-                {scanMode === SCAN_MODES.WASTE ? 'recycling' : 'search'}
-              </span>
+            <div className="w-16 h-16 backdrop-blur-md rounded-full flex items-center justify-center border transition-all shadow-inner bg-white/5 border-white/10 group-hover:bg-white/10 group-hover:border-white/20">
+              <span className="material-icons-round text-3xl text-white group-hover:text-primary transition-colors">menu_book</span>
             </div>
-            <span className="text-[10px] text-white/60 font-black uppercase tracking-widest group-hover:text-white transition-colors">
-              {scanMode === SCAN_MODES.WASTE ? 'Bin Scan' : 'Waste'}
-            </span>
+            <span className="text-[10px] text-white/60 font-black uppercase tracking-widest group-hover:text-white transition-colors">Guide</span>
           </motion.button>
 
           {/* Master Shutter */}
@@ -634,30 +574,15 @@ export default function CameraScanner() {
                     )}
                   </motion.button>
 
-                  <div className="flex gap-3">
-                    {/* View Map */}
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate('/dashboard/map')}
-                      className="flex-1 py-3 rounded-xl font-bold text-sm bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
-                    >
-                      <span className="material-icons-round text-lg">map</span> View Map
-                    </motion.button>
-
-                    {/* Scan Bin (toggle to bin mode) */}
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setShowResultsModal(false);
-                        setScanMode(SCAN_MODES.BIN);
-                      }}
-                      className="flex-1 py-3 rounded-xl font-bold text-sm bg-orange-500/10 text-orange-400 border border-orange-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-orange-500/20 transition-all"
-                    >
-                      <span className="material-icons-round text-lg">qr_code_scanner</span> Scan Bin
-                    </motion.button>
-                  </div>
+                  {/* View Map */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => navigate('/dashboard/map')}
+                    className="w-full py-3 rounded-xl font-bold text-sm bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
+                  >
+                    <span className="material-icons-round text-lg">map</span> Find Nearest Bin
+                  </motion.button>
 
                   {/* Scan Again */}
                   <motion.button
