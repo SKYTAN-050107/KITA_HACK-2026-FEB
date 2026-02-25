@@ -10,6 +10,7 @@ import MapPage from './pages/MapPage';
 import HistoryPage from './pages/HistoryPage';
 import GuidelinesPage from './pages/GuidelinesPage';
 import SettingsPage from './pages/SettingsPage';
+import ScanResultPage from './pages/ScanResultPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="scanner" element={<ScannerPage />} />
+            <Route path="scanner/result" element={<ScanResultPage />} />
             <Route path="map" element={<MapPage />} />
             <Route path="history" element={<HistoryPage />} />
             <Route path="guidelines" element={<GuidelinesPage />} />

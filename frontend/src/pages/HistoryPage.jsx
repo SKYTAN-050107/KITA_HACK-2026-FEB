@@ -56,14 +56,15 @@ export default function HistoryPage() {
     if (isLoadMore) setLoadingMore(true); else setLoading(true);
 
     try {
-      // Try backend API first
-      const jwt = localStorage.getItem('jwt');
+      // Get fresh Firebase ID token (authMiddleware verifies this directly)
+      let idToken = null;
+      try { idToken = await user.getIdToken(); } catch { /* proceed to fallback */ }
       let fetched = false;
 
-      if (jwt && !after) {
+      if (idToken && !after) {
         try {
           const res = await fetch(`${endpoints.scans}?page=1&limit=${PAGE_SIZE}`, {
-            headers: { Authorization: `Bearer ${jwt}` },
+            headers: { Authorization: `Bearer ${idToken}` },
           });
           if (res.ok) {
             const data = await res.json();
