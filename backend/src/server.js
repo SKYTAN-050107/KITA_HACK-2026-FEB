@@ -1,20 +1,37 @@
-// backend/src/server.js
+// backend/src/server.js — KITA_HACK Backend API server
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const multer = require('multer');
 require('dotenv').config();
+
+const authMiddleware = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// ── Multer fallback for judge file uploads ──
+const upload = multer({ limits: { fileSize: 15 * 1024 * 1024 } }); // 15MB
+
+// ── Global Middleware ──
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://192.168.*.*:5173'], // Vite default + local network
-    credentials: true
+    origin: '*', // Allow all origins for hackathon judge + mobile PWA
+    credentials: true,
 }));
 
-app.use(express.json({ limit: '10mb' })); // Large limit for base64 images
+app.use(express.json({ limit: '15mb' })); // Large limit for base64 images
 app.use(express.urlencoded({ extended: true }));
+
+// Rate limiting (global)
+const globalLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, error: 'Too many requests', code: 'RATE_001' },
+});
+app.use(globalLimiter);
 
 // Logging middleware (development)
 if (process.env.NODE_ENV === 'development') {
@@ -24,44 +41,59 @@ if (process.env.NODE_ENV === 'development') {
     });
 }
 
-// Routes
+// ── Public Routes (no auth required) ──
 app.use('/api/scan', require('./routes/scanRoutes'));
 
-// Root route
+// ── Protected Routes (auth required) ──
+// All /api/v1/* routes go through authMiddleware
+// NOTE: authRoutes handles /api/v1/verify which does its own token verification
+//       so it should NOT be behind authMiddleware
+// Future route mounts will be added here per phase:
+// app.use('/api/v1', authMiddleware, require('./routes/authRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/scanSaveRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/scanHistoryRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/userRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/checkinRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/weeklyRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/nearbyRoutes'));
+// app.use('/api/v1', authMiddleware, require('./routes/guidelinesRoutes'));
+
+// ── Root route ──
 app.get('/', (req, res) => {
     res.json({
         message: '🚀 KITA_HACK Backend API is running',
         endpoints: {
             health: '/api/health',
-            scan: '/api/scan'
-        }
+            scan: '/api/scan',
+            validate: '/api/scan/validate',
+        },
     });
 });
 
-// Health check
+// ── Health check ──
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        service: 'KITA_HACK Backend'
+        service: 'KITA_HACK Backend',
     });
 });
 
-// 404 handler
+// ── 404 handler ──
 app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint not found' });
 });
 
-// Error handler
+// ── Error handler ──
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({
         error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+        message: process.env.NODE_ENV === 'development' ? err.message : undefined,
     });
 });
 
-// Start server
+// ── Start server ──
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 KITA_HACK Backend running on http://localhost:${PORT}`);
     console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
