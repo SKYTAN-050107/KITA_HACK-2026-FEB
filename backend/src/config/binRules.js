@@ -1,100 +1,92 @@
 // backend/src/config/binRules.js
+// Malaysia (Johor Bahru) 4-bin system — aligned with frontend wasteRules.js
+//   🟢 Green  → Plastic
+//   🔵 Blue   → Paper / Cardboard
+//   🟠 Orange → Glass, Metal, Aluminum, E-Waste
+//   ⚫ Black  → General Waste + Food / Organic Waste
 
 const BIN_RULES = {
+  green_bin: {
+    id: 'green_bin',
+    name: 'Green Recycling Bin',
+    color: '#16a34a',
+    symbol: '♻️',
+    description: 'Plastics – rinsed and clean',
+    accepts: [
+      'plastic'
+    ],
+    rejects: [
+      'glass',
+      'metal',
+      'paper',
+      'food_waste',
+      'clothes',
+      'electronics',
+      'general_waste'
+    ],
+    tips: 'Rinse containers, remove caps & labels. Check recycling number (#1-#7).'
+  },
+
   blue_bin: {
     id: 'blue_bin',
     name: 'Blue Recycling Bin',
-    color: 'Blue',
-    symbol: '♻️',
-    description: 'Clean recyclable materials',
+    color: '#3b82f6',
+    symbol: '📄',
+    description: 'Paper and cardboard',
     accepts: [
-      'plastic',
-      'glass',
-      'metal',
-      'aluminum',
-      'tin',
-      'carton',
-      'tetra_pak'
-    ],
-    rejects: [
-      'food_waste',
-      'paper',
-      'clothes',
-      'electronics',
-      'batteries',
-      'general_waste'
-    ],
-    tips: 'Rinse containers before recycling'
-  },
-  
-  brown_bin: {
-    id: 'brown_bin',
-    name: 'Brown Organic Bin',
-    color: 'Brown',
-    symbol: '🍂',
-    description: 'Organic and compostable waste',
-    accepts: [
-      'food_waste',
-      'fruit_peels',
-      'vegetable_scraps',
-      'garden_waste',
-      'leaves',
       'paper'
     ],
     rejects: [
       'plastic',
       'glass',
       'metal',
+      'food_waste',
       'clothes',
-      'electronics'
+      'electronics',
+      'general_waste'
     ],
-    tips: 'No plastic bags, even biodegradable ones'
+    tips: 'Keep paper clean and dry. Flatten cardboard boxes. No greasy or food-stained paper.'
   },
-  
+
   orange_bin: {
     id: 'orange_bin',
     name: 'Orange Special Waste Bin',
-    color: 'Orange',
+    color: '#ea580c',
     symbol: '⚠️',
-    description: 'Hazardous and electronic waste',
+    description: 'Glass, metals, aluminum cans, e-waste',
     accepts: [
-      'electronics',
-      'batteries',
-      'light_bulbs',
-      'chemicals',
-      'paint',
-      'oil'
+      'glass',
+      'metal',
+      'electronics'
     ],
     rejects: [
-      'food_waste',
       'plastic',
       'paper',
-      'glass',
+      'food_waste',
+      'clothes',
       'general_waste'
     ],
-    tips: 'Handle with care, check local guidelines'
+    tips: 'Handle glass carefully. Remove batteries from devices. Rinse metal cans.'
   },
-  
+
   black_bin: {
     id: 'black_bin',
     name: 'Black General Waste Bin',
-    color: 'Black',
+    color: '#1f2937',
     symbol: '🗑️',
-    description: 'Non-recyclable general waste',
+    description: 'General waste and food/organic waste',
     accepts: [
       'general_waste',
-      'contaminated_items',
-      'diapers',
-      'ceramics',
-      'broken_glass'
+      'food_waste'
     ],
     rejects: [
-      'recyclables',
-      'food_waste',
-      'electronics',
-      'batteries'
+      'plastic',
+      'glass',
+      'metal',
+      'paper',
+      'electronics'
     ],
-    tips: 'Last resort - try to recycle or compost first'
+    tips: 'Last resort — try to recycle or donate first. Bag food waste securely.'
   }
 };
 

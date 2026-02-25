@@ -1,223 +1,152 @@
-const vision = require('@google-cloud/vision');
+const { VertexAI } = require('@google-cloud/vertexai');
 const path = require('path');
 require('dotenv').config();
 
-// Initialize Vision API client
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: path.resolve(__dirname, '../../', process.env.GOOGLE_APPLICATION_CREDENTIALS)
-});
+// ── Vertex AI configuration ───────────────────────────────────────────
+const PROJECT_ID  = process.env.GCP_PROJECT_ID  || 'kitahack-487005';
+const LOCATION    = process.env.GCP_LOCATION    || 'asia-southeast1';
+const MODEL_ID    = process.env.GEMINI_MODEL_ID || 'gemini-2.0-flash';
 
+// Set up credential path so the SDK can authenticate
+process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
+  __dirname, '../../service-account-key.json'
+);
+
+// Initialize Vertex AI client
+const vertexAI = new VertexAI({ project: PROJECT_ID, location: LOCATION });
+const model = vertexAI.getGenerativeModel({ model: MODEL_ID });
+
+// ── Valid categories ──────────────────────────────────────────────────
+const VALID_WASTE_TYPES = [
+  'plastic', 'glass', 'metal', 'paper',
+  'food_waste', 'clothes', 'electronics', 'general_waste'
+];
+
+const VALID_BIN_TYPES = [
+  'green_bin', 'blue_bin', 'orange_bin', 'black_bin'
+];
+
+// ── Prompts ───────────────────────────────────────────────────────────
+const WASTE_PROMPT = `You are an expert waste classification AI for a recycling app in Johor Bahru, Malaysia.
+
+Analyse the image and classify the dominant item into EXACTLY ONE of these waste types:
+  plastic, glass, metal, paper, food_waste, clothes, electronics, general_waste
+
+Rules:
+- "plastic"       → PET bottles, HDPE containers, packaging film, plastic bags, tupperware
+- "glass"         → glass bottles, jars, glass containers (NOT drinking glasses / ceramics)
+- "metal"         → aluminum cans, tin cans, foil, copper wire, metal lids
+- "paper"         → newspapers, cardboard, magazines, office paper, cartons
+- "food_waste"    → fruit peels, cooked food, vegetable scraps, coffee grounds, food-soiled items
+- "clothes"       → shirts, pants, shoes, fabric, curtains, bedsheets
+- "electronics"   → phones, batteries, chargers, light bulbs, cables, circuit boards
+- "general_waste" → diapers, ceramics, contaminated items, anything that doesn't fit above
+
+Respond with ONLY the waste type keyword, nothing else. Example: plastic`;
+
+const BIN_PROMPT = `You are an expert bin identification AI for a recycling app in Johor Bahru, Malaysia.
+
+The Malaysia (JB) bin colour system:
+- green_bin  → Bright green bin for plastics
+- blue_bin   → Blue bin for paper/cardboard
+- orange_bin → Orange bin for glass, metals, e-waste  
+- black_bin  → Black/grey bin for general & food waste
+
+Analyse the image. Identify the recycling/waste bin shown and classify it as EXACTLY ONE of:
+  green_bin, blue_bin, orange_bin, black_bin
+
+Consider the bin's colour, labels, markings, and any text.
+
+Respond with ONLY the bin type keyword, nothing else. Example: green_bin`;
+
+// ── Helper: strip data-URI prefix ─────────────────────────────────────
+function stripDataUri(imageBase64) {
+  return imageBase64.includes(',')
+    ? imageBase64.split(',')[1]
+    : imageBase64;
+}
+
+// ── Helper: detect MIME type from data URI or default ─────────────────
+function getMimeType(imageBase64) {
+  if (imageBase64.startsWith('data:')) {
+    const match = imageBase64.match(/^data:(image\/\w+);/);
+    if (match) return match[1];
+  }
+  return 'image/jpeg';
+}
+
+// ── Classify waste ────────────────────────────────────────────────────
 /**
- * Classify waste type from image
+ * Classify waste type from image using Gemini vision model
  * @param {string} imageBase64 - Base64 encoded image (with or without data URI prefix)
  * @returns {Promise<string>} - Detected waste type
  */
 async function classifyWaste(imageBase64) {
   try {
-    // Remove data URI prefix if present
-    const base64Image = imageBase64.includes(',')
-      ? imageBase64.split(',')[1]
-      : imageBase64;
+    const mimeType  = getMimeType(imageBase64);
+    const imageData = stripDataUri(imageBase64);
 
-    // Call Vision API with correct request structure
-    const [result] = await client.labelDetection({
-      image: { content: base64Image }
-    });
+    const request = {
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: WASTE_PROMPT },
+          { inlineData: { mimeType, data: imageData } }
+        ]
+      }]
+    };
 
-    const labels = result.labelAnnotations;
+    const result   = await model.generateContent(request);
+    const response = result.response;
+    const raw      = response.candidates[0].content.parts[0].text.trim().toLowerCase();
 
-    if (!labels || labels.length === 0) {
-      return 'general_waste';
-    }
+    console.log('Gemini waste classification raw:', raw);
 
-    const detectedLabels = labels.map(label => ({
-      description: label.description.toLowerCase(),
-      score: label.score
-    }));
-
-    console.log('Detected labels:', detectedLabels);
-    return mapLabelsToWasteType(detectedLabels);
+    // Validate against known types
+    const wasteType = VALID_WASTE_TYPES.find(t => raw.includes(t));
+    return wasteType || 'general_waste';
 
   } catch (error) {
-    console.error('Vision API Error:', error);
-    throw new Error('Failed to classify waste');
+    console.error('Vertex AI (waste) error:', error);
+    throw new Error('Failed to classify waste: ' + error.message);
   }
 }
 
+// ── Classify bin ──────────────────────────────────────────────────────
 /**
- * Classify bin type from image
+ * Classify bin type from image using Gemini vision model
  * @param {string} imageBase64 - Base64 encoded image
  * @returns {Promise<string>} - Detected bin type
  */
 async function classifyBin(imageBase64) {
   try {
-    const base64Image = imageBase64.includes(',')
-      ? imageBase64.split(',')[1]
-      : imageBase64;
+    const mimeType  = getMimeType(imageBase64);
+    const imageData = stripDataUri(imageBase64);
 
     const request = {
-      image: { content: base64Image }
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: BIN_PROMPT },
+          { inlineData: { mimeType, data: imageData } }
+        ]
+      }]
     };
 
-    // Detect colors, labels, and text
-    const [labelResult] = await client.labelDetection(request);
-    const [colorResult] = await client.imageProperties(request);
-    const [textResult] = await client.textDetection(request);
+    const result   = await model.generateContent(request);
+    const response = result.response;
+    const raw      = response.candidates[0].content.parts[0].text.trim().toLowerCase();
 
-    const labels = labelResult.labelAnnotations?.map(l => l.description.toLowerCase()) || [];
-    const text = textResult.textAnnotations?.[0]?.description.toLowerCase() || '';
-    const dominantColors = colorResult.imagePropertiesAnnotation?.dominantColors?.colors || [];
+    console.log('Gemini bin classification raw:', raw);
 
-    console.log('Bin detection - Labels:', labels);
-    console.log('Bin detection - Text:', text);
-
-    return identifyBinType(dominantColors, labels, text);
+    // Validate against known bin types
+    const binType = VALID_BIN_TYPES.find(t => raw.includes(t));
+    return binType || 'black_bin';
 
   } catch (error) {
-    console.error('Bin classification error:', error);
-    throw new Error('Failed to classify bin');
+    console.error('Vertex AI (bin) error:', error);
+    throw new Error('Failed to classify bin: ' + error.message);
   }
-}
-
-/**
- * Map Vision API labels to waste types
- */
-function mapLabelsToWasteType(labels) {
-  const labelDescriptions = labels.map(l => l.description);
-
-  // Plastic detection
-  if (labelDescriptions.some(l =>
-    l.includes('plastic') ||
-    l.includes('bottle') ||
-    l.includes('container') ||
-    l.includes('packaging') ||
-    l.includes('pet bottle')
-  )) {
-    return 'plastic';
-  }
-
-  // Glass detection
-  if (labelDescriptions.some(l =>
-    l.includes('glass') ||
-    l.includes('jar') ||
-    l.includes('wine bottle') ||
-    l.includes('beer bottle')
-  )) {
-    return 'glass';
-  }
-
-  // Metal/Aluminum detection
-  if (labelDescriptions.some(l =>
-    l.includes('metal') ||
-    l.includes('aluminum') ||
-    l.includes('tin') ||
-    l.includes('can') ||
-    l.includes('beverage can')
-  )) {
-    return 'metal';
-  }
-
-  // Paper detection
-  if (labelDescriptions.some(l =>
-    l.includes('paper') ||
-    l.includes('cardboard') ||
-    l.includes('newspaper') ||
-    l.includes('magazine') ||
-    l.includes('box')
-  )) {
-    return 'paper';
-  }
-
-  // Food waste detection
-  if (labelDescriptions.some(l =>
-    l.includes('food') ||
-    l.includes('fruit') ||
-    l.includes('vegetable') ||
-    l.includes('organic') ||
-    l.includes('peel')
-  )) {
-    return 'food_waste';
-  }
-
-  // Clothes/Textile detection
-  if (labelDescriptions.some(l =>
-    l.includes('clothing') ||
-    l.includes('textile') ||
-    l.includes('fabric') ||
-    l.includes('shirt') ||
-    l.includes('pants')
-  )) {
-    return 'clothes';
-  }
-
-  // Electronics detection
-  if (labelDescriptions.some(l =>
-    l.includes('electronic') ||
-    l.includes('gadget') ||
-    l.includes('phone') ||
-    l.includes('battery') ||
-    l.includes('device')
-  )) {
-    return 'electronics';
-  }
-
-  // Default fallback
-  return 'general_waste';
-}
-
-/**
- * Identify bin type from colors and context
- */
-function identifyBinType(colors, labels, text) {
-  if (!colors || colors.length === 0) {
-    return 'black_bin'; // Default
-  }
-
-  const dominantColor = colors[0].color;
-  const { red = 0, green = 0, blue = 0 } = dominantColor;
-
-  // Text-based detection (most reliable)
-  if (text.includes('recycle') || text.includes('recycling')) {
-    return 'blue_bin';
-  }
-  if (text.includes('compost') || text.includes('organic')) {
-    return 'brown_bin';
-  }
-  if (text.includes('hazard') || text.includes('electronic')) {
-    return 'orange_bin';
-  }
-  if (text.includes('general') || text.includes('waste')) {
-    return 'black_bin';
-  }
-
-  // Label-based detection
-  if (labels.some(l => l.includes('recycling') || l.includes('recycle'))) {
-    return 'blue_bin';
-  }
-
-  // Color-based detection
-  // Blue bin (high blue, low red/green)
-  if (blue > 150 && blue > red + 30 && blue > green + 30) {
-    return 'blue_bin';
-  }
-
-  // Brown bin (balanced warm tones)
-  if (red > 100 && green > 80 && blue < 100 && Math.abs(red - green) < 40) {
-    return 'brown_bin';
-  }
-
-  // Orange bin (high red, medium green, low blue)
-  if (red > 150 && green > 80 && green < red - 20 && blue < 100) {
-    return 'orange_bin';
-  }
-
-  // Black/dark bin (all values low)
-  if (red < 80 && green < 80 && blue < 80) {
-    return 'black_bin';
-  }
-
-  // Default fallback
-  return 'black_bin';
 }
 
 module.exports = {
