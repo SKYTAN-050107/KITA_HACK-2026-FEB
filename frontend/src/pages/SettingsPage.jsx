@@ -43,6 +43,14 @@ const getPasswordStrength = (pw) => {
   return { label: 'Strong', color: 'bg-emerald-500', width: '100%' };
 };
 
+/* ── Tab definitions ── */
+const TABS = [
+  { id: 'profile', label: 'Profile', icon: 'person' },
+  { id: 'security', label: 'Security', icon: 'shield' },
+  { id: 'preferences', label: 'Preferences', icon: 'tune' },
+  { id: 'danger', label: 'Danger Zone', icon: 'warning' },
+];
+
 /* ── Animation variants (matching Dashboard) ── */
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -53,11 +61,21 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
 };
 
+/* ── Tab content transition variants ── */
+const tabContentVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 300, damping: 30 } },
+  exit: { opacity: 0, x: -20, transition: { duration: 0.15 } },
+};
+
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useDarkMode();
   const avatarInputRef = useRef(null);
+
+  /* ── Tab state ── */
+  const [activeTab, setActiveTab] = useState('profile');
 
   /* ── Profile state ── */
   const [displayName, setDisplayName] = useState('');
@@ -344,7 +362,7 @@ export default function SettingsPage() {
   ══════════════════════════════════════════ */
   return (
     <motion.div
-      className="max-w-2xl mx-auto px-4 sm:px-6 py-8 transition-colors duration-500"
+      className="max-w-5xl mx-auto px-4 sm:px-6 py-8 transition-colors duration-500"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -364,356 +382,420 @@ export default function SettingsPage() {
         </div>
       </motion.div>
 
-      {/* ══════════════════════════════════
-           1. PROFILE CARD
-      ══════════════════════════════════ */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl mb-6 transition-colors duration-500"
-      >
-        <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
-          <span className="material-icons-round text-xl text-primary">person</span>
-          Profile
-        </h2>
-
-        <div className="flex flex-col sm:flex-row items-center gap-6">
-          {/* Avatar */}
-          <div className="relative group shrink-0">
-            <div
-              className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-emerald-600/20 dark:from-primary/30 dark:to-emerald-600/30 flex items-center justify-center overflow-hidden border-2 border-primary/30 shadow-lg cursor-pointer"
-              onClick={() => avatarInputRef.current?.click()}
-            >
-              {(avatarPreview || avatarUrl) ? (
-                <img src={avatarPreview || avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <span className="material-icons-round text-4xl text-primary/60">account_circle</span>
-              )}
-            </div>
-            <div
-              className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-              onClick={() => avatarInputRef.current?.click()}
-            >
-              <span className="material-icons-round text-white text-xl">photo_camera</span>
-            </div>
-            <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png" className="hidden" onChange={handleAvatarPick} />
+      {/* ── Two-column layout: Sidebar tabs + Content panel ── */}
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row gap-6">
+        {/* ─── LEFT: Sidebar Navigation ─── */}
+        <nav className="w-full md:w-56 shrink-0">
+          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-3 shadow-xl transition-colors duration-500">
+            <ul className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible">
+              {TABS.map((tab) => {
+                const isActive = activeTab === tab.id;
+                const isDanger = tab.id === 'danger';
+                return (
+                  <li key={tab.id}>
+                    <button
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+                        isActive
+                          ? isDanger
+                            ? 'bg-red-500/10 dark:bg-red-500/15 text-red-600 dark:text-red-400 shadow-sm'
+                            : 'bg-gradient-to-r from-emerald-500/10 to-primary/10 dark:from-emerald-500/15 dark:to-primary/15 text-primary dark:text-emerald-400 shadow-sm'
+                          : isDanger
+                            ? 'text-red-500/60 dark:text-red-400/40 hover:bg-red-50/50 dark:hover:bg-red-500/5'
+                            : 'text-emerald-800/60 dark:text-emerald-100/50 hover:bg-emerald-50/50 dark:hover:bg-white/5'
+                      }`}
+                    >
+                      <span className={`material-icons-round text-xl ${
+                        isActive
+                          ? isDanger ? 'text-red-500 dark:text-red-400' : 'text-primary dark:text-emerald-400'
+                          : isDanger ? 'text-red-400/50' : 'text-emerald-800/40 dark:text-emerald-100/30'
+                      }`}>
+                        {tab.icon}
+                      </span>
+                      <span>{tab.label}</span>
+                      {isActive && (
+                        <span className={`ml-auto w-1.5 h-1.5 rounded-full hidden md:block ${isDanger ? 'bg-red-500' : 'bg-primary'}`} />
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+        </nav>
 
-          <div className="flex-1 w-full space-y-4">
-            {/* Display Name */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
-                Display Name
-              </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white placeholder-emerald-800/30 dark:placeholder-emerald-100/30 font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
-                placeholder="Your name"
-              />
-            </div>
-
-            {/* Email (read-only) */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 flex items-center gap-1 transition-colors duration-500">
-                Email
-                <span className="material-icons-round text-[14px] text-emerald-800/30 dark:text-emerald-100/30" title="Email cannot be changed">lock</span>
-              </label>
-              <input
-                type="text"
-                value={user?.email || ''}
-                readOnly
-                className="w-full h-12 px-4 rounded-xl bg-emerald-50/50 dark:bg-white/[0.02] border border-emerald-900/5 dark:border-white/5 text-emerald-800/60 dark:text-emerald-100/40 font-medium cursor-not-allowed transition-all duration-300"
-              />
-            </div>
-          </div>
-        </div>
-
-        {profileError && (
-          <p className="text-sm text-red-500 mt-3 flex items-center gap-1">
-            <span className="material-icons-round text-base">error</span>
-            {profileError}
-          </p>
-        )}
-
-        <div className="flex justify-end mt-5">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-            disabled={!profileChanged || profileSaving}
-            onClick={handleProfileSave}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-              profileChanged && !profileSaving
-                ? 'bg-gradient-to-r from-emerald-500 to-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl'
-                : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
-            }`}
-          >
-            {profileSaving ? (
-              <span className="flex items-center gap-2">
-                <span className="material-icons-round text-base animate-spin">progress_activity</span>
-                Saving…
-              </span>
-            ) : profileSaved ? (
-              <span className="flex items-center gap-2">
-                <span className="material-icons-round text-base">check_circle</span>
-                Saved ✓
-              </span>
-            ) : (
-              'Save Changes'
-            )}
-          </motion.button>
-        </div>
-      </motion.div>
-
-      {/* ══════════════════════════════════
-           2. SECURITY CARD
-      ══════════════════════════════════ */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl mb-6 transition-colors duration-500"
-      >
-        <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
-          <span className="material-icons-round text-xl text-blue-500">shield</span>
-          Security
-        </h2>
-
-        {isGoogleUser ? (
-          <div className="flex items-center gap-3 text-emerald-800/60 dark:text-emerald-100/50 bg-blue-50/50 dark:bg-blue-500/5 rounded-xl p-4 border border-blue-200/30 dark:border-blue-500/10">
-            <span className="material-icons-round text-blue-500 text-xl">info</span>
-            <p className="text-sm font-medium">Password is managed by Google. You signed in with Google OAuth.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {/* Current Password */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
-                Current Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showCurrentPw ? 'text' : 'password'}
-                  value={currentPw}
-                  onChange={(e) => setCurrentPw(e.target.value)}
-                  className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
-                  placeholder="Enter current password"
-                />
-                <button type="button" onClick={() => setShowCurrentPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
-                  <span className="material-icons-round text-xl">{showCurrentPw ? 'visibility_off' : 'visibility'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* New Password */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
-                New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showNewPw ? 'text' : 'password'}
-                  value={newPw}
-                  onChange={(e) => setNewPw(e.target.value)}
-                  className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
-                  placeholder="Enter new password"
-                />
-                <button type="button" onClick={() => setShowNewPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
-                  <span className="material-icons-round text-xl">{showNewPw ? 'visibility_off' : 'visibility'}</span>
-                </button>
-              </div>
-              {/* Strength meter */}
-              {newPw && (
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="flex-1 h-1.5 bg-emerald-100/50 dark:bg-white/5 rounded-full overflow-hidden">
-                    <div className={`h-full ${passwordStrength.color} rounded-full transition-all duration-500`} style={{ width: passwordStrength.width }} />
-                  </div>
-                  <span className={`text-xs font-bold ${passwordStrength.color === 'bg-red-500' ? 'text-red-500' : passwordStrength.color === 'bg-yellow-500' ? 'text-yellow-500' : 'text-emerald-500'}`}>
-                    {passwordStrength.label}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
-                Confirm New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPw ? 'text' : 'password'}
-                  value={confirmPw}
-                  onChange={(e) => setConfirmPw(e.target.value)}
-                  className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
-                  placeholder="Confirm new password"
-                />
-                <button type="button" onClick={() => setShowConfirmPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
-                  <span className="material-icons-round text-xl">{showConfirmPw ? 'visibility_off' : 'visibility'}</span>
-                </button>
-              </div>
-              {confirmPw && newPw !== confirmPw && (
-                <p className="text-xs text-red-400 mt-1.5 font-medium">Passwords do not match</p>
-              )}
-            </div>
-
-            {pwError && (
-              <p className="text-sm text-red-500 flex items-center gap-1">
-                <span className="material-icons-round text-base">error</span>
-                {pwError}
-              </p>
-            )}
-            {pwSuccess && (
-              <p className="text-sm text-emerald-500 flex items-center gap-1">
-                <span className="material-icons-round text-base">check_circle</span>
-                {pwSuccess}
-              </p>
-            )}
-
-            <div className="flex justify-end pt-2">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                disabled={!currentPw || !newPw || !confirmPw || pwSaving}
-                onClick={handlePasswordChange}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                  currentPw && newPw && confirmPw && !pwSaving
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl'
-                    : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
-                }`}
+        {/* ─── RIGHT: Content Panel ─── */}
+        <div className="flex-1 min-w-0">
+          <AnimatePresence mode="wait">
+            {/* ═══ PROFILE TAB ═══ */}
+            {activeTab === 'profile' && (
+              <motion.div
+                key="profile"
+                variants={tabContentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl transition-colors duration-500"
               >
-                {pwSaving ? (
-                  <span className="flex items-center gap-2">
-                    <span className="material-icons-round text-base animate-spin">progress_activity</span>
-                    Updating…
-                  </span>
-                ) : (
-                  'Update Password'
+                <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
+                  <span className="material-icons-round text-xl text-primary">person</span>
+                  Profile
+                </h2>
+
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  {/* Avatar */}
+                  <div className="relative group shrink-0">
+                    <div
+                      className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-emerald-600/20 dark:from-primary/30 dark:to-emerald-600/30 flex items-center justify-center overflow-hidden border-2 border-primary/30 shadow-lg cursor-pointer"
+                      onClick={() => avatarInputRef.current?.click()}
+                    >
+                      {(avatarPreview || avatarUrl) ? (
+                        <img src={avatarPreview || avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="material-icons-round text-4xl text-primary/60">account_circle</span>
+                      )}
+                    </div>
+                    <div
+                      className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      onClick={() => avatarInputRef.current?.click()}
+                    >
+                      <span className="material-icons-round text-white text-xl">photo_camera</span>
+                    </div>
+                    <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png" className="hidden" onChange={handleAvatarPick} />
+                  </div>
+
+                  <div className="flex-1 w-full space-y-4">
+                    {/* Display Name */}
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
+                        Display Name
+                      </label>
+                      <input
+                        type="text"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        className="w-full h-12 px-4 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white placeholder-emerald-800/30 dark:placeholder-emerald-100/30 font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
+                        placeholder="Your name"
+                      />
+                    </div>
+
+                    {/* Email (read-only) */}
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 flex items-center gap-1 transition-colors duration-500">
+                        Email
+                        <span className="material-icons-round text-[14px] text-emerald-800/30 dark:text-emerald-100/30" title="Email cannot be changed">lock</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={user?.email || ''}
+                        readOnly
+                        className="w-full h-12 px-4 rounded-xl bg-emerald-50/50 dark:bg-white/[0.02] border border-emerald-900/5 dark:border-white/5 text-emerald-800/60 dark:text-emerald-100/40 font-medium cursor-not-allowed transition-all duration-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {profileError && (
+                  <p className="text-sm text-red-500 mt-3 flex items-center gap-1">
+                    <span className="material-icons-round text-base">error</span>
+                    {profileError}
+                  </p>
                 )}
-              </motion.button>
-            </div>
-          </div>
-        )}
-      </motion.div>
 
-      {/* ══════════════════════════════════
-           3. PREFERENCES CARD
-      ══════════════════════════════════ */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl mb-6 transition-colors duration-500"
-      >
-        <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
-          <span className="material-icons-round text-xl text-amber-500">tune</span>
-          Preferences
-        </h2>
+                <div className="flex justify-end mt-5">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    disabled={!profileChanged || profileSaving}
+                    onClick={handleProfileSave}
+                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                      profileChanged && !profileSaving
+                        ? 'bg-gradient-to-r from-emerald-500 to-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl'
+                        : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
+                    }`}
+                  >
+                    {profileSaving ? (
+                      <span className="flex items-center gap-2">
+                        <span className="material-icons-round text-base animate-spin">progress_activity</span>
+                        Saving…
+                      </span>
+                    ) : profileSaved ? (
+                      <span className="flex items-center gap-2">
+                        <span className="material-icons-round text-base">check_circle</span>
+                        Saved ✓
+                      </span>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
 
-        <div className="space-y-5">
-          {/* 3a. Notifications toggle */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Push Notifications</p>
-              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Scan reminders and streak alerts</p>
-            </div>
-            <button
-              type="button"
-              onClick={handleNotificationsToggle}
-              className={`relative w-[36px] h-[20px] rounded-full transition-colors duration-300 ${notificationsOn ? 'bg-emerald-500' : 'bg-emerald-900/20 dark:bg-white/15'}`}
-            >
-              <div
-                className={`absolute top-[2px] w-[16px] h-[16px] bg-white rounded-full shadow transition-all duration-300 ${notificationsOn ? 'left-[18px]' : 'left-[2px]'}`}
-              />
-            </button>
-          </div>
+            {/* ═══ SECURITY TAB ═══ */}
+            {activeTab === 'security' && (
+              <motion.div
+                key="security"
+                variants={tabContentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl transition-colors duration-500"
+              >
+                <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
+                  <span className="material-icons-round text-xl text-blue-500">shield</span>
+                  Security
+                </h2>
 
-          {/* Divider */}
-          <div className="border-t border-emerald-900/5 dark:border-white/5" />
+                {isGoogleUser ? (
+                  <div className="flex items-center gap-3 text-emerald-800/60 dark:text-emerald-100/50 bg-blue-50/50 dark:bg-blue-500/5 rounded-xl p-4 border border-blue-200/30 dark:border-blue-500/10">
+                    <span className="material-icons-round text-blue-500 text-xl">info</span>
+                    <p className="text-sm font-medium">Password is managed by Google. You signed in with Google OAuth.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Current Password */}
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
+                        Current Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showCurrentPw ? 'text' : 'password'}
+                          value={currentPw}
+                          onChange={(e) => setCurrentPw(e.target.value)}
+                          className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
+                          placeholder="Enter current password"
+                        />
+                        <button type="button" onClick={() => setShowCurrentPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
+                          <span className="material-icons-round text-xl">{showCurrentPw ? 'visibility_off' : 'visibility'}</span>
+                        </button>
+                      </div>
+                    </div>
 
-          {/* 3b. Day / Night Theme Toggle */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Theme</p>
-              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">
-                {isDark ? 'Night mode active' : 'Day mode active'}
-              </p>
-            </div>
-            <DayNightToggle isDark={isDark} onToggle={toggleDarkMode} />
-          </div>
+                    {/* New Password */}
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showNewPw ? 'text' : 'password'}
+                          value={newPw}
+                          onChange={(e) => setNewPw(e.target.value)}
+                          className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
+                          placeholder="Enter new password"
+                        />
+                        <button type="button" onClick={() => setShowNewPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
+                          <span className="material-icons-round text-xl">{showNewPw ? 'visibility_off' : 'visibility'}</span>
+                        </button>
+                      </div>
+                      {/* Strength meter */}
+                      {newPw && (
+                        <div className="mt-2 flex items-center gap-3">
+                          <div className="flex-1 h-1.5 bg-emerald-100/50 dark:bg-white/5 rounded-full overflow-hidden">
+                            <div className={`h-full ${passwordStrength.color} rounded-full transition-all duration-500`} style={{ width: passwordStrength.width }} />
+                          </div>
+                          <span className={`text-xs font-bold ${passwordStrength.color === 'bg-red-500' ? 'text-red-500' : passwordStrength.color === 'bg-yellow-500' ? 'text-yellow-500' : 'text-emerald-500'}`}>
+                            {passwordStrength.label}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-          {/* Divider */}
-          <div className="border-t border-emerald-900/5 dark:border-white/5" />
+                    {/* Confirm Password */}
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-emerald-800/50 dark:text-emerald-100/50 mb-1.5 block transition-colors duration-500">
+                        Confirm New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showConfirmPw ? 'text' : 'password'}
+                          value={confirmPw}
+                          onChange={(e) => setConfirmPw(e.target.value)}
+                          className="w-full h-12 px-4 pr-12 rounded-xl bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all duration-300"
+                          placeholder="Confirm new password"
+                        />
+                        <button type="button" onClick={() => setShowConfirmPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-800/40 dark:text-emerald-100/40 hover:text-emerald-800/70 dark:hover:text-emerald-100/70 transition-colors">
+                          <span className="material-icons-round text-xl">{showConfirmPw ? 'visibility_off' : 'visibility'}</span>
+                        </button>
+                      </div>
+                      {confirmPw && newPw !== confirmPw && (
+                        <p className="text-xs text-red-400 mt-1.5 font-medium">Passwords do not match</p>
+                      )}
+                    </div>
 
-          {/* Data export */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Export Scan History</p>
-              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Download all scans as CSV</p>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              disabled={exporting}
-              onClick={handleExportCSV}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-900 dark:text-emerald-100 hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 flex items-center gap-1.5 shadow"
-            >
-              {exporting ? (
-                <span className="material-icons-round text-sm animate-spin">progress_activity</span>
-              ) : (
-                <span className="material-icons-round text-sm">download</span>
-              )}
-              {exporting ? 'Exporting…' : 'Download CSV'}
-            </motion.button>
-          </div>
-        </div>
-      </motion.div>
+                    {pwError && (
+                      <p className="text-sm text-red-500 flex items-center gap-1">
+                        <span className="material-icons-round text-base">error</span>
+                        {pwError}
+                      </p>
+                    )}
+                    {pwSuccess && (
+                      <p className="text-sm text-emerald-500 flex items-center gap-1">
+                        <span className="material-icons-round text-base">check_circle</span>
+                        {pwSuccess}
+                      </p>
+                    )}
 
-      {/* ══════════════════════════════════
-           4. DANGER ZONE CARD
-      ══════════════════════════════════ */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-red-400/20 dark:border-red-500/20 rounded-2xl p-6 shadow-xl mb-6 transition-colors duration-500"
-      >
-        <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-5 flex items-center gap-2">
-          <span className="material-icons-round text-xl">warning</span>
-          Danger Zone
-        </h2>
+                    <div className="flex justify-end pt-2">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        disabled={!currentPw || !newPw || !confirmPw || pwSaving}
+                        onClick={handlePasswordChange}
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                          currentPw && newPw && confirmPw && !pwSaving
+                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl'
+                            : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
+                        }`}
+                      >
+                        {pwSaving ? (
+                          <span className="flex items-center gap-2">
+                            <span className="material-icons-round text-base animate-spin">progress_activity</span>
+                            Updating…
+                          </span>
+                        ) : (
+                          'Update Password'
+                        )}
+                      </motion.button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
 
-        <div className="space-y-4">
-          {/* Logout */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Sign Out</p>
-              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Log out of your account</p>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={handleLogout}
-              className="px-5 py-2 rounded-xl text-sm font-bold bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 border border-emerald-900/10 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-white/10 transition-all duration-300 shadow"
-            >
-              Logout
-            </motion.button>
-          </div>
+            {/* ═══ PREFERENCES TAB ═══ */}
+            {activeTab === 'preferences' && (
+              <motion.div
+                key="preferences"
+                variants={tabContentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/10 rounded-2xl p-6 shadow-xl transition-colors duration-500"
+              >
+                <h2 className="text-lg font-bold text-emerald-950 dark:text-white mb-5 flex items-center gap-2 transition-colors duration-500">
+                  <span className="material-icons-round text-xl text-amber-500">tune</span>
+                  Preferences
+                </h2>
 
-          {/* Divider */}
-          <div className="border-t border-red-200/30 dark:border-red-500/10" />
+                <div className="space-y-5">
+                  {/* Notifications toggle */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Push Notifications</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Scan reminders and streak alerts</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleNotificationsToggle}
+                      className={`relative w-[36px] h-[20px] rounded-full transition-colors duration-300 ${notificationsOn ? 'bg-emerald-500' : 'bg-emerald-900/20 dark:bg-white/15'}`}
+                    >
+                      <div
+                        className={`absolute top-[2px] w-[16px] h-[16px] bg-white rounded-full shadow transition-all duration-300 ${notificationsOn ? 'left-[18px]' : 'left-[2px]'}`}
+                      />
+                    </button>
+                  </div>
 
-          {/* Delete account */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-bold text-red-600 dark:text-red-400">Delete Account</p>
-              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">
-                Permanently remove your account and data
-              </p>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => setShowDeleteModal(true)}
-              className="px-5 py-2 rounded-xl text-sm font-bold bg-white/50 dark:bg-white/5 text-red-600 dark:text-red-400 border-[1.5px] border-red-400 dark:border-red-500/60 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-300 shadow"
-            >
-              Delete Account
-            </motion.button>
-          </div>
+                  {/* Divider */}
+                  <div className="border-t border-emerald-900/5 dark:border-white/5" />
+
+                  {/* Day / Night Theme Toggle */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Theme</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">
+                        {isDark ? 'Night mode active' : 'Day mode active'}
+                      </p>
+                    </div>
+                    <DayNightToggle isDark={isDark} onToggle={toggleDarkMode} />
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-emerald-900/5 dark:border-white/5" />
+
+                  {/* Data export */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Export Scan History</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Download all scans as CSV</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={exporting}
+                      onClick={handleExportCSV}
+                      className="px-4 py-2 rounded-xl text-xs font-bold bg-white/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 text-emerald-900 dark:text-emerald-100 hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 flex items-center gap-1.5 shadow"
+                    >
+                      {exporting ? (
+                        <span className="material-icons-round text-sm animate-spin">progress_activity</span>
+                      ) : (
+                        <span className="material-icons-round text-sm">download</span>
+                      )}
+                      {exporting ? 'Exporting…' : 'Download CSV'}
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ═══ DANGER ZONE TAB ═══ */}
+            {activeTab === 'danger' && (
+              <motion.div
+                key="danger"
+                variants={tabContentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="bg-white/60 dark:bg-white/5 backdrop-blur-2xl border border-red-400/20 dark:border-red-500/20 rounded-2xl p-6 shadow-xl transition-colors duration-500"
+              >
+                <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-5 flex items-center gap-2">
+                  <span className="material-icons-round text-xl">warning</span>
+                  Danger Zone
+                </h2>
+
+                <div className="space-y-4">
+                  {/* Logout */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Sign Out</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">Log out of your account</p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={handleLogout}
+                      className="px-5 py-2 rounded-xl text-sm font-bold bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 border border-emerald-900/10 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-white/10 transition-all duration-300 shadow"
+                    >
+                      Logout
+                    </motion.button>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-red-200/30 dark:border-red-500/10" />
+
+                  {/* Delete account */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-red-600 dark:text-red-400">Delete Account</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">
+                        Permanently remove your account and data
+                      </p>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => setShowDeleteModal(true)}
+                      className="px-5 py-2 rounded-xl text-sm font-bold bg-white/50 dark:bg-white/5 text-red-600 dark:text-red-400 border-[1.5px] border-red-400 dark:border-red-500/60 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-300 shadow"
+                    >
+                      Delete Account
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
