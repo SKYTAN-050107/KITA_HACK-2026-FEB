@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import useIsMobile from '../hooks/useIsMobile';
@@ -58,18 +58,9 @@ export default function DashboardLayout() {
           <Navbar onHamburgerClick={() => setMobileMenuOpen(true)} showHamburger={isMobile} />
 
           {/* Page content */}
-          <AnimatePresence mode="wait">
-            <motion.main
-              key={location.pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="flex-1 transition-all duration-300"
-            >
-              <Outlet />
-            </motion.main>
-          </AnimatePresence>
+          <main className="flex-1">
+            <Outlet />
+          </main>
 
           {/* Footer */}
           <motion.footer

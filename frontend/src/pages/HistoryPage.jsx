@@ -133,11 +133,8 @@ export default function HistoryPage() {
   const toggleExpand = (id) => setExpandedId(prev => prev === id ? null : id);
 
   return (
-    <motion.div
+    <div
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
     >
       {/* ── Header ── */}
       <div className="flex items-center gap-4 mb-8">
@@ -462,6 +459,6 @@ export default function HistoryPage() {
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

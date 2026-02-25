@@ -241,8 +241,8 @@ export default function Dashboard() {
 
   /* ── Animation variants (preserved) ── */
   const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1 } }
   };
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
