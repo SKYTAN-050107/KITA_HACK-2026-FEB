@@ -9,11 +9,12 @@ import { useAuth } from '../contexts/AuthContext';
 
 // APP_FLOW.md §2 — 5 nav items
 const NAV_ITEMS = [
-  { label: 'Analytics', icon: 'analytics',  path: '/dashboard',          end: true },
-  { label: 'Scanner',   icon: 'camera_alt', path: '/dashboard/scanner' },
-  { label: 'Map',       icon: 'map',        path: '/dashboard/map' },
-  { label: 'History',   icon: 'history',     path: '/dashboard/history' },
-  { label: 'Settings',  icon: 'settings',    path: '/dashboard/settings' },
+  { label: 'Analytics',  icon: 'analytics',  path: '/dashboard',              end: true },
+  { label: 'Scanner',    icon: 'camera_alt', path: '/dashboard/scanner' },
+  { label: 'Map',        icon: 'map',        path: '/dashboard/map' },
+  { label: 'History',    icon: 'history',     path: '/dashboard/history' },
+  { label: 'Guidelines', icon: 'menu_book',   path: '/dashboard/guidelines' },
+  { label: 'Settings',   icon: 'settings',    path: '/dashboard/settings' },
 ];
 
 const EXPANDED_WIDTH = 256;
