@@ -176,11 +176,11 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                             className="text-center mb-6 sm:mb-10"
                         >
                             <motion.div
-                                whileHover={{ rotate: 180 }}
+                                whileHover={{ scale: 1.1 }}
                                 transition={{ duration: 0.5 }}
-                                className="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 backdrop-blur-md border border-emerald-900/5 dark:border-white/10 shadow-inner cursor-pointer transition-colors duration-500"
+                                className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 cursor-pointer"
                             >
-                                <span className="material-icons-round text-3xl sm:text-5xl text-primary drop-shadow-sm dark:drop-shadow-lg transition-colors duration-500">eco</span>
+                                <img src="/logo.jpg" alt="RecycleNow Logo" className="w-full h-full object-contain filter drop-shadow-lg rounded-2xl" />
                             </motion.div>
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950 dark:text-white mb-2 tracking-tight transition-colors duration-500">
                                 {isLogin ? 'Welcome Back' : 'Join the Movement'}

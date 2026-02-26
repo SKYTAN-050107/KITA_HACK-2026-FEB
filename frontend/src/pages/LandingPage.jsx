@@ -26,12 +26,13 @@ const LandingPage = () => {
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center gap-2 group cursor-pointer"
+                            className="flex items-center group cursor-pointer"
                         >
-                            <div className="bg-primary/20 p-1 sm:p-1.5 rounded-lg border border-primary/30 group-hover:bg-primary transition-colors duration-500">
-                                <span className="material-icons-round text-primary text-lg sm:text-xl group-hover:text-emerald-950 transition-colors duration-500">recycling</span>
-                            </div>
-                            <span className="text-base sm:text-xl font-bold tracking-tight text-emerald-900 dark:text-white group-hover:text-primary transition-colors duration-500">Recycle<span className="text-primary">Now</span></span>
+                            <img
+                                src="/logo.jpg"
+                                alt="RecycleNow Logo"
+                                className="h-10 sm:h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-105 rounded-lg"
+                            />
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
