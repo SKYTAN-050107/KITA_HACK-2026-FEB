@@ -6,15 +6,17 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
 import { useAuth } from '../contexts/AuthContext';
+import useDarkMode from '../hooks/useDarkMode';
+import DayNightToggle from './DayNightToggle';
 
 // APP_FLOW.md §2 — 5 nav items
 const NAV_ITEMS = [
-  { label: 'Analytics',  icon: 'analytics',  path: '/dashboard',              end: true },
-  { label: 'Scanner',    icon: 'camera_alt', path: '/dashboard/scanner' },
-  { label: 'Map',        icon: 'map',        path: '/dashboard/map' },
-  { label: 'History',    icon: 'history',     path: '/dashboard/history' },
-  { label: 'Guidelines', icon: 'menu_book',   path: '/dashboard/guidelines' },
-  { label: 'Settings',   icon: 'settings',    path: '/dashboard/settings' },
+  { label: 'Analytics', icon: 'analytics', path: '/dashboard', end: true },
+  { label: 'Scanner', icon: 'camera_alt', path: '/dashboard/scanner' },
+  { label: 'Map', icon: 'map', path: '/dashboard/map' },
+  { label: 'History', icon: 'history', path: '/dashboard/history' },
+  { label: 'Guidelines', icon: 'menu_book', path: '/dashboard/guidelines' },
+  { label: 'Settings', icon: 'settings', path: '/dashboard/settings' },
 ];
 
 const EXPANDED_WIDTH = 256;
@@ -26,6 +28,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { isDark, toggleDarkMode } = useDarkMode();
 
   // Auto-dismiss mobile drawer on nav
   useEffect(() => {
@@ -57,9 +60,13 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
 
   /* ─── Shared nav content (used by both desktop & mobile) ─── */
   const renderBrand = () => (
-    <NavLink to="/dashboard" className="flex items-center gap-2 mb-10 group">
-      <div className="bg-primary/10 dark:bg-primary/20 p-2 rounded-xl border border-primary/20 dark:border-primary/30 group-hover:bg-primary transition-colors flex-shrink-0">
-        <span className="material-icons-round text-primary text-xl group-hover:text-emerald-50 dark:group-hover:text-emerald-950 transition-colors">recycling</span>
+    <NavLink to="/dashboard" className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} mb-10 group`}>
+      <div className="relative w-12 h-12 flex-shrink-0 transition-all duration-300 group-hover:scale-105">
+        <img
+          src="/logo.jpg"
+          alt="RecycleNow Logo"
+          className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(16,185,129,0.2)] rounded-xl"
+        />
       </div>
       {!collapsed && (
         <motion.span
@@ -82,10 +89,9 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
           to={item.path}
           end={item.end}
           className={({ isActive }) =>
-            `relative flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 group ${showLabels ? '' : 'justify-center'} ${
-              isActive
-                ? 'bg-primary/15 text-primary border border-primary/20'
-                : 'text-emerald-800/70 dark:text-emerald-100/60 hover:bg-primary/5 dark:hover:bg-white/5 border border-transparent'
+            `relative flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 group ${showLabels ? '' : 'justify-center'} ${isActive
+              ? 'bg-primary/15 text-primary border border-primary/20'
+              : 'text-emerald-800/70 dark:text-emerald-100/60 hover:bg-primary/5 dark:hover:bg-white/5 border border-transparent'
             }`
           }
         >
@@ -100,11 +106,10 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
                 />
               )}
               <span
-                className={`material-icons-round text-xl transition-all flex-shrink-0 ${
-                  isActive
-                    ? 'text-primary'
-                    : 'text-emerald-800/50 dark:text-emerald-100/40 group-hover:text-primary'
-                } ${item.icon === 'settings' ? 'group-hover:rotate-90 transition-transform duration-500' : ''}`}
+                className={`material-icons-round text-xl transition-all flex-shrink-0 ${isActive
+                  ? 'text-primary'
+                  : 'text-emerald-800/50 dark:text-emerald-100/40 group-hover:text-primary'
+                  } ${item.icon === 'settings' ? 'group-hover:rotate-90 transition-transform duration-500' : ''}`}
               >
                 {item.icon}
               </span>
@@ -126,11 +131,36 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   );
 
   const renderFooter = (showLabels = true) => (
-    <div className="mt-auto pt-6 border-t border-emerald-900/10 dark:border-white/10 transition-colors duration-500">
+    <div className="mt-auto pt-6 border-t border-emerald-900/10 dark:border-white/10 transition-colors duration-500 flex flex-col gap-4">
+      {/* Theme Toggle - 1:1 Design from Settings */}
+      <div className={`flex flex-col items-center px-2 ${showLabels ? '' : 'overflow-hidden'}`}>
+        {showLabels && (
+          <div className="w-full flex justify-between items-center mb-4">
+            <span className="text-xs font-bold text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wider">Appearance</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 transition-colors">
+              {isDark ? 'NIGHT' : 'DAY'}
+            </span>
+          </div>
+        )}
+        <div
+          className="transition-all duration-500 origin-center"
+          style={{
+            transform: showLabels ? 'scale(1)' : 'scale(0.5)',
+            margin: showLabels ? '0' : '-10px 0'
+          }}
+        >
+          <DayNightToggle isDark={isDark} onToggle={toggleDarkMode} />
+        </div>
+      </div>
+
       <div className={`flex items-center ${showLabels ? 'gap-3' : 'justify-center'}`}>
         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-emerald-400 p-0.5 shadow-lg shadow-primary/30 flex-shrink-0">
-          <div className="w-full h-full bg-emerald-50 dark:bg-emerald-950 rounded-full flex items-center justify-center border-[3px] border-emerald-50 dark:border-emerald-950 transition-colors duration-500">
-            <span className="material-icons-round text-primary text-base">person</span>
+          <div className="w-full h-full bg-emerald-50 dark:bg-emerald-950 rounded-full flex items-center justify-center border-[3px] border-emerald-50 dark:border-emerald-950 transition-colors duration-500 overflow-hidden">
+            {user?.photoURL ? (
+              <img src={user.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            ) : (
+              <span className="material-icons-round text-primary text-base">person</span>
+            )}
           </div>
         </div>
         {showLabels && (
@@ -145,7 +175,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleLogout}
-          className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-red-500 dark:text-red-400 bg-red-500/5 dark:bg-red-500/10 border border-red-500/10 dark:border-red-500/20 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-red-500 dark:text-red-400 bg-red-500/5 dark:bg-red-500/10 border border-red-500/10 dark:border-red-500/20 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all cursor-pointer"
         >
           <span className="material-icons-round text-lg">logout</span>
           Logout

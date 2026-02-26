@@ -44,6 +44,8 @@ const calcLevel = (pts) => {
   return { lv, name, nextName, progress };
 };
 
+const toTwoDecimals = (value) => parseFloat(Number(value || 0).toFixed(2));
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -92,8 +94,8 @@ export default function Dashboard() {
             if (!cancelled) {
               setStats({
                 totalScans: data.totalScans ?? 0,
-                impactKg: data.impactKg ?? 0,
-                co2Saved: data.co2Saved ?? 0,
+                impactKg: toTwoDecimals(data.impactKg),
+                co2Saved: toTwoDecimals(data.co2Saved),
                 points: data.points ?? 0,
                 streak: data.streak ?? 0,
                 lastCheckIn: data.lastCheckIn ?? null,
@@ -109,8 +111,8 @@ export default function Dashboard() {
           const d = snap.data();
           setStats({
             totalScans: d.totalScans ?? 0,
-            impactKg: d.impactKg ?? 0,
-            co2Saved: d.co2Saved ?? 0,
+            impactKg: toTwoDecimals(d.impactKg),
+            co2Saved: toTwoDecimals(d.co2Saved),
             points: d.points ?? 0,
             streak: d.streak ?? 0,
             lastCheckIn: d.lastCheckIn ?? null,
@@ -340,20 +342,20 @@ export default function Dashboard() {
                 <span className="material-icons-round text-2xl">eco</span>
               </div>
               <div>
-                <p className="text-emerald-800/50 dark:text-emerald-100/50 text-xs font-bold uppercase tracking-widest transition-colors duration-500">Impact</p>
+                <p className="text-emerald-800/50 dark:text-emerald-100/50 text-xs font-bold uppercase tracking-widest transition-colors duration-500">Estimated disposal impact</p>
                 <motion.p
                   key={stats.impactKg}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className="text-3xl font-black text-emerald-950 dark:text-white transition-colors duration-500"
                 >
-                  {stats.impactKg}<span className="text-lg text-emerald-800/40 dark:text-emerald-100/40 ml-1">kg</span>
+                  {Number(stats.impactKg || 0).toFixed(2)}<span className="text-lg text-emerald-800/40 dark:text-emerald-100/40 ml-1">kg</span>
                 </motion.p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <span className="material-icons-round text-sm text-blue-400">cloud</span>
-              <p className="text-xs text-blue-500 dark:text-blue-400 font-bold transition-colors duration-500">{stats.co2Saved} kg CO₂ saved</p>
+              <p className="text-xs text-blue-500 dark:text-blue-400 font-bold transition-colors duration-500">{Number(stats.co2Saved || 0).toFixed(2)} kg CO₂ saved</p>
             </div>
           </div>
         </motion.div>

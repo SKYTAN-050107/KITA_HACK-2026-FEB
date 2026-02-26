@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Scan images ──
+    // Users can only read/write images in their own folder
+    // Path: scans/{userId}/{scanId}.jpg
+    match /scans/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // ── Default: deny everything else ──
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

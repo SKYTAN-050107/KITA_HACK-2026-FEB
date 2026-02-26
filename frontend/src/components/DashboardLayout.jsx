@@ -25,7 +25,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-emerald-950 font-sans selection:bg-primary/30 selection:text-emerald-950 dark:selection:text-white relative overflow-hidden transition-colors duration-500">
+    <div className="h-screen bg-background-light dark:bg-emerald-950 font-sans selection:bg-primary/30 selection:text-emerald-950 dark:selection:text-white relative overflow-hidden transition-colors duration-500">
       {/* Ambient Lighting Orbs — same as existing MainLayout */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden fixed">
         <motion.div
@@ -41,7 +41,7 @@ export default function DashboardLayout() {
       </div>
 
       {/* Layout shell */}
-      <div className="relative z-10 flex min-h-screen">
+      <div className="relative z-10 flex h-screen overflow-hidden">
         {/* Desktop sidebar */}
         {!isMobile && (
           <Sidebar />
@@ -53,7 +53,7 @@ export default function DashboardLayout() {
         )}
 
         {/* Main content column */}
-        <div className="flex-1 flex flex-col min-h-screen min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
           {/* Navbar with hamburger on mobile */}
           <Navbar onHamburgerClick={() => setMobileMenuOpen(true)} showHamburger={isMobile} />
 

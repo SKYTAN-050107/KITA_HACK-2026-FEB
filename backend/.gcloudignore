@@ -1,0 +1,14 @@
+# .gcloudignore — controls what gcloud uploads to Cloud Build
+# This overrides .gitignore for deployment purposes
+
+node_modules/
+.env
+*.log
+.git/
+.gitignore
+*.md
+.dockerignore
+.DS_Store
+
+# NOTE: service-account-key.json is NOT ignored here
+# It must be uploaded so Docker can COPY it into the container

@@ -16,20 +16,16 @@ export default function ScanResultPage() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Extract scan result from navigation state
+  // Extract scan result and captured image from navigation state
   const scanResult = location.state?.scanResult;
   const result = scanResult?.result;
+  const imageData = location.state?.imageData || null;
 
   // Derive waste data
   const wasteType = result?.wasteType || 'general_waste';
   const ruleData = WASTE_RULES[wasteType] || WASTE_RULES.general_waste;
   const confidence = result?.confidence ?? 0;
   const isLowConfidence = result?.isLowConfidence || false;
-
-  // Checklist state (interactive)
-  const [checklist, setChecklist] = useState(
-    () => (result?.checklist || ruleData.checklist).map(c => ({ ...c, completed: false }))
-  );
 
   // Save state
   const [savingToHistory, setSavingToHistory] = useState(false);
@@ -40,16 +36,16 @@ export default function ScanResultPage() {
   const circumference = 2 * Math.PI * 44;
   const strokeDash = circumference * confidence;
 
-  // ── Toggle checklist item ──
-  const toggleChecklistItem = (idx) => {
-    setChecklist(prev => prev.map((item, i) => i === idx ? { ...item, completed: !item.completed } : item));
-  };
-
   // ── Save scan to history ──
   const saveToHistory = async () => {
     if (!user || savingToHistory) return;
     setSavingToHistory(true);
     try {
+      const checklistPayload = (ruleData.checklist || []).map((item) => ({
+        step: typeof item === 'string' ? item : item.step,
+        completed: false,
+      }));
+
       // Get fresh Firebase ID token (authMiddleware verifies this directly)
       let idToken = null;
       try { idToken = await user.getIdToken(); } catch { /* proceed to fallback */ }
@@ -66,7 +62,8 @@ export default function ScanResultPage() {
               confidence,
               disposalMethod: ruleData.disposalMethod,
               rules: ruleData.shortRules,
-              checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
+              checklist: checklistPayload,
+              imageData: imageData,
               imageHash: result?.imageHash || null,
             }),
           });
@@ -82,10 +79,11 @@ export default function ScanResultPage() {
           confidence,
           disposalMethod: ruleData.disposalMethod,
           rules: ruleData.shortRules,
-          checklist: checklist.map(c => ({ step: c.step, completed: c.completed })),
-          checklistCompleted: checklist.every(c => c.completed),
+          checklist: checklistPayload,
+          checklistCompleted: false,
           timestamp: serverTimestamp(),
           location: null,
+          imageUrl: null,
           imageHash: result?.imageHash || null,
           pointsEarned: 5,
         });
@@ -145,6 +143,22 @@ export default function ScanResultPage() {
           </div>
           <span className="text-white/60 text-sm font-bold uppercase tracking-widest group-hover:text-white transition-colors">Back to Scanner</span>
         </motion.button>
+
+        {/* ── Captured Image Preview ── */}
+        {imageData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mb-6 rounded-2xl overflow-hidden border border-white/10"
+          >
+            <img
+              src={imageData}
+              alt="Scanned waste"
+              className="w-full h-48 object-cover"
+            />
+          </motion.div>
+        )}
 
         {/* ── Header: Waste type + confidence ── */}
         <motion.div
@@ -261,38 +275,6 @@ export default function ScanResultPage() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
-
-        {/* ── Preparation Checklist ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="mb-6"
-        >
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-3">Preparation Checklist</p>
-          <div className="space-y-2">
-            {checklist.map((item, i) => (
-              <motion.button
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + 0.05 * i }}
-                onClick={() => toggleChecklistItem(i)}
-                className={`w-full flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all text-left ${item.completed ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/5 hover:bg-white/8'}`}
-              >
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${item.completed ? 'bg-primary' : 'border-2 border-white/20'}`}>
-                  {item.completed && <span className="material-icons-round text-white text-sm">check</span>}
-                </div>
-                <span className={`text-sm font-medium transition-all ${item.completed ? 'text-primary line-through' : 'text-white/80'}`}>
-                  {item.step}
-                </span>
-              </motion.button>
-            ))}
-          </div>
-          <p className="text-white/30 text-xs font-medium mt-2 text-center">
-            {checklist.filter(c => c.completed).length}/{checklist.length} completed
-          </p>
         </motion.div>
 
         {/* ── Action Buttons ── */}

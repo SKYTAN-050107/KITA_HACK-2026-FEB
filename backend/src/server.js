@@ -15,8 +15,16 @@ const PORT = process.env.PORT || 3000;
 const upload = multer({ limits: { fileSize: 15 * 1024 * 1024 } }); // 15MB
 
 // ── Global Middleware ──
+const allowedOrigins = [
+    'https://kitahack-487005.web.app',
+    'https://kitahack-487005.firebaseapp.com',
+    'http://localhost:5173', // Vite dev server
+    'http://localhost:3000', // Local backend testing
+];
 app.use(cors({
-    origin: '*', // Allow all origins for hackathon judge + mobile PWA
+    origin: process.env.NODE_ENV === 'production'
+        ? allowedOrigins.filter(o => o.startsWith('https://'))
+        : allowedOrigins,
     credentials: true,
 }));
 

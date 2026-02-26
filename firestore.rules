@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Scans collection ──
+    // Users can only read/write their own scans
+    match /scans/{scanId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── Users collection ──
+    // Users can only access their own document
+    match /users/{userId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // ── Checkins collection ──
+    // Users can only access their own check-in records
+    match /checkins/{checkinId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── Default: deny everything else ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

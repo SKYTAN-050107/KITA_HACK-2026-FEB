@@ -217,7 +217,7 @@ export default function DayNightToggle({ isDark, onToggle }) {
             className="absolute z-10"
             style={{
               top: 4,
-              left: isDark ? 4 : 72,
+              left: isDark ? 76 : 4,
               width: 40,
               height: 40,
               borderRadius: '50%',
@@ -232,11 +232,11 @@ export default function DayNightToggle({ isDark, onToggle }) {
                 <mask id={`moon-mask-${uid}`}>
                   <circle cx="50" cy="50" r="46" fill="white" />
                   <circle
-                    cx={isDark ? 62 : 85}
-                    cy={isDark ? 28 : 18}
                     r="42"
                     fill="black"
                     style={{
+                      cx: isDark ? 62 : 150,
+                      cy: isDark ? 28 : -20,
                       transition: 'cx 0.6s cubic-bezier(0.4,0,0.2,1), cy 0.6s cubic-bezier(0.4,0,0.2,1)',
                     }}
                   />
