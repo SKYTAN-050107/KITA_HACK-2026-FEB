@@ -103,7 +103,7 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => navigate('/')}
-                className="fixed top-6 left-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-emerald-800 dark:text-emerald-200 p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
+                className="fixed top-4 left-4 sm:top-6 sm:left-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-emerald-800 dark:text-emerald-200 p-2 sm:p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
                 aria-label="Back to landing"
             >
                 <span className="material-icons-round text-xl">arrow_back</span>
@@ -117,7 +117,7 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                 whileHover={{ scale: 1.1, rotate: 15 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleDarkMode}
-                className="fixed top-6 right-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-primary p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
+                className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-primary p-2 sm:p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
                 aria-label="Toggle dark mode"
             >
                 <motion.span
@@ -164,7 +164,7 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 className="w-full max-w-md relative z-10 perspective-1000"
             >
-                <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/20 rounded-[2.5rem] p-8 md:p-10 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-950/80 transition-colors duration-500">
+                <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/20 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-950/80 transition-colors duration-500">
                     {/* Header */}
                     <AnimatePresence mode="popLayout">
                         <motion.div
@@ -173,16 +173,16 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
                             transition={{ duration: 0.3 }}
-                            className="text-center mb-10"
+                            className="text-center mb-6 sm:mb-10"
                         >
                             <motion.div
                                 whileHover={{ rotate: 180 }}
                                 transition={{ duration: 0.5 }}
-                                className="w-20 h-20 bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 rounded-3xl flex items-center justify-center mx-auto mb-6 backdrop-blur-md border border-emerald-900/5 dark:border-white/10 shadow-inner cursor-pointer transition-colors duration-500"
+                                className="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 backdrop-blur-md border border-emerald-900/5 dark:border-white/10 shadow-inner cursor-pointer transition-colors duration-500"
                             >
-                                <span className="material-icons-round text-5xl text-primary drop-shadow-sm dark:drop-shadow-lg transition-colors duration-500">eco</span>
+                                <span className="material-icons-round text-3xl sm:text-5xl text-primary drop-shadow-sm dark:drop-shadow-lg transition-colors duration-500">eco</span>
                             </motion.div>
-                            <h1 className="text-3xl font-extrabold text-emerald-950 dark:text-white mb-2 tracking-tight transition-colors duration-500">
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950 dark:text-white mb-2 tracking-tight transition-colors duration-500">
                                 {isLogin ? 'Welcome Back' : 'Join the Movement'}
                             </h1>
                             <p className="text-emerald-900/70 dark:text-emerald-100/70 text-sm font-medium transition-colors duration-500">

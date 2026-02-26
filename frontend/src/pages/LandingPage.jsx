@@ -22,16 +22,16 @@ const LandingPage = () => {
             {/* Navigation */}
             <nav className="sticky top-0 z-50 bg-background-light/80 dark:bg-emerald-950/80 backdrop-blur-md border-b border-emerald-100 dark:border-white/10 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-20 items-center">
+                    <div className="flex justify-between h-14 sm:h-20 items-center">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-2 group cursor-pointer"
                         >
-                            <div className="bg-primary/20 p-1.5 rounded-lg border border-primary/30 group-hover:bg-primary transition-colors duration-500">
-                                <span className="material-icons-round text-primary text-xl group-hover:text-emerald-950 transition-colors duration-500">recycling</span>
+                            <div className="bg-primary/20 p-1 sm:p-1.5 rounded-lg border border-primary/30 group-hover:bg-primary transition-colors duration-500">
+                                <span className="material-icons-round text-primary text-lg sm:text-xl group-hover:text-emerald-950 transition-colors duration-500">recycling</span>
                             </div>
-                            <span className="text-xl font-bold tracking-tight text-emerald-900 dark:text-white group-hover:text-primary transition-colors duration-500">Recycle<span className="text-primary">Now</span></span>
+                            <span className="text-base sm:text-xl font-bold tracking-tight text-emerald-900 dark:text-white group-hover:text-primary transition-colors duration-500">Recycle<span className="text-primary">Now</span></span>
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
@@ -52,7 +52,7 @@ const LandingPage = () => {
                                 whileHover={{ scale: 1.1, rotate: 15 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={toggleDarkMode}
-                                className="bg-primary/10 dark:bg-primary/20 text-primary p-2 rounded-full border border-primary/20 dark:border-primary/30 cursor-pointer transition-all"
+                                className="bg-primary/10 dark:bg-primary/20 text-primary p-1.5 sm:p-2 rounded-full border border-primary/20 dark:border-primary/30 cursor-pointer transition-all"
                                 aria-label="Toggle dark mode"
                             >
                                 <motion.span
@@ -60,14 +60,14 @@ const LandingPage = () => {
                                     initial={{ rotate: -90, opacity: 0 }}
                                     animate={{ rotate: 0, opacity: 1 }}
                                     transition={{ duration: 0.3 }}
-                                    className="material-icons-round text-lg"
+                                    className="material-icons-round text-base sm:text-lg"
                                 >
                                     {isDark ? 'light_mode' : 'dark_mode'}
                                 </motion.span>
                             </motion.button>
                             <button
                                 onClick={() => navigate('/login')}
-                                className="hidden sm:block text-emerald-800 dark:text-emerald-200 font-bold hover:text-primary transition-colors duration-500 cursor-pointer"
+                                className="text-emerald-800 dark:text-emerald-200 font-bold hover:text-primary transition-colors duration-500 cursor-pointer text-sm sm:text-base"
                             >
                                 Login
                             </button>
@@ -75,7 +75,7 @@ const LandingPage = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => navigate('/signup')}
-                                className="bg-primary text-emerald-950 px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/40 transition-all cursor-pointer border border-primary/50"
+                                className="bg-primary text-emerald-950 px-3 py-2 sm:px-6 sm:py-2.5 rounded-xl font-bold text-sm sm:text-base hover:shadow-lg hover:shadow-primary/40 transition-all cursor-pointer border border-primary/50"
                             >
                                 Get Started
                             </motion.button>
