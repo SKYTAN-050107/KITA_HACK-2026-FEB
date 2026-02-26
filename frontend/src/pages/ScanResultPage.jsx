@@ -305,7 +305,7 @@ export default function ScanResultPage() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/dashboard/map', { state: { wasteType } })}
+            onClick={() => navigate('/dashboard/map', { state: "clothes" })}
             className="w-full py-3 rounded-xl font-bold text-sm bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
           >
             <span className="material-icons-round text-lg">map</span> Find Nearest Station

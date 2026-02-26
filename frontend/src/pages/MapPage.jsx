@@ -177,7 +177,9 @@ const MapPage = () => {
 
     const handlePresetSearch = (query) => {
         if (!mapRef.current || !window.google || !userLocation) return;
-    
+        // Clear previous places
+        setPlaces([]);
+        setSelectedLocation(null);
         const service = new window.google.maps.places.PlacesService(mapRef.current);
     
         service.textSearch(
@@ -222,17 +224,19 @@ const MapPage = () => {
         // - user location is ready
         // - Google Maps API is loaded
         // - wasteType is provided via redirect
-        if (!userLocation || !isLoaded || !wasteType) return;
+        if (!userLocation || !isLoaded) return;
+
+        if (!wasteType) return;
     
         const typeQueryMap = {
             plastic: "recycling center",
             metal: "recycling center",
             paper: "recycling center",
             glass: "recycling center",
-            food_waste: "composting",
+            food_waste: "compost",
             clothes: "clothes donation",
             electronics: "e-waste",
-            general_waste: "trash bin"
+            general_waste: "trash collector"
         };
     
         const query = typeQueryMap[wasteType] || wasteType;
