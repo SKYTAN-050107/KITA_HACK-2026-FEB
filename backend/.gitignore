@@ -20,3 +20,4 @@ service-account-key.json
 *.crt
 *.cer
 *.der
+service-account-key.json
