@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer, Autocomplete } from "@react-google-maps/api";
 import MapSearchBar from '../components/MapSearchBar';
@@ -31,7 +31,9 @@ const googleMapsConfig = {
 const MapPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const filterType = searchParams.get('type') || 'all';
+    const location = useLocation();
+    const { state } = location || {};
+    const wasteType = state?.wasteType; // this is the type passed from another page
 
     const [loading, setLoading] = useState(true);
     const [selectedLocation, setSelectedLocation] = useState(null);
@@ -179,23 +181,64 @@ const MapPage = () => {
         const service = new window.google.maps.places.PlacesService(mapRef.current);
     
         service.textSearch(
-          {
-            query,
-            location: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
-            radius: 5000, // 5 km
-          },
-          (results, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-              setPlaces(results); // <-- store all results
-              const first = results[0];
-              mapRef.current.panTo(first.geometry.location);
-              mapRef.current.setZoom(15);
+            {
+                query,
+                location: new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
+                radius: 5000, // 5 km
+            },
+            (results, status) => {
+                if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+                    setPlaces(results); // store all results
+    
+                    // Find the nearest place to userLocation
+                    let nearest = results[0];
+                    let minDistance = Number.MAX_VALUE;
+    
+                    results.forEach((place) => {
+                        const latDiff = place.geometry.location.lat() - userLocation.lat;
+                        const lngDiff = place.geometry.location.lng() - userLocation.lng;
+                        const dist = Math.sqrt(latDiff ** 2 + lngDiff ** 2);
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            nearest = place;
+                        }
+                    });
+    
+                    // Pan to the nearest place
+                    mapRef.current.panTo(nearest.geometry.location);
+                    mapRef.current.setZoom(15);
+    
+                    // Optional: select the nearest place automatically
+                    handlePlaceSelected(nearest);
+                }
             }
-          }
         );
     };
 
     const { isLoaded } = useJsApiLoader(googleMapsConfig);
+
+    useEffect(() => {
+        // Only trigger if:
+        // - user location is ready
+        // - Google Maps API is loaded
+        // - wasteType is provided via redirect
+        if (!userLocation || !isLoaded || !wasteType) return;
+    
+        const typeQueryMap = {
+            plastic: "recycling center",
+            metal: "recycling center",
+            paper: "recycling center",
+            glass: "recycling center",
+            food_waste: "composting",
+            clothes: "clothes donation",
+            electronics: "e-waste",
+            general_waste: "trash bin"
+        };
+    
+        const query = typeQueryMap[wasteType] || wasteType;
+    
+        handlePresetSearch(query);
+    }, [userLocation, isLoaded, wasteType]);
 
     const goToUserLocation = () => {
         if (userLocation && mapRef.current) {
@@ -226,6 +269,22 @@ const MapPage = () => {
             openTime: place.opening_hours?.weekday_text?.join(", ") || "Not available",
         };
         setSelectedLocation(selected);
+
+        if (mapRef.current) {
+            const map = mapRef.current;
+            const target = new window.google.maps.LatLng(selected.lat, selected.lng);
+
+            // Smooth pan to target
+            map.panTo(target);
+            // Optional: offset vertically so bottom info card doesn't cover the marker
+        
+
+            // Zoom in slightly if needed
+            if(map.getZoom() != 16){
+                map.setZoom(Math.max(map.getZoom(), 16));
+            }
+            
+        }
     };
 
     return (
@@ -295,11 +354,13 @@ const MapPage = () => {
                 <div className="flex flex-col items-center gap-4 pointer-events-auto px-6">
 
                     {/* Search Bar */}
-                    <MapSearchBar
-                        mapRef={mapRef}
-                        userLocation={userLocation}
-                        onPlaceSelected={handlePlaceSelected}
-                    />
+                    {isLoaded && (
+                        <MapSearchBar
+                            mapRef={mapRef}
+                            userLocation={userLocation}
+                            onPlaceSelected={handlePlaceSelected}
+                        />
+                    )}
 
                     {/* Preset Buttons */}
                     <div className="flex gap-3 flex-wrap justify-center">
