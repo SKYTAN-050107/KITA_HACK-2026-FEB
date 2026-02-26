@@ -20,19 +20,20 @@ const LandingPage = () => {
     return (
         <div className="font-display bg-background-light dark:bg-emerald-950 text-emerald-950 dark:text-emerald-50 selection:bg-primary/30 overflow-hidden transition-colors duration-500">
             {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-background-light/80 dark:bg-emerald-950/80 backdrop-blur-md border-b border-emerald-100 dark:border-white/10 transition-colors duration-500">
+            <nav className="sticky top-0 z-50 bg-background-light/90 dark:bg-emerald-950/90 backdrop-blur-xl border-b border-emerald-900/10 dark:border-white/10 transition-colors duration-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-14 sm:h-20 items-center">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center group cursor-pointer"
+                            className="flex items-center gap-3 group cursor-pointer"
                         >
                             <img
                                 src="/logo.jpg"
-                                alt="RecycleNow Logo"
-                                className="h-10 sm:h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-105 rounded-lg"
+                                alt="Logo"
+                                className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-xl transition-transform group-hover:scale-110"
                             />
+                            <span className="text-base sm:text-xl font-bold tracking-tight text-emerald-900 dark:text-white group-hover:text-primary transition-colors duration-500">Recycle<span className="text-primary">Now</span></span>
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}

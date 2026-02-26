@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useIsMobile from '../hooks/useIsMobile';
 import { useAuth } from '../contexts/AuthContext';
 import useDarkMode from '../hooks/useDarkMode';
+import DayNightToggle from './DayNightToggle';
 
 // APP_FLOW.md §2 — 5 nav items
 const NAV_ITEMS = [
@@ -131,28 +132,25 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
 
   const renderFooter = (showLabels = true) => (
     <div className="mt-auto pt-6 border-t border-emerald-900/10 dark:border-white/10 transition-colors duration-500 flex flex-col gap-4">
-      {/* Dark Mode Toggle - Simplified for Sidebar */}
-      <div className={`flex items-center ${showLabels ? 'justify-between px-2' : 'justify-center'}`}>
+      {/* Theme Toggle - 1:1 Design from Settings */}
+      <div className={`flex flex-col items-center px-2 ${showLabels ? '' : 'overflow-hidden'}`}>
         {showLabels && (
-          <span className="text-xs font-bold text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wider">Appearance</span>
+          <div className="w-full flex justify-between items-center mb-4">
+            <span className="text-xs font-bold text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wider">Appearance</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 transition-colors">
+              {isDark ? 'NIGHT' : 'DAY'}
+            </span>
+          </div>
         )}
-        <motion.button
-          whileHover={{ scale: 1.1, rotate: 15 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={toggleDarkMode}
-          className="bg-primary/10 dark:bg-primary/20 text-primary p-2 rounded-xl border border-primary/20 dark:border-primary/30 flex items-center justify-center cursor-pointer"
-          aria-label="Toggle dark mode"
+        <div
+          className="transition-all duration-500 origin-center"
+          style={{
+            transform: showLabels ? 'scale(1)' : 'scale(0.5)',
+            margin: showLabels ? '0' : '-10px 0'
+          }}
         >
-          <motion.span
-            key={isDark ? 'dark' : 'light'}
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="material-icons-round text-[1.2rem]"
-          >
-            {isDark ? 'light_mode' : 'dark_mode'}
-          </motion.span>
-        </motion.button>
+          <DayNightToggle isDark={isDark} onToggle={toggleDarkMode} />
+        </div>
       </div>
 
       <div className={`flex items-center ${showLabels ? 'gap-3' : 'justify-center'}`}>

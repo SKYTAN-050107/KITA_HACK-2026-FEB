@@ -94,7 +94,7 @@ const AuthPage = ({ defaultMode = 'login' }) => {
     };
 
     return (
-        <div className="min-h-screen relative overflow-hidden font-sans flex items-center justify-center p-4 bg-emerald-50 dark:bg-emerald-950 transition-colors duration-500">
+        <div className="min-h-screen relative overflow-hidden font-sans flex items-center justify-center p-4 bg-background-light dark:bg-emerald-950 transition-colors duration-500">
             {/* Back Arrow */}
             <motion.button
                 initial={{ opacity: 0, scale: 0 }}

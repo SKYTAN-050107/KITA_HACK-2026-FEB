@@ -395,21 +395,19 @@ export default function SettingsPage() {
                   <li key={tab.id}>
                     <button
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
-                        isActive
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${isActive
                           ? isDanger
                             ? 'bg-red-500/10 dark:bg-red-500/15 text-red-600 dark:text-red-400 shadow-sm'
                             : 'bg-gradient-to-r from-emerald-500/10 to-primary/10 dark:from-emerald-500/15 dark:to-primary/15 text-primary dark:text-emerald-400 shadow-sm'
                           : isDanger
                             ? 'text-red-500/60 dark:text-red-400/40 hover:bg-red-50/50 dark:hover:bg-red-500/5'
                             : 'text-emerald-800/60 dark:text-emerald-100/50 hover:bg-emerald-50/50 dark:hover:bg-white/5'
-                      }`}
+                        }`}
                     >
-                      <span className={`material-icons-round text-xl ${
-                        isActive
+                      <span className={`material-icons-round text-xl ${isActive
                           ? isDanger ? 'text-red-500 dark:text-red-400' : 'text-primary dark:text-emerald-400'
                           : isDanger ? 'text-red-400/50' : 'text-emerald-800/40 dark:text-emerald-100/30'
-                      }`}>
+                        }`}>
                         {tab.icon}
                       </span>
                       <span>{tab.label}</span>
@@ -508,11 +506,10 @@ export default function SettingsPage() {
                     whileTap={{ scale: 0.97 }}
                     disabled={!profileChanged || profileSaving}
                     onClick={handleProfileSave}
-                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                      profileChanged && !profileSaving
+                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${profileChanged && !profileSaving
                         ? 'bg-gradient-to-r from-emerald-500 to-primary text-white shadow-lg shadow-primary/20 hover:shadow-xl'
                         : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
-                    }`}
+                      }`}
                   >
                     {profileSaving ? (
                       <span className="flex items-center gap-2">
@@ -644,11 +641,10 @@ export default function SettingsPage() {
                         whileTap={{ scale: 0.97 }}
                         disabled={!currentPw || !newPw || !confirmPw || pwSaving}
                         onClick={handlePasswordChange}
-                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                          currentPw && newPw && confirmPw && !pwSaving
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${currentPw && newPw && confirmPw && !pwSaving
                             ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-xl'
                             : 'bg-emerald-100/50 dark:bg-white/5 text-emerald-800/30 dark:text-emerald-100/20 cursor-not-allowed'
-                        }`}
+                          }`}
                       >
                         {pwSaving ? (
                           <span className="flex items-center gap-2">
@@ -701,16 +697,7 @@ export default function SettingsPage() {
                   {/* Divider */}
                   <div className="border-t border-emerald-900/5 dark:border-white/5" />
 
-                  {/* Day / Night Theme Toggle */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-bold text-emerald-950 dark:text-white transition-colors duration-500">Theme</p>
-                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 font-medium transition-colors duration-500">
-                        {isDark ? 'Night mode active' : 'Day mode active'}
-                      </p>
-                    </div>
-                    <DayNightToggle isDark={isDark} onToggle={toggleDarkMode} />
-                  </div>
+                  {/* Theme Toggle has been moved to Sidebar */}
 
                   {/* Divider */}
                   <div className="border-t border-emerald-900/5 dark:border-white/5" />
@@ -862,11 +849,10 @@ export default function SettingsPage() {
                   whileTap={deleteConfirmText === 'DELETE' && deleteCountdown <= 0 ? { scale: 0.97 } : {}}
                   disabled={deleteConfirmText !== 'DELETE' || deleteCountdown > 0 || deleting}
                   onClick={handleDeleteAccount}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
-                    deleteConfirmText === 'DELETE' && deleteCountdown <= 0 && !deleting
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${deleteConfirmText === 'DELETE' && deleteCountdown <= 0 && !deleting
                       ? 'bg-red-500 text-white shadow-lg shadow-red-500/20 hover:bg-red-600'
                       : 'bg-red-100/50 dark:bg-red-500/5 text-red-300 dark:text-red-500/30 cursor-not-allowed'
-                  }`}
+                    }`}
                 >
                   {deleting ? (
                     <span className="flex items-center justify-center gap-2">
