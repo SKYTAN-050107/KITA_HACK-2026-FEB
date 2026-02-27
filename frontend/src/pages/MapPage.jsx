@@ -413,7 +413,7 @@ const MapPage = () => {
             )}
 
             {/*Locate User button*/}
-            <div className="absolute bottom-38 right-2 z-30">
+            <div className="absolute bottom-48 sm:bottom-38 right-2 z-30">
             <button
                 onClick={goToUserLocation}
                 className="w-10.5 h-10.5 flex items-center justify-center bg-white shadow-lg rounded-full hover:scale-105 transition"
@@ -425,11 +425,11 @@ const MapPage = () => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="absolute bottom-0 left-0 right-20 p-8 z-40">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 shadow-2xl">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                            <span className="material-icons-round text-2xl">near_me</span>
+            <div className="absolute bottom-0 left-0 right-0 sm:right-20 p-3 sm:p-8 z-40">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 shadow-2xl">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-6">
+                        <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                            <span className="material-icons-round text-lg sm:text-2xl">near_me</span>
                         </div>
                         <div>
                             {selectedLocation ? (
@@ -469,7 +469,7 @@ const MapPage = () => {
 
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-full bg-primary text-emerald-950 font-bold py-3 sm:py-4 rounded-xl hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer text-sm sm:text-base"
+                        className="w-full bg-primary text-emerald-950 font-bold py-2.5 sm:py-4 rounded-xl hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer text-sm sm:text-base"
                     >
                         Navigate & Earn Points
                     </button>
