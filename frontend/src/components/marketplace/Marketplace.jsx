@@ -4,7 +4,7 @@ import { MapPin, Star, TrendingUp, Filter, Search, ChevronRight } from 'lucide-r
 import useDarkMode from '../../hooks/useDarkMode';
 
 const Marketplace = () => {
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'listings');
   const [listings, setListings] = useState([]);

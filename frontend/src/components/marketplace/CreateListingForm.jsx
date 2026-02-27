@@ -7,7 +7,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 const CreateListingForm = ({ listingId = null }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [searchParams] = useSearchParams();
   const fileInputRef = useRef(null);
 

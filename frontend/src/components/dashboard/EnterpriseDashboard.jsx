@@ -16,7 +16,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 
 const EnterpriseDashboard = () => {
   const navigate = useNavigate();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [showMenu, setShowMenu] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 

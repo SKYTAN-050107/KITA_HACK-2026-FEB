@@ -7,7 +7,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 const OffersManagement = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [activeTab, setActiveTab] = useState('received');
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(false);

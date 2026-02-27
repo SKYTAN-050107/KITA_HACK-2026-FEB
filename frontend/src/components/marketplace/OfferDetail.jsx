@@ -15,7 +15,7 @@ const OfferDetail = () => {
   const { offerId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const messagesEndRef = useRef(null);
 
   const [offer, setOffer] = useState(null);

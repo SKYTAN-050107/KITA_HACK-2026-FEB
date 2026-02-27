@@ -7,7 +7,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 const MyListings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

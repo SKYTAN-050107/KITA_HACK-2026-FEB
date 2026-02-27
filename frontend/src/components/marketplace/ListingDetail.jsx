@@ -8,7 +8,7 @@ const ListingDetail = () => {
   const { listingId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

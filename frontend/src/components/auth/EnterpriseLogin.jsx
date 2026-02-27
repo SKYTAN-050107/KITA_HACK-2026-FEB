@@ -13,7 +13,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 
 const EnterpriseLogin = () => {
   const navigate = useNavigate();
-  const [darkMode] = useDarkMode();
+  const { isDark: darkMode } = useDarkMode();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
