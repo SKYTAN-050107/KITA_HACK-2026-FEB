@@ -152,7 +152,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {[
-                { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => navigate('/dashboard/enterprise/find-suppliers') },
+                { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => navigate('/dashboard/enterprise/marketplace') },
                 { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
                 { icon: 'inventory_2', color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
                 { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => navigate('/dashboard/enterprise/analytics') },

@@ -23,6 +23,14 @@ const EnterpriseMarketplace = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const fileInputRef = useRef(null);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [requestForm, setRequestForm] = useState({
+    wasteType: '',
+    quantity: '',
+    unit: 'kg',
+    budget: '',
+    description: '',
+  });
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -112,6 +120,15 @@ const EnterpriseMarketplace = () => {
 
   const handleFilterChange = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
   const clearFilters = () => setFilters({ wasteType: '', minPrice: '', maxPrice: '', sortBy: 'newest' });
+
+  const handleRequestFormChange = (key, value) => setRequestForm((prev) => ({ ...prev, [key]: value }));
+
+  const handleSubmitRequest = (e) => {
+    e.preventDefault();
+    alert(`Buyer request posted!\nWaste: ${requestForm.wasteType}\nQty: ${requestForm.quantity} ${requestForm.unit}\nBudget: RM${requestForm.budget}\n${requestForm.description}`);
+    setShowRequestForm(false);
+    setRequestForm({ wasteType: '', quantity: '', unit: 'kg', budget: '', description: '' });
+  };
 
   const handleMakeOffer = (item, type) => {
     const target = type === 'listing' ? item.listingId : item.requestId;
@@ -311,6 +328,112 @@ const EnterpriseMarketplace = () => {
           </div>
         ) : activeTab === 'requests' ? (
           <div>
+            {/* Post Buyer Request Button */}
+            <div className="flex justify-end mb-6">
+              <button
+                onClick={() => setShowRequestForm(!showRequestForm)}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all border border-emerald-50 dark:border-white/20 cursor-pointer"
+              >
+                <span className="material-icons-round text-lg">add</span>
+                Post Buyer Request
+              </button>
+            </div>
+
+            {/* Post Buyer Request Form (collapsible) */}
+            {showRequestForm && (
+              <div className="mb-8 bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+                <h2 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-4">
+                  New Buyer Request
+                </h2>
+                <form onSubmit={handleSubmitRequest} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Waste Type</label>
+                    <select
+                      value={requestForm.wasteType}
+                      onChange={(e) => handleRequestFormChange('wasteType', e.target.value)}
+                      required
+                      className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    >
+                      <option value="">Select type</option>
+                      <option value="plastic_bottle">Plastic Bottles</option>
+                      <option value="aluminum_can">Aluminum Cans</option>
+                      <option value="paper">Paper & Cardboard</option>
+                      <option value="metal">Metal</option>
+                      <option value="glass">Glass</option>
+                      <option value="organic">Organic Waste</option>
+                      <option value="electronics">Electronics</option>
+                      <option value="textiles">Textiles</option>
+                    </select>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Quantity</label>
+                      <input
+                        type="number"
+                        value={requestForm.quantity}
+                        onChange={(e) => handleRequestFormChange('quantity', e.target.value)}
+                        required
+                        placeholder="e.g. 500"
+                        className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                      />
+                    </div>
+                    <div className="w-24">
+                      <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Unit</label>
+                      <select
+                        value={requestForm.unit}
+                        onChange={(e) => handleRequestFormChange('unit', e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                      >
+                        <option value="kg">kg</option>
+                        <option value="tonnes">tonnes</option>
+                        <option value="pieces">pieces</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Budget (RM)</label>
+                    <input
+                      type="number"
+                      value={requestForm.budget}
+                      onChange={(e) => handleRequestFormChange('budget', e.target.value)}
+                      required
+                      placeholder="e.g. 5000"
+                      className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Description</label>
+                    <input
+                      type="text"
+                      value={requestForm.description}
+                      onChange={(e) => handleRequestFormChange('description', e.target.value)}
+                      placeholder="Describe your requirements..."
+                      className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 flex gap-3 justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowRequestForm(false)}
+                      className="px-5 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white font-medium rounded-xl border border-emerald-900/10 dark:border-white/10 hover:bg-primary/10 dark:hover:bg-white/10 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+                    >
+                      Submit Request
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {allRequests.map((request) => (
                 <div key={request.requestId} className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 hover:shadow-lg transition">
