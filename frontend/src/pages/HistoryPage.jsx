@@ -590,7 +590,7 @@ export default function HistoryPage() {
                     onClick={() => { setSelectedScan(null); navigate('/dashboard/map'); }}
                     className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-blue-500/10 dark:bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center justify-center gap-2 cursor-pointer hover:bg-blue-500/20 transition-all"
                   >
-                    <span className="material-icons-round text-sm">map</span> Find Bin
+                    <span className="material-icons-round text-sm">map</span> Find Collection Point
                   </motion.button>
                 </div>
               </div>
