@@ -54,6 +54,23 @@ const Marketplace = () => {
     },
   ];
 
+  const DEMO_OFFERED = [
+    {
+      offeredId: 'demo-cardboard-boxes',
+      wasteType: 'paper',
+      description: 'Corrugated Cardboard Boxes — Various Sizes, Flattened & Bundled',
+      quantity: 120,
+      unit: 'kg',
+      condition: 'Used · Dry',
+      pricePerUnit: 0.18,
+      totalPrice: 21.60,
+      photos: ['/corrugated-board-boxes-examples-1024x683.png'],
+      sellerProfile: { name: 'BoxCycle Enterprise', rating: 4.6, reviewCount: 31 },
+      location: { city: 'Penang' },
+      status: 'Accepting Offers',
+    },
+  ];
+
   /* Merge demo + API data */
   const allListings = [...DEMO_LISTINGS, ...listings];
   const allRequests = [...DEMO_REQUESTS, ...buyerRequests];
@@ -210,6 +227,16 @@ const Marketplace = () => {
               }`}
             >
               Buyer Requests ({allRequests.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('offered')}
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
+                activeTab === 'offered'
+                  ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
+                  : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
+              }`}
+            >
+              Offered Items ({DEMO_OFFERED.length})
             </button>
       </div>
 
@@ -422,7 +449,7 @@ const Marketplace = () => {
                 ))}
               </div>
           </div>
-        ) : (
+        ) : activeTab === 'requests' ? (
           <div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {allRequests.map((request) => (
@@ -516,7 +543,112 @@ const Marketplace = () => {
                 ))}
               </div>
           </div>
-        )}
+        ) : activeTab === 'offered' ? (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {DEMO_OFFERED.map((item) => (
+                <div
+                  key={item.offeredId}
+                  className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 overflow-hidden hover:shadow-lg transition"
+                >
+                  {/* Image */}
+                  <div className="w-full h-48 bg-emerald-100/50 dark:bg-white/5 relative overflow-hidden">
+                    {item.photos && item.photos[0] ? (
+                      <img
+                        src={item.photos[0]}
+                        alt={item.wasteType}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">inventory_2</span>
+                      </div>
+                    )}
+                    {item.condition && (
+                      <div className="absolute top-2 right-2 bg-emerald-950/80 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                        {item.condition}
+                      </div>
+                    )}
+                    {item.status && (
+                      <div className="absolute top-2 left-2 bg-primary/90 text-emerald-950 text-xs font-bold px-2 py-1 rounded-lg">
+                        {item.status}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4">
+                    <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1 capitalize">
+                      {item.wasteType.replace(/_/g, ' ')}
+                    </p>
+                    <h3 className="font-semibold text-emerald-950 dark:text-white mb-2 line-clamp-2">
+                      {item.description}
+                    </h3>
+                    <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-3">
+                      {item.quantity} {item.unit}
+                    </p>
+
+                    {/* Price */}
+                    <div className="mb-3">
+                      <p className="text-2xl font-extrabold text-primary">
+                        ${item.pricePerUnit}{' '}
+                        <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
+                          /{item.unit}
+                        </span>
+                      </p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">
+                        Total: ${item.totalPrice}
+                      </p>
+                    </div>
+
+                    {/* Seller Profile */}
+                    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-emerald-900/10 dark:border-white/10">
+                      <div className="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-800/40 flex items-center justify-center">
+                        <span className="material-icons-round text-sm text-amber-700 dark:text-amber-300">store</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-emerald-950 dark:text-white truncate">
+                          {item.sellerProfile?.name}
+                        </p>
+                        {item.sellerProfile?.rating > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="material-icons-round text-sm text-yellow-400">star</span>
+                            <span className="text-xs text-emerald-800/60 dark:text-emerald-100/60">
+                              {item.sellerProfile.rating.toFixed(1)}
+                              ({item.sellerProfile.reviewCount})
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    {item.location?.city && (
+                      <div className="flex items-center gap-1 text-xs text-emerald-800/60 dark:text-emerald-100/60 mb-4">
+                        <span className="material-icons-round text-sm">location_on</span>
+                        {item.location.city}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                      <button
+                        className="flex-1 px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
+                      >
+                        View Details
+                      </button>
+                      <button
+                        className="flex-1 px-3 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 text-sm font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
+                      >
+                        Make Offer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
