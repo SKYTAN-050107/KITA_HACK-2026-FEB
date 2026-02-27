@@ -367,7 +367,7 @@ const MapPage = () => {
                     )}
 
                     {/* Preset Buttons */}
-                    <div className="flex gap-2 sm:gap-3 flex-nowrap overflow-x-auto w-full justify-start sm:justify-center pb-1 scrollbar-none">
+                    <div className="flex gap-1.5 sm:gap-3 flex-nowrap overflow-x-auto w-full justify-center pb-1 scrollbar-none">
                     {[
                         { label: "Recycling Centre", icon: "recycling" },
                         { label: "Clothes Donation", icon: "checkroom" },
@@ -376,9 +376,9 @@ const MapPage = () => {
                         <button
                             key={label}
                             onClick={() => userLocation && handlePresetSearch(label)}
-                            className="flex-shrink-0 flex items-center gap-1.5 bg-white shadow-md text-emerald-950 px-3.5 sm:px-4 py-2 rounded-full border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-xs sm:text-sm font-medium"
+                            className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5 bg-white shadow-md text-emerald-950 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-[10px] sm:text-sm font-medium"
                         >
-                            <span className="material-icons-round text-base text-emerald-600">{icon}</span>
+                            <span className="material-icons-round text-sm sm:text-base text-emerald-600">{icon}</span>
                             {label}
                         </button>
                     ))}
@@ -425,8 +425,8 @@ const MapPage = () => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="absolute bottom-0 left-0 right-0 sm:right-20 p-3 sm:p-8 z-40">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 shadow-2xl">
+            <div className="absolute bottom-0 left-0 right-0 sm:right-20 flex justify-center sm:justify-start p-2 sm:p-8 z-40">
+                <div className="w-full max-w-sm sm:max-w-none bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 shadow-2xl">
                     <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-6">
                         <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
                             <span className="material-icons-round text-lg sm:text-2xl">near_me</span>
