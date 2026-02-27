@@ -184,26 +184,28 @@ const Marketplace = () => {
           </p>
         </div>
 
-        {/* Upload Item Button */}
-        <div className="ml-auto flex items-center gap-3">
-          {uploadedPhoto && (
-            <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoUpload}
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
-          >
-            <span className="material-icons-round text-lg">add_a_photo</span>
-            Upload Item
-          </button>
-        </div>
+        {/* Upload Item Button — hidden on Buyer Requests tab */}
+        {activeTab !== 'requests' && (
+          <div className="ml-auto flex items-center gap-3">
+            {uploadedPhoto && (
+              <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+            >
+              <span className="material-icons-round text-lg">add_a_photo</span>
+              Upload Item
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
