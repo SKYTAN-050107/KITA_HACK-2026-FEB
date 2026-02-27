@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import useDarkMode from '../../hooks/useDarkMode';
 
@@ -17,8 +17,54 @@ const Marketplace = () => {
     sortBy: searchParams.get('sortBy') || 'newest',
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [uploadedPhoto, setUploadedPhoto] = useState(null);
+  const fileInputRef = useRef(null);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+  /* ── Demo data shown alongside API results ── */
+  const DEMO_LISTINGS = [
+    {
+      listingId: 'demo-plastic-bottles',
+      wasteType: 'plastic_bottle',
+      description: 'Bulk PET Plastic Bottles — Cleaned & Ready for Recycling',
+      quantity: 50,
+      unit: 'kg',
+      condition: 'Used · Clean',
+      pricePerUnit: 0.35,
+      totalPrice: 17.50,
+      photos: ['/pexels-640491770-27666146.jpg'],
+      sellerProfile: { name: 'GreenCollect MY', rating: 4.8, reviewCount: 24 },
+      location: { city: 'Johor Bahru' },
+    },
+  ];
+
+  const DEMO_REQUESTS = [
+    {
+      requestId: 'demo-aluminum-cans',
+      wasteType: 'aluminum_can',
+      description: 'Looking for large quantities of empty aluminum beverage cans for our smelting facility. Must be dry and free of food residue.',
+      quantityNeeded: 200,
+      unit: 'kg',
+      priceOffered: 1.20,
+      photos: ['/bag-of-cans.png'],
+      buyerProfile: { companyName: 'MetalWorks Recycling Sdn Bhd', name: 'MetalWorks Recycling', rating: 4.9, reviewCount: 57, verificationStatus: 'verified' },
+      location: { city: 'Kuala Lumpur' },
+      deadline: '2026-04-15',
+    },
+  ];
+
+  /* Merge demo + API data */
+  const allListings = [...DEMO_LISTINGS, ...listings];
+  const allRequests = [...DEMO_REQUESTS, ...buyerRequests];
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setUploadedPhoto(ev.target.result);
+    reader.readAsDataURL(file);
+  };
 
   // Fetch listings
   useEffect(() => {
@@ -120,6 +166,27 @@ const Marketplace = () => {
             Buy and sell valuable waste with confidence
           </p>
         </div>
+
+        {/* Upload Photo Button */}
+        <div className="ml-auto flex items-center gap-3">
+          {uploadedPhoto && (
+            <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+          >
+            <span className="material-icons-round text-lg">add_a_photo</span>
+            Upload Photo
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -132,7 +199,7 @@ const Marketplace = () => {
                   : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
               }`}
             >
-              Available Items ({listings.length})
+              Available Items ({allListings.length})
             </button>
             <button
               onClick={() => setActiveTab('requests')}
@@ -142,7 +209,7 @@ const Marketplace = () => {
                   : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
               }`}
             >
-              Buyer Requests ({buyerRequests.length})
+              Buyer Requests ({allRequests.length})
             </button>
       </div>
 
@@ -257,16 +324,8 @@ const Marketplace = () => {
           </div>
         ) : activeTab === 'listings' ? (
           <div>
-            {listings.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-emerald-800/60 dark:text-emerald-100/60 text-lg mb-4">No listings found</p>
-                <p className="text-emerald-800/50 dark:text-emerald-100/40">
-                  Try adjusting your filters or check back later
-                </p>
-              </div>
-            ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {listings.map((listing) => (
+                {allListings.map((listing) => (
                   <div
                     key={listing.listingId}
                     className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 overflow-hidden hover:shadow-lg transition"
@@ -362,22 +421,11 @@ const Marketplace = () => {
                   </div>
                 ))}
               </div>
-            )}
           </div>
         ) : (
           <div>
-            {buyerRequests.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-emerald-800/60 dark:text-emerald-100/60 text-lg mb-4">
-                  No buyer requests found
-                </p>
-                <p className="text-emerald-800/50 dark:text-emerald-100/40">
-                  Check back later for opportunities to sell
-                </p>
-              </div>
-            ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {buyerRequests.map((request) => (
+                {allRequests.map((request) => (
                   <div
                     key={request.requestId}
                     className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 hover:shadow-lg transition"
@@ -406,6 +454,13 @@ const Marketplace = () => {
                         )}
                       </div>
                     </div>
+
+                    {/* Photo */}
+                    {request.photos && request.photos[0] && (
+                      <div className="mb-4 rounded-xl overflow-hidden h-48 bg-emerald-100/50 dark:bg-white/5">
+                        <img src={request.photos[0]} alt={request.wasteType} className="w-full h-full object-cover" />
+                      </div>
+                    )}
 
                     {/* Details */}
                     <div className="mb-4 pb-4 border-b border-emerald-900/10 dark:border-white/10">
@@ -460,7 +515,6 @@ const Marketplace = () => {
                   </div>
                 ))}
               </div>
-            )}
           </div>
         )}
       </div>
