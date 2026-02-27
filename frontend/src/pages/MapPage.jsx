@@ -344,18 +344,18 @@ const MapPage = () => {
             </div>
 
             {/* Top Bar */}
-            <div className="absolute top-8 left-0 right-0 z-40 p-6 pointer-events-none">
+            <div className="absolute top-2 sm:top-8 left-0 right-0 z-40 px-3 sm:px-6 pt-3 sm:pt-6 pointer-events-none">
 
                 {/* Back Button (Left) */}
                 <button
                     onClick={() => navigate('/dashboard')}
-                    className="absolute left-6 bg-white/10 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/20 transition-all pointer-events-auto cursor-pointer"
+                    className="absolute left-3 sm:left-6 top-3 sm:top-6 bg-white shadow-lg text-emerald-950 w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 hover:bg-gray-50 transition-all pointer-events-auto cursor-pointer z-50"
                 >
                     <span className="material-icons-round">arrow_back</span>
                 </button>
 
                 {/* Center Stack */}
-                <div className="flex flex-col items-center gap-4 pointer-events-auto px-6">
+                <div className="flex flex-col items-center gap-3 pointer-events-auto pl-12 sm:px-14">
 
                     {/* Search Bar */}
                     {isLoaded && (
@@ -367,14 +367,19 @@ const MapPage = () => {
                     )}
 
                     {/* Preset Buttons */}
-                    <div className="flex gap-3 flex-wrap justify-center">
-                    {["Recycling Centre", "Clothes Donation", "E-Waste"].map((type) => (
+                    <div className="flex gap-2 sm:gap-3 flex-nowrap overflow-x-auto w-full justify-start sm:justify-center pb-1 scrollbar-none">
+                    {[
+                        { label: "Recycling Centre", icon: "recycling" },
+                        { label: "Clothes Donation", icon: "checkroom" },
+                        { label: "E-Waste", icon: "devices" },
+                    ].map(({ label, icon }) => (
                         <button
-                            key={type}
-                            onClick={() => userLocation && handlePresetSearch(type)}
-                            className="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-full border border-white/10 hover:bg-white/20 transition-all text-sm"
+                            key={label}
+                            onClick={() => userLocation && handlePresetSearch(label)}
+                            className="flex-shrink-0 flex items-center gap-1.5 bg-white shadow-md text-emerald-950 px-3.5 sm:px-4 py-2 rounded-full border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all text-xs sm:text-sm font-medium"
                         >
-                            {type}
+                            <span className="material-icons-round text-base text-emerald-600">{icon}</span>
+                            {label}
                         </button>
                     ))}
                     </div>
@@ -420,19 +425,19 @@ const MapPage = () => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="absolute bottom-0 left-0 right-20 p-8 z-40">
-                <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 shadow-2xl">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                            <span className="material-icons-round text-2xl">near_me</span>
+            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 z-40">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-[2rem] p-4 sm:p-6 shadow-2xl">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                            <span className="material-icons-round text-xl sm:text-2xl">near_me</span>
                         </div>
                         <div>
                             {selectedLocation ? (
                                 <>
-                                    <h3 className="text-white font-bold text-lg">
+                                    <h3 className="text-white font-bold text-base sm:text-lg">
                                         {selectedLocation.name}
                                     </h3>
-                                    <p className="text-white/60 text-sm">
+                                    <p className="text-white/60 text-xs sm:text-sm">
                                         {drivingDistance
                                             ? `${drivingDistance} • ${drivingDuration}`
                                             : "Calculating route..."}
@@ -440,10 +445,10 @@ const MapPage = () => {
                                 </>
                                 ) : (
                                 <>
-                                    <h3 className="text-white font-bold text-lg">
+                                    <h3 className="text-white font-bold text-base sm:text-lg">
                                         Select a location
                                     </h3>
-                                    <p className="text-white/60 text-sm">
+                                    <p className="text-white/60 text-xs sm:text-sm">
                                         Tap a marker to see details
                                     </p>
                                 </>
@@ -464,7 +469,7 @@ const MapPage = () => {
 
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-full bg-primary text-emerald-950 font-bold py-4 rounded-xl hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer"
+                        className="w-full bg-primary text-emerald-950 font-bold py-3 sm:py-4 rounded-xl hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer text-sm sm:text-base"
                     >
                         Navigate & Earn Points
                     </button>

@@ -46,7 +46,7 @@ function MapSearchBar({ mapRef, userLocation, onPlaceSelected }) {
       <input
         type="text"
         placeholder="Search nearby places..."
-        className="top-4 left-4 z-50 w-80 px-4 py-2 bg-white rounded-2xl shadow-lg outline-none focus:ring-2 focus:ring-blue-400"
+        className="top-4 left-4 z-50 w-full sm:w-80 px-4 py-2.5 bg-white rounded-2xl shadow-lg outline-none focus:ring-2 focus:ring-emerald-400 text-sm sm:text-base"
       />
     </Autocomplete>
   );
