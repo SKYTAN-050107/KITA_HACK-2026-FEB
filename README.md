@@ -1,215 +1,564 @@
-# KITA_HACK
+# RecycleNow
 
-AI-powered civic recycling assistant for faster waste classification, cleaner disposal habits, and better local sustainability outcomes.
+**AI-Powered Smart Waste Management & Recycling Marketplace**
 
-KITA_HACK is built around **SDG 12** goals (responsible consumption and production): users scan waste, get short actionable rules, save scans to history, and find suitable disposal centres.
+> Scan. Sort. Sustain. — Making responsible waste disposal effortless through computer vision and community-driven recycling.
 
-## What Is KITA_HACK?
+Built for **KITA HACK** organized by **Google Developer Group Malaysia**.
 
-KITA_HACK is a full-stack waste intelligence platform with:
-- **Computer-vision waste classification** (Vertex AI endpoint).
-- **Rule-based disposal guidance** (short rules + checklist).
-- **Gamified behaviour loop** (points, streaks, daily check-in).
-- **History + disposal tracking** (pending/recycled/donated/disposed).
-- **Guidelines education layer** (country-specific and universal rules).
+RecycleNow is a full-stack Progressive Web App that helps users classify waste instantly using computer vision, find nearby recycling centres, trade recyclable materials on a marketplace, and build sustainable habits through gamification — all aligned with **UN SDG 12: Responsible Consumption and Production**.
 
-Think of it as a practical "scan-to-dispose" assistant for daily household waste decisions.
+---
 
-## Mission
+## Table of Contents
 
-- Make correct disposal decisions easier in under 10 seconds.
-- Reduce contamination in recycling streams through clear instructions.
-- Improve environmental literacy with contextual, actionable education.
-- Encourage consistent eco-actions via streaks, points, and progress feedback.
+- [App Flow](#app-flow)
+- [System Architecture](#system-architecture)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Technical Architecture](#technical-architecture)
+- [Implementation Details](#implementation-details)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Reference](#api-reference)
+- [Firestore Data Schema](#firestore-data-schema)
+- [Challenges Faced](#challenges-faced)
+- [Future Roadmap](#future-roadmap)
 
-## Current Features (Implemented)
+---
 
-- Public landing and auth flows (email/password + Google popup via Firebase).
-- Protected dashboard with:
-  - User stats (`totalScans`, `impactKg`, `co2Saved`, `points`, `streak`)
-  - Weekly scans chart
-  - Daily check-in and milestone bonuses
-- Camera scanner:
-  - Single-shot capture from device camera
-  - `POST /api/scan` classification
-  - Confidence + waste rules + checklist
-  - Save to history
-- Full-screen scan result page (`/dashboard/scanner/result`).
-- History page:
-  - Paginated loading
-  - Image-grid cards
-  - Expandable details
-  - Disposal status updates via checkbox workflow
-- Guidelines page with structured rules by waste type.
-- Settings page:
-  - Profile update
-  - Password update (Firebase-side)
-  - Data export (CSV)
-  - Account deletion flow
-- Backend APIs for scans, check-ins, profile, nearby centres, guidelines, and history.
-- Firebase Storage upload support for scan images.
+## App Flow
+
+![App Flow](docs/app-flow.png)
+
+## System Architecture
+
+![System Architecture](docs/system-architecture.png)
+
+---
+
+## Features
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Computer Vision Scanner | ✅ Live | Capture waste images → Vertex AI AutoML classifies into plastic, glass, metal, paper, clothes, general waste |
+| Disposal Guidelines | ✅ Live | Category-specific disposal rules with interactive checklist (clean, separate, compact) |
+| Recycling Centre Map | ✅ Live | Google Maps integration — locate nearby recycling centres, donation points, e-waste collection |
+| Scan History | ✅ Live | Full history with image grid, expandable details, disposal status tracking (pending → recycled/donated/disposed) |
+| Gamification System | ✅ Live | Points, streaks, daily check-in bonuses, milestone rewards — drives consistent eco-actions |
+| Waste Marketplace | ✅ Live | List recyclable materials for sale, browse listings, make offers, negotiate with built-in messaging |
+| Enterprise Portal | ✅ Live | Separate mock-auth dashboard for institutional buyers — bulk purchasing, supplier discovery, pricing tiers |
+| PWA Support | ✅ Live | Installable on mobile devices, offline-capable with Workbox service worker caching |
+| User Authentication | ✅ Live | Firebase Auth with email/password and Google OAuth sign-in |
+| Guidelines Education | ✅ Live | Structured waste type rules with country-specific and universal recycling guidance |
+| Dashboard Analytics | ✅ Live | Weekly scan charts, impact metrics (CO₂ saved, kg recycled), streak tracking via Recharts |
+| Dark Mode | ✅ Live | System-aware dark/light theme toggle with glassmorphism UI design |
+
+---
 
 ## Tech Stack
 
-- **Frontend**: React 19, Vite 7, React Router 7, Tailwind CSS 4, Framer Motion, Recharts, Firebase Web SDK.
-- **Backend**: Node.js, Express 4, Firebase Admin SDK, Multer, Express Rate Limit.
-- **AI**: Google Cloud Vertex AI (`@google-cloud/aiplatform`) via deployed endpoint.
-- **Data**: Firestore (users/scans/checkins), Firebase Storage.
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 19, Vite 7, JSX, React Router 7 |
+| Styling | Tailwind CSS 4, glassmorphism design system, Framer Motion animations |
+| Maps | Google Maps API (`@react-google-maps/api`), Places Autocomplete |
+| Charts | Recharts |
+| Icons | Google Material Symbols (font-based) + Lucide React |
+| Backend | Node.js, Express 4, Multer (file uploads), Express Rate Limit |
+| AI/ML | Google Cloud Vertex AI — AutoML Image Classification endpoint |
+| Database | Cloud Firestore (NoSQL) — users, scans, checkins, listings, requests, offers |
+| Storage | Firebase Storage (Cloud Storage bucket) — scan images, listing photos |
+| Auth | Firebase Authentication (Email/Password + Google OAuth), Enterprise mock auth (localStorage) |
+| Hosting | Firebase Hosting (frontend SPA), Docker → Cloud Run / GCE (backend) |
+| PWA | VitePWA plugin with Workbox caching strategy |
+| Forms | React Hook Form + Zod schema validation |
 
-## Architecture
+---
 
-```text
-Frontend (React/Vite)
-  -> Firebase Auth (ID Token)
-  -> Backend API (Express)
-      -> Vertex AI endpoint (waste classification)
-      -> Firestore (scans/users/checkins)
-      -> Firebase Storage (scan images)
+## Technical Architecture
+
+### Client Layer
+
+The frontend is a React 19 Progressive Web App built with Vite 7 and optimized with `babel-plugin-react-compiler`. It uses Tailwind CSS 4 with a custom glassmorphism design system (`backdrop-blur-xl`, `bg-white/60`, `border-white/40`) and Framer Motion for page transitions and micro-interactions.
+
+**Key architectural decisions:**
+- **Mobile-first responsive design** using Tailwind breakpoint prefixes (`sm:`, `md:`, `lg:`)
+- **Context-based auth** via `AuthContext` wrapping the entire app with Firebase user state
+- **Protected routing** with `ProtectedRoute` (Firebase Auth) and `EnterpriseProtectedRoute` (localStorage mock auth) as separate guard components
+- **PWA with Workbox** — `registerType: 'autoUpdate'` with runtime caching for API responses and static assets
+
+### Hosting Layer
+
+Firebase Hosting serves the static SPA build (`frontend/dist`) with:
+- SPA rewrites (`**` → `/index.html`)
+- No-cache headers for service worker files
+- HTTPS enforcement
+
+### Backend Layer
+
+Express.js server running on port 3000 with:
+- **CORS whitelist** — production domains (`kitahack-487005.web.app`, `kitahack-487005.firebaseapp.com`) and local dev origins
+- **Global rate limiting** — 200 requests/hour per IP via `express-rate-limit`
+- **Firebase Admin SDK token verification** in `authMiddleware.js` — extracts `uid`, `email`, `role` from Bearer token and attaches to `req.user`
+- **15MB request body limit** to accommodate base64-encoded images for waste scanning
+
+### AI / ML Layer
+
+Waste classification uses a **Vertex AI AutoML Image Classification** model deployed on endpoint `europe-west4-aiplatform.googleapis.com`:
+1. User captures a photo via device camera (`CameraScanner.jsx`)
+2. Image is base64-encoded and sent to `POST /api/scan`
+3. Backend `visionAI.js` sends the image to the Vertex AI prediction endpoint
+4. AutoML returns classification labels with confidence scores
+5. Labels are mapped to app waste types: `plastic`, `glass`, `metal`, `paper`, `clothes`, `general_waste`
+6. Frontend displays the result with disposal rules from `binRules.js` + `wasteRulesBackend.js`
+
+### Data Layer
+
+- **Cloud Firestore** — NoSQL document database for all structured data (users, scans, checkins, marketplace listings, offers, requests)
+- **Firebase Storage** — Cloud Storage bucket for binary assets (scan images, listing photos) via `storageService.js`
+
+---
+
+## Implementation Details
+
+### Waste Scanning Flow
+
+1. **Image Capture** — `CameraScanner.jsx` accesses device camera, captures a single frame
+2. **API Request** — Base64 image payload sent to `POST /api/scan` (public, no auth required for demo accessibility)
+3. **Vertex AI Classification** — `visionAI.js` calls AutoML endpoint, receives `{ wasteType, confidence, rawLabel }`
+4. **Rule Mapping** — `binRules.js` maps waste type → disposal instructions (which bin, preparation steps)
+5. **Result Display** — `ScanResultPage.jsx` shows classification, confidence score, disposal checklist
+6. **Save to History** — Authenticated users can persist scan to Firestore via `POST /api/v1/scans` with image upload to Firebase Storage
+
+### Marketplace System
+
+The marketplace enables peer-to-peer trading of recyclable materials:
+
+- **Listings** — Users create listings with waste type, quantity, price, photos, and location
+- **Buyer Requests** — Enterprises post what materials they need
+- **Offers & Negotiation** — Buyers make offers on listings, sellers can accept/reject/counter with built-in messaging thread
+- **Photo Upload** — Listing images stored in Firebase Storage via `storageService.js`
+- **Dual Access** — Regular users access via `/dashboard/marketplace`, enterprises via `/dashboard/enterprise/marketplace`
+
+### Enterprise Portal
+
+A separate auth flow using localStorage mock credentials (`demo@company.com` / `demo123`) provides:
+- Enterprise dashboard with overview stats, pricing tiers, analytics
+- Supplier discovery (`FindSuppliers.jsx`)
+- Bulk marketplace access with enterprise-specific UI
+
+### Gamification Engine
+
+- **+5 points** per waste scan saved to history
+- **Daily check-in** with streak tracking and milestone bonuses
+- **Impact metrics** calculated from scan data — kg recycled, CO₂ saved
+- **Weekly activity chart** powered by Recharts
+
+### Map & Nearby Centres
+
+- Google Maps with `@react-google-maps/api` for interactive recycling centre discovery
+- `recyclingCentres.js` provides hardcoded centre data for Malaysian locations
+- `centreAssignment.js` handles proximity-based sorting and assignment
+- Quick-filter buttons for recycling centres, donation points, e-waste collection
+- Directions rendering with Google Maps Directions API
+
+### Authentication Architecture
+
+Two parallel auth systems coexist without interference:
+
+| System | Mechanism | Guard Component | Use Case |
+|--------|-----------|-----------------|----------|
+| Firebase Auth | ID token → Admin SDK verification | `ProtectedRoute` | All user-facing features |
+| Enterprise Mock | localStorage flags | `EnterpriseProtectedRoute` | Demo enterprise dashboard |
+
+---
+
+## Project Structure
+
+```
+KITA_HACK-2026-FEB/
+├── firebase.json                    # Firebase Hosting + Firestore + Storage config
+├── firestore.rules                  # Firestore security rules
+├── storage.rules                    # Firebase Storage security rules
+├── Implementation.md                # Marketplace & enterprise integration plan
+│
+├── docs/
+│   ├── app-flow.png                 # Application flow diagram
+│   └── system-architecture.png      # System architecture diagram
+│
+├── backend/
+│   ├── Dockerfile                   # Container build for Cloud Run / GCE
+│   ├── package.json
+│   ├── service-account-key.json     # GCP service account (git-ignored)
+│   └── src/
+│       ├── server.js                # Express entry point — CORS, rate limit, route mounting
+│       ├── config/
+│       │   ├── binRules.js          # Waste type → bin colour + disposal instructions
+│       │   ├── firebaseAdmin.js     # Firebase Admin SDK initialization
+│       │   ├── recyclingCentres.js  # Malaysian recycling centre dataset
+│       │   └── wasteRulesBackend.js # Extended waste disposal rules
+│       ├── middleware/
+│       │   └── authMiddleware.js    # Firebase ID token verification
+│       ├── routes/
+│       │   ├── authRoutes.js        # Token verification + user creation
+│       │   ├── checkinRoutes.js     # Daily check-in + streak tracking
+│       │   ├── guidelinesRoutes.js  # Waste disposal guidelines
+│       │   ├── marketplaceRoutes.js # Marketplace CRUD (listings, offers, requests)
+│       │   ├── nearbyRoutes.js      # Nearby recycling centres
+│       │   ├── scanHistoryRoutes.js # Scan history retrieval
+│       │   ├── scanRoutes.js        # Waste scanning (Vertex AI)
+│       │   ├── scanSaveRoutes.js    # Save scan results to Firestore
+│       │   ├── userRoutes.js        # User profile CRUD
+│       │   └── weeklyRoutes.js      # Weekly scan aggregation
+│       └── services/
+│           ├── centreAssignment.js  # Proximity-based centre matching
+│           ├── marketplaceService.js# Marketplace Firestore operations
+│           ├── storageService.js    # Firebase Storage upload/download
+│           └── visionAI.js          # Vertex AI AutoML prediction client
+│
+└── frontend/
+    ├── index.html
+    ├── package.json
+    ├── vite.config.js               # Vite + React Compiler + Tailwind + PWA
+    ├── public/                      # Static assets (PWA icons, demo images)
+    └── src/
+        ├── App.jsx                  # Router configuration (all routes)
+        ├── main.jsx                 # App entry point
+        ├── index.css                # Global styles + Tailwind imports
+        ├── components/
+        │   ├── CameraScanner.jsx    # Device camera capture component
+        │   ├── DashboardLayout.jsx  # Sidebar + Navbar + main content wrapper
+        │   ├── DayNightToggle.jsx   # Dark mode toggle switch
+        │   ├── DisposalCheckbox.jsx # Disposal step checkbox
+        │   ├── EnterpriseProtectedRoute.jsx  # Enterprise auth guard
+        │   ├── MainLayout.jsx       # Public page layout
+        │   ├── MapSearchBar.jsx     # Google Places Autocomplete search
+        │   ├── Navbar.jsx           # Top navigation bar
+        │   ├── ProtectedRoute.jsx   # Firebase auth guard
+        │   ├── Sidebar.jsx          # Navigation sidebar with collapse
+        │   ├── auth/
+        │   │   ├── EnterpriseLogin.jsx   # Enterprise mock login
+        │   │   ├── EnterpriseSignup.jsx  # Enterprise mock signup
+        │   │   └── RoleSelector.jsx      # User/Enterprise role toggle
+        │   ├── dashboard/
+        │   │   ├── EnterpriseDashboard.jsx  # Enterprise overview + pricing + analytics
+        │   │   └── FindSuppliers.jsx        # Supplier discovery
+        │   └── marketplace/
+        │       ├── CreateListingForm.jsx  # New listing creation
+        │       ├── EnterpriseMarketplace.jsx  # Enterprise marketplace view
+        │       ├── ListingDetail.jsx      # Single listing detail + offer
+        │       ├── Marketplace.jsx        # User marketplace browse
+        │       ├── MyListings.jsx         # User's own listings
+        │       ├── OfferDetail.jsx        # Offer detail + messaging
+        │       └── OffersManagement.jsx   # Sent/received offers dashboard
+        ├── config/
+        │   ├── api.js               # API base URL configuration
+        │   ├── constants.js         # App-wide constants
+        │   ├── firebase.js          # Firebase Web SDK initialization
+        │   └── wasteRules.js        # Frontend waste disposal rules
+        ├── contexts/
+        │   └── AuthContext.jsx      # Firebase auth state provider
+        ├── hooks/
+        │   ├── useDarkMode.js       # Dark/light theme hook
+        │   └── useIsMobile.js       # Responsive breakpoint hook
+        └── pages/
+            ├── AuthPage.jsx         # Login/signup forms
+            ├── Dashboard.jsx        # User dashboard (stats, chart, check-in)
+            ├── GuidelinesPage.jsx   # Waste disposal guidelines
+            ├── HistoryPage.jsx      # Scan history with status tracking
+            ├── LandingPage.jsx      # Public landing page
+            ├── MapPage.jsx          # Google Maps recycling centre finder
+            ├── ScannerPage.jsx      # Camera scanner page
+            ├── ScanResultPage.jsx   # Scan result + disposal instructions
+            └── SettingsPage.jsx     # Profile, password, data export, delete account
 ```
 
-## Route Map
+---
 
-Public:
-- `/` Landing
-- `/login`
-- `/signup`
-
-Protected (`ProtectedRoute`):
-- `/dashboard`
-- `/dashboard/scanner`
-- `/dashboard/scanner/result`
-- `/dashboard/map`
-- `/dashboard/history`
-- `/dashboard/guidelines`
-- `/dashboard/settings`
-
-## API Summary
-
-Public:
-- `POST /api/scan`
-- `POST /api/scan/validate`
-- `POST /api/v1/verify`
-- `GET /api/health`
-
-Protected (Firebase ID token in `Authorization: Bearer <token>`):
-- `GET /api/v1/user/stats`
-- `GET /api/v1/scans/weekly`
-- `POST /api/v1/checkin`
-- `POST /api/v1/scans`
-- `PATCH /api/v1/scans/:scanId/status`
-- `GET /api/v1/scans`
-- `GET /api/v1/scans/:scanId`
-- `POST /api/v1/nearby`
-- `PUT /api/v1/user/profile`
-- `DELETE /api/v1/user`
-- `GET /api/v1/guidelines`
-
-## Setup
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ (Node.js 20 recommended)
-- npm
-- Firebase project (Auth, Firestore, Storage)
-- Google Cloud Vertex AI endpoint + service account JSON
+- npm 9+
+- Firebase project with **Authentication**, **Firestore**, and **Storage** enabled
+- Google Cloud project with a **Vertex AI AutoML Image Classification** endpoint deployed
+- GCP service account JSON key with Vertex AI prediction permissions
 
-### 1. Install dependencies
+### Installation
 
 ```bash
-# root already contains frontend/backend folders
+# Clone the repository
+git clone https://github.com/your-username/recyclenow.git
+cd recyclenow
+
+# Install backend dependencies
 cd backend && npm install
+
+# Install frontend dependencies
 cd ../frontend && npm install
 ```
 
-### 2. Backend credentials
+### Backend Credentials
 
-Place service account key at:
+Place your GCP service account key at:
 
-```text
+```
 backend/service-account-key.json
 ```
 
-### 3. Backend environment (`backend/.env`)
+### Start Development Servers
 
-```env
-PORT=3000
-NODE_ENV=development
-GCP_PROJECT_ID=kitahack-487005
-GCP_LOCATION=europe-west4
-VERTEX_ENDPOINT_ID=7802070739024084992
-```
-
-### 4. Frontend environment (`frontend/.env`)
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-## Run Locally
-
-Backend:
 ```bash
+# Terminal 1 — Backend
 cd backend
 npm run dev
-```
 
-Frontend:
-```bash
+# Terminal 2 — Frontend
 cd frontend
 npm run dev
 ```
 
-Local URLs:
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:3000`
 - Health check: `http://localhost:3000/api/health`
 
-## Project Structure
+### Build for Production
 
-```text
-KITA_HACK-2026-FEB/
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   └── server.js
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── contexts/
-│   │   ├── hooks/
-│   │   └── config/
-│   └── package.json
-├── APP_FLOW.md
-├── BACKEND_STRUCTURE.md
-├── Rules.md
-├── ImplementationPlan.md
-├── implementationPlan2.md
-└── revisingPlan.md
+```bash
+cd frontend
+npm run build
+npm run preview
 ```
 
-## Known Gaps / In Progress
+Deploy frontend to Firebase Hosting:
 
-- Map page UI is currently mock-style in frontend while backend nearby endpoint exists.
-- Frontend still contains fallback direct Firestore writes in several flows.
-- `POST /api/v1/verify` currently returns user payload (no backend JWT issuance).
-- Some docs describe planned behaviour that is still being phased in.
+```bash
+firebase deploy --only hosting
+```
 
-## Roadmap (From Plan Docs)
+---
 
-- Complete scanner flow hardening and remove remaining mock fallbacks.
-- Fully integrate real nearby-centre map interactions.
-- Strengthen auth/session strategy consistency across frontend/backend.
-- Expand guideline/rule content and localization.
-- Final deployment hardening for demo/production readiness.
+## Environment Variables
 
-## Documentation References
+### Backend (`backend/.env`)
 
-- `APP_FLOW.md` — route-by-route product flow.
-- `BACKEND_STRUCTURE.md` — endpoint contracts and backend architecture.
-- `Rules.md` — waste taxonomy and disposal rules.
-- `ImplementationPlan.md`, `implementationPlan2.md`, `revisingPlan.md` — phased execution plans.
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `NODE_ENV` | Environment mode | `development` / `production` |
+| `GCP_PROJECT_ID` | Google Cloud project ID | `kitahack-487005` |
+| `GCP_LOCATION` | Vertex AI endpoint region | `europe-west4` |
+| `VERTEX_ENDPOINT_ID` | AutoML endpoint ID | `7802070739024084992` |
+
+### Frontend (`frontend/.env`)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API base URL | `http://localhost:3000` |
+
+> Frontend Firebase config is hardcoded in `frontend/src/config/firebase.js`. All Vite env vars must be prefixed with `VITE_`.
+
+---
+
+## API Reference
+
+### Public Endpoints (No Auth)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/scan` | Classify waste image via Vertex AI |
+| `GET` | `/api/marketplace` | Browse marketplace listings |
+| `GET` | `/api/health` | Health check |
+
+### Protected Endpoints (Bearer Token)
+
+All protected routes require `Authorization: Bearer <firebase-id-token>` header.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/verify` | Verify token + create/fetch user |
+| `GET` | `/api/v1/user/stats` | Get user stats (points, streaks, scans) |
+| `PUT` | `/api/v1/user/profile` | Update user profile |
+| `DELETE` | `/api/v1/user` | Delete user account |
+| `POST` | `/api/v1/scans` | Save scan result to history |
+| `GET` | `/api/v1/scans` | Get paginated scan history |
+| `GET` | `/api/v1/scans/:scanId` | Get single scan detail |
+| `PATCH` | `/api/v1/scans/:scanId/status` | Update disposal status |
+| `GET` | `/api/v1/scans/weekly` | Get weekly scan aggregation |
+| `POST` | `/api/v1/checkin` | Daily check-in (streak + points) |
+| `POST` | `/api/v1/nearby` | Find nearby recycling centres |
+| `GET` | `/api/v1/guidelines` | Get disposal guidelines |
+| `GET` | `/api/v1/marketplace/listings` | List marketplace listings (filtered) |
+| `POST` | `/api/v1/marketplace/listings` | Create listing |
+| `GET` | `/api/v1/marketplace/my-listings` | Get user's listings |
+| `GET` | `/api/v1/marketplace/offers` | Get sent/received offers |
+| `POST` | `/api/v1/marketplace/offers` | Create offer on listing |
+| `PUT` | `/api/v1/marketplace/offers/:id` | Accept/reject/counter offer |
+| `POST` | `/api/v1/marketplace/offers/:id/messages` | Send message in offer thread |
+| `POST` | `/api/v1/marketplace/upload` | Upload listing photos |
+
+---
+
+## Firestore Data Schema
+
+### `users/{userId}`
+
+```json
+{
+  "email": "user@example.com",
+  "displayName": "string",
+  "totalPoints": 25,
+  "totalScans": 5,
+  "impactKg": 12.5,
+  "co2Saved": 8.3,
+  "streak": 3,
+  "lastCheckIn": "Timestamp",
+  "createdAt": "Timestamp"
+}
+```
+
+### `scans/{scanId}`
+
+```json
+{
+  "userId": "firebase_uid",
+  "wasteType": "plastic | glass | metal | paper | clothes | general_waste",
+  "confidence": 0.94,
+  "rawLabel": "string",
+  "imageUrl": "gs://bucket/scans/uid/scanId.jpg",
+  "status": "pending | recycled | donated | disposed",
+  "pointsAwarded": 5,
+  "createdAt": "ServerTimestamp"
+}
+```
+
+### `checkins/{checkinId}`
+
+```json
+{
+  "userId": "firebase_uid",
+  "date": "2026-02-28",
+  "pointsAwarded": 5,
+  "streakDay": 3,
+  "createdAt": "ServerTimestamp"
+}
+```
+
+### `listings/{listingId}`
+
+```json
+{
+  "userId": "firebase_uid",
+  "title": "Clean PET Bottles",
+  "wasteType": "plastic",
+  "quantity": "10 kg",
+  "price": 15.00,
+  "description": "string",
+  "photos": ["url1", "url2"],
+  "status": "active | sold | expired",
+  "createdAt": "ServerTimestamp"
+}
+```
+
+### `offers/{offerId}`
+
+```json
+{
+  "listingId": "listing_uid",
+  "buyerId": "firebase_uid",
+  "sellerId": "firebase_uid",
+  "amount": 12.00,
+  "status": "pending | accepted | rejected | countered | completed",
+  "messages": [
+    { "senderId": "uid", "text": "string", "timestamp": "Timestamp" }
+  ],
+  "createdAt": "ServerTimestamp"
+}
+```
+
+---
+
+## Challenges Faced
+
+### 1. Vertex AI AutoML Integration Complexity
+
+Integrating a custom-trained AutoML Image Classification model required handling GCP service account authentication, base64 image encoding/decoding, and mapping raw AutoML labels to application waste categories. The Vertex AI prediction endpoint uses protobuf-based request/response formats, which required the `@google-cloud/aiplatform` SDK's helper utilities to convert between JavaScript objects and protobuf `Value` types.
+
+### 2. Cross-Origin Image Handling in PWA
+
+Running the app as a PWA with Firebase Hosting (frontend) and Cloud Run (backend) introduced CORS challenges. Camera-captured images needed to be base64-encoded on the client, sent as JSON payloads (up to 15MB), and then forwarded to Vertex AI — requiring careful configuration of Express body limits, CORS whitelists, and Multer for multipart uploads on marketplace photo endpoints.
+
+### 3. Real-Time Firestore Security Rules
+
+Designing Firestore security rules that enforce user-level isolation (users can only read/write their own documents) while allowing the marketplace to have public read access required careful rule structuring. The `scans` and `checkins` collections use `resource.data.userId == request.auth.uid` guards, while marketplace listings needed public read + authenticated write — two different access patterns in the same database.
+
+### 4. Mobile-First Map Page UX
+
+The Google Maps integration on mobile devices required extensive iteration. Google Maps renders its own UI controls (zoom, street view, locate) that conflict with overlay UI elements. The bottom action card, quick-filter buttons, and search bar all needed precise `z-index` layering and responsive positioning (`right-14 sm:right-20`) to avoid blocking native map controls on small screens while maintaining desktop layout integrity.
+
+### 5. PWA Service Worker Cache Invalidation
+
+The VitePWA plugin with Workbox `autoUpdate` strategy caused stale content issues during rapid iteration. The Firebase Hosting configuration needed explicit `no-cache` headers for `/service-worker.js` and `/sw.js` to ensure users always get the latest version. Workbox runtime caching also required careful strategy selection to avoid caching API responses that should always be fresh.
+
+### 6. Dual Authentication Coexistence
+
+Supporting both Firebase Auth (real users) and localStorage mock auth (enterprise demo) required two completely independent route guard components (`ProtectedRoute` vs `EnterpriseProtectedRoute`) and separate route trees, ensuring neither system interferes with the other while sharing the same `DashboardLayout` shell.
+
+### 7. Image Fallbacks in Production
+
+Demo/marketplace listing images that worked during local development returned 404s in production Firebase Hosting. This required implementing `onError` fallback handlers on all `<img>` tags with absolute-positioned fallback icons, and restructuring API error handling to silently degrade rather than blocking the entire UI with error states.
+
+---
+
+## Future Roadmap
+
+### Near-Term
+
+- [ ] **Live Marketplace Backend** — Complete CRUD for listings, offers, buyer requests with full Firestore integration (currently partially scaffolded)
+- [ ] **Image Compression Pipeline** — Client-side image compression before upload to reduce Vertex AI latency and storage costs
+- [ ] **Expanded Waste Taxonomy** — Add e-waste, hazardous waste, food waste, and organic waste categories to AutoML model
+- [ ] **Multi-Language Support** — Bahasa Malaysia, Mandarin, and Tamil localization for Malaysian users
+- [ ] **Push Notifications** — Firebase Cloud Messaging for marketplace offer updates, streak reminders, and daily check-in nudges
+
+### Mid-Term
+
+- [ ] **Barcode/QR Scanning** — Scan product barcodes to look up packaging material and disposal instructions
+- [ ] **Community Leaderboard** — Regional leaderboards for points, scans, and recycling impact
+- [ ] **Recycling Centre Reviews** — User ratings and operating hour verification for mapped centres
+- [ ] **Offline Scanning** — TensorFlow Lite model for on-device classification when network is unavailable
+- [ ] **Carbon Footprint Dashboard** — Detailed environmental impact tracking with shareable reports
+
+### Long-Term
+
+- [ ] **IoT Smart Bin Integration** — Connect with smart bins to verify correct disposal and award bonus points
+- [ ] **Government Data Integration** — Partner with Malaysian local councils for official recycling centre data and collection schedules
+- [ ] **Enterprise API** — RESTful API for waste management companies to integrate classification services
+- [ ] **Gamification V2** — Badges, achievements, team challenges, and redeemable rewards with local business partners
+- [ ] **Regional Expansion** — Adapt waste rules and recycling centre data for Singapore, Thailand, and Indonesia
+
+---
+
+## Scripts
+
+```bash
+# Frontend
+npm run dev        # Start Vite dev server
+npm run build      # Production build to frontend/dist
+npm run preview    # Preview production build
+npm run lint       # Run ESLint
+
+# Backend
+npm run dev        # Start with nodemon (auto-reload)
+npm start          # Start production server
+```
+
+---
+
+## License
+
+This project was built for **KITA HACK** — organized by **Google Developer Group Malaysia**.
+
+**RecycleNow** — Scan. Sort. Sustain.
