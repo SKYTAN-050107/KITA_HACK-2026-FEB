@@ -99,7 +99,6 @@ const Marketplace = () => {
 
   const fetchListings = async () => {
     setLoading(true);
-    setError(null);
     try {
       const params = new URLSearchParams();
       if (filters.wasteType) params.append('wasteType', filters.wasteType);
@@ -112,11 +111,9 @@ const Marketplace = () => {
 
       if (data.success) {
         setListings(data.listings);
-      } else {
-        setError(data.error || 'Failed to fetch listings');
       }
     } catch (err) {
-      setError(err.message);
+      console.warn('Marketplace listings API unavailable, showing demo data:', err.message);
     } finally {
       setLoading(false);
     }
@@ -124,7 +121,6 @@ const Marketplace = () => {
 
   const fetchBuyerRequests = async () => {
     setLoading(true);
-    setError(null);
     try {
       const params = new URLSearchParams();
       if (filters.wasteType) params.append('wasteType', filters.wasteType);
@@ -136,11 +132,9 @@ const Marketplace = () => {
 
       if (data.success) {
         setBuyerRequests(data.requests);
-      } else {
-        setError(data.error || 'Failed to fetch requests');
       }
     } catch (err) {
-      setError(err.message);
+      console.warn('Marketplace requests API unavailable, showing demo data:', err.message);
     } finally {
       setLoading(false);
     }
@@ -348,10 +342,6 @@ const Marketplace = () => {
               <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
               <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading...</p>
             </div>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 text-red-800 dark:text-red-200">
-            <p className="font-medium">Error: {error}</p>
           </div>
         ) : activeTab === 'listings' ? (
           <div>
