@@ -35,15 +35,15 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
 
   const pricingTiers = [
     {
-      id: 1, name: 'Standard', basePrice: 20, minQuantity: '1-99kg',
+      id: 1, name: 'Standard', basePrice: 20,
       discount: '0%', features: ['Regular delivery', 'Email support', 'Basic reporting'], active: true,
     },
     {
-      id: 2, name: 'Bulk', basePrice: 15, minQuantity: '100-499kg',
+      id: 2, name: 'Bulk', basePrice: 50,
       discount: '25%', features: ['Priority delivery', 'Phone support', 'Weekly reports', 'Volume tracking'], active: true,
     },
     {
-      id: 3, name: 'Premium', basePrice: 12, minQuantity: '500kg+',
+      id: 3, name: 'Premium', basePrice: 100,
       discount: '40%', features: ['Express delivery', '24/7 support', 'Custom analytics', 'Dedicated account manager'], active: true,
     },
   ];
@@ -253,12 +253,11 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                   </h3>
                   <div className="mb-4">
                     <p className="text-4xl font-extrabold text-primary">RM{tier.basePrice}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">/kg (base price)</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400"> (base price)</p>
                   </div>
 
                   <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-3 mb-4">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      Minimum: {tier.minQuantity}
                     </p>
                     <p className="text-sm font-medium text-green-600 dark:text-green-400">
                       Discount: {tier.discount}
