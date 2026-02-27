@@ -165,6 +165,30 @@ const AuthPage = ({ defaultMode = 'login' }) => {
                 className="w-full max-w-md relative z-10 perspective-1000"
             >
                 <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/20 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-950/80 transition-colors duration-500">
+                    {/* Role Toggle — matching EnterpriseLogin */}
+                    <div className="mb-6 sm:mb-8">
+                        <p className="text-xs font-bold text-emerald-900/60 dark:text-emerald-200/60 uppercase tracking-widest mb-3 text-center transition-colors duration-500">
+                            {isLogin ? 'Login as' : 'Sign up as'}
+                        </p>
+                        <div className="flex gap-2 bg-white/40 dark:bg-black/20 p-1 rounded-xl border border-emerald-900/10 dark:border-white/10 transition-colors duration-500">
+                            <motion.button
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-extrabold text-sm cursor-default transition-all duration-300 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 shadow-lg shadow-primary/20 border border-emerald-50 dark:border-white/20"
+                            >
+                                <span className="material-icons-round text-lg">person</span>
+                                <span>User</span>
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => navigate(isLogin ? '/login/enterprise' : '/signup/enterprise')}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-extrabold text-sm cursor-pointer transition-all duration-300 text-emerald-900/50 dark:text-emerald-200/50 hover:text-emerald-900/80 dark:hover:text-emerald-200/80"
+                            >
+                                <span className="material-icons-round text-lg">domain</span>
+                                <span>Enterprise</span>
+                            </motion.button>
+                        </div>
+                    </div>
+
                     {/* Header */}
                     <AnimatePresence mode="popLayout">
                         <motion.div

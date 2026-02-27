@@ -14,9 +14,9 @@ import ScanResultPage from './pages/ScanResultPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 
-// Role Selector & Enterprise
-import RoleSelector from './components/auth/RoleSelector';
+// Enterprise auth
 import EnterpriseLogin from './components/auth/EnterpriseLogin';
+import EnterpriseSignup from './components/auth/EnterpriseSignup';
 import EnterpriseDashboard from './components/dashboard/EnterpriseDashboard';
 import EnterpriseProtectedRoute from './components/EnterpriseProtectedRoute';
 
@@ -35,9 +35,10 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<RoleSelector mode="login" LoginComponent={AuthPage} />} />
-        <Route path="/signup" element={<RoleSelector mode="signup" SignupComponent={() => <AuthPage defaultMode="signup" />} />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/signup" element={<AuthPage defaultMode="signup" />} />
         <Route path="/login/enterprise" element={<EnterpriseLogin />} />
+        <Route path="/signup/enterprise" element={<EnterpriseSignup />} />
 
         {/* Enterprise dashboard — uses DashboardLayout (same sidebar+navbar as normal user) */}
         <Route element={<EnterpriseProtectedRoute />}>

@@ -235,7 +235,7 @@ const OfferDetail = () => {
 
   if (error || !offer) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500 flex items-center justify-center">
         <div className="text-center">
           <span className="material-icons-round text-5xl text-red-500 mx-auto mb-3">error</span>
           <p className="text-red-600 dark:text-red-400 text-lg mb-4">
@@ -253,31 +253,29 @@ const OfferDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors flex flex-col">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500 flex flex-col">
       {/* Header */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
-            >
-              <span className="material-icons-round text-xl">chevron_left</span>
-              Back
-            </button>
-            <div className="flex-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white">
-                Offer #{offerId.substring(0, 8)}
-              </h1>
-              <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
-                {isSeller ? 'You are the seller' : 'You are the buyer'}
-              </p>
-            </div>
+      <div className="max-w-4xl mx-auto w-full mb-6">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
+          >
+            <span className="material-icons-round text-xl">chevron_left</span>
+            Back
+          </button>
+          <div className="flex-1">
+            <h1 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white transition-colors duration-500">
+              Offer #{offerId.substring(0, 8)}
+            </h1>
+            <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 transition-colors duration-500">
+              {isSeller ? 'You are the seller' : 'You are the buyer'}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 flex-1 flex flex-col gap-6 w-full">
+      <div className="max-w-4xl mx-auto flex-1 flex flex-col gap-6 w-full">
         {/* Status Banner */}
         {getStatusBanner()}
 

@@ -90,10 +90,12 @@ const ListingDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background-light dark:bg-background-dark">
-        <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
-          <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading listing...</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
+        <div className="flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
+            <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading listing...</p>
+          </div>
         </div>
       </div>
     );
@@ -101,7 +103,7 @@ const ListingDetail = () => {
 
   if (error || !listing) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark p-4 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => navigate('/dashboard/marketplace')}
@@ -125,10 +127,10 @@ const ListingDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
       {/* Header */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="max-w-4xl mx-auto mb-6">
+        <div className="flex items-center justify-between">
           <button
             onClick={() => navigate('/dashboard/marketplace')}
             className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
@@ -155,7 +157,7 @@ const ListingDetail = () => {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Images & Details */}
           <div className="lg:col-span-2">

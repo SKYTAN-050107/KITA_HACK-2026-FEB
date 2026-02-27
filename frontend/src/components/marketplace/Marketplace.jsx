@@ -106,50 +106,48 @@ const Marketplace = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
       {/* Header */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-2">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+          <span className="material-icons-round text-3xl">storefront</span>
+        </div>
+        <div>
+          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">
             Marketplace
           </h1>
-          <p className="text-emerald-800/60 dark:text-emerald-100/60">
+          <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
             Buy and sell valuable waste with confidence
           </p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl border-b border-white/40 dark:border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex gap-8">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
             <button
               onClick={() => setActiveTab('listings')}
-              className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
                 activeTab === 'listings'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
+                  ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
+                  : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
               }`}
             >
               Available Items ({listings.length})
             </button>
             <button
               onClick={() => setActiveTab('requests')}
-              className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
                 activeTab === 'requests'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
+                  ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
+                  : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
               }`}
             >
               Buyer Requests ({buyerRequests.length})
             </button>
-          </div>
-        </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl border-b border-white/40 dark:border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="mb-6">
           <div className="flex gap-3 flex-wrap items-center">
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -242,11 +240,10 @@ const Marketplace = () => {
               </div>
             </div>
           )}
-        </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">

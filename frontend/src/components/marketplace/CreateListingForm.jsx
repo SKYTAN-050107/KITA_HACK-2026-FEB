@@ -203,25 +203,34 @@ const CreateListingForm = ({ listingId = null }) => {
     'w-full px-4 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors';
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
       {/* Header */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
-          >
-            <span className="material-icons-round text-xl">chevron_left</span>
-            Back
-          </button>
-          <h1 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white">
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
+        >
+          <span className="material-icons-round text-xl">chevron_left</span>
+          Back
+        </button>
+        <div className="w-5"></div>
+      </div>
+
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+          <span className="material-icons-round text-3xl">{listingId ? 'edit_note' : 'add_circle'}</span>
+        </div>
+        <div>
+          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">
             {listingId ? 'Edit Listing' : 'Create Listing'}
           </h1>
-          <div className="w-5"></div>
+          <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
+            {listingId ? 'Update your listing details' : 'List your waste for sale'}
+          </p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto">
         {error && (
           <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex gap-3">
             <span className="material-icons-round text-xl text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5">error</span>

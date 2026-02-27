@@ -87,56 +87,58 @@ const MyListings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
       {/* Header */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => navigate('/dashboard/marketplace')}
-              className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
-            >
-              <span className="material-icons-round text-xl">chevron_left</span>
-              Back
-            </button>
-            <button
-              onClick={() => navigate('/dashboard/marketplace/listings/new')}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
-            >
-              <span className="material-icons-round text-base">add</span>
-              New Listing
-            </button>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-2">
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={() => navigate('/dashboard/marketplace')}
+          className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
+        >
+          <span className="material-icons-round text-xl">chevron_left</span>
+          Back
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/marketplace/listings/new')}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+        >
+          <span className="material-icons-round text-base">add</span>
+          New Listing
+        </button>
+      </div>
+
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+          <span className="material-icons-round text-3xl">inventory_2</span>
+        </div>
+        <div>
+          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">
             My Listings
           </h1>
-          <p className="text-emerald-800/60 dark:text-emerald-100/60">Manage and track your waste items</p>
+          <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">Manage and track your waste items</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl border-b border-white/40 dark:border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex gap-2 flex-wrap">
+      <div className="mb-6">
+        <div className="flex gap-2 flex-wrap">
             {['all', 'draft', 'listed', 'sold'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-4 py-2 rounded-xl font-medium transition capitalize ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 capitalize ${
                   filterStatus === status
-                    ? 'bg-gradient-to-r from-primary to-emerald-400 text-emerald-950'
-                    : 'bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white hover:bg-primary/10 dark:hover:bg-white/20'
+                    ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
+                    : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
                 }`}
               >
                 {status}
               </button>
             ))}
-          </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
