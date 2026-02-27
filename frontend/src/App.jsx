@@ -22,6 +22,7 @@ import EnterpriseProtectedRoute from './components/EnterpriseProtectedRoute';
 
 // Marketplace
 import Marketplace from './components/marketplace/Marketplace';
+import EnterpriseMarketplace from './components/marketplace/EnterpriseMarketplace';
 import MyListings from './components/marketplace/MyListings';
 import CreateListingForm from './components/marketplace/CreateListingForm';
 import ListingDetail from './components/marketplace/ListingDetail';
@@ -46,6 +47,7 @@ function App() {
             <Route index element={<EnterpriseDashboard />} />
             <Route path="pricing" element={<EnterpriseDashboard tab="pricing" />} />
             <Route path="analytics" element={<EnterpriseDashboard tab="analytics" />} />
+            <Route path="marketplace" element={<EnterpriseMarketplace />} />
           </Route>
         </Route>
 

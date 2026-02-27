@@ -287,14 +287,6 @@ export default function Dashboard() {
           </motion.h1>
           <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">Ready to make an impact today?</p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.05, backgroundColor: 'rgba(16,185,129,0.1)' }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleLogout}
-          className="bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-emerald-900/10 dark:border-white/10 shadow-lg backdrop-blur-md hover:dark:bg-white/10"
-        >
-          Logout
-        </motion.button>
       </motion.div>
 
       {/* ══════ Stat Summary Cards (NEW — 5.1 & 5.3 & 5.4) ══════ */}

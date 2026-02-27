@@ -25,6 +25,7 @@ const ENTERPRISE_NAV_ITEMS = [
   { label: 'Overview', icon: 'bar_chart', path: '/dashboard/enterprise', end: true },
   { label: 'Pricing Tiers', icon: 'attach_money', path: '/dashboard/enterprise/pricing' },
   { label: 'Analytics', icon: 'pie_chart', path: '/dashboard/enterprise/analytics' },
+  { label: 'Marketplace', icon: 'storefront', path: '/dashboard/enterprise/marketplace' },
 ];
 
 const EXPANDED_WIDTH = 256;

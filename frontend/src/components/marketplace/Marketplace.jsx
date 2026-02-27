@@ -631,16 +631,11 @@ const Marketplace = () => {
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div>
                       <button
-                        className="flex-1 px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
+                        className="w-full px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
                       >
                         View Details
-                      </button>
-                      <button
-                        className="flex-1 px-3 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 text-sm font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
-                      >
-                        Make Offer
                       </button>
                     </div>
                   </div>
