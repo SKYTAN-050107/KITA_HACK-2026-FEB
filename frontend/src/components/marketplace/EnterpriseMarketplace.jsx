@@ -156,24 +156,26 @@ const EnterpriseMarketplace = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
-          <span className="material-icons-round text-3xl">storefront</span>
-        </div>
-        <div>
-          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">
-            Enterprise Marketplace
-          </h1>
-          <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
-            Buy and sell valuable waste with confidence
-          </p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-emerald-600/10 dark:from-primary/20 dark:to-emerald-600/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+            <span className="material-icons-round text-xl sm:text-3xl">storefront</span>
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-emerald-950 dark:text-white tracking-tight transition-colors duration-500">
+              Enterprise Marketplace
+            </h1>
+            <p className="text-xs sm:text-base text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
+              Buy and sell valuable waste with confidence
+            </p>
+          </div>
         </div>
 
         {/* Upload Item Button — hidden on Buyer Requests tab */}
         {activeTab !== 'requests' && (
-          <div className="ml-auto flex items-center gap-3">
+          <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-3">
             {uploadedPhoto && (
-              <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
+              <img src={uploadedPhoto} alt="Uploaded" className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
             )}
             <input
               ref={fileInputRef}
@@ -184,7 +186,7 @@ const EnterpriseMarketplace = () => {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg text-sm sm:text-base"
             >
               <span className="material-icons-round text-lg">add_a_photo</span>
               Upload Item

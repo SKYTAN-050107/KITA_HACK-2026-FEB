@@ -74,7 +74,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
       {/* ── Header — matching Dashboard.jsx ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white mb-1 tracking-tight transition-colors duration-500">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-emerald-950 dark:text-white mb-1 tracking-tight transition-colors duration-500">
             Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary dark:from-emerald-400 dark:to-primary">{mockUser.companyName}</span> 🏢
           </h1>
           <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
@@ -83,74 +83,74 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
         </div>
       </div>
 
-        {/* ═══════════ OVERVIEW TAB ═══════════ */}}
+        {/* ═══════════ OVERVIEW TAB ═══════════ */}
         {activeTab === 'overview' && (
           <>
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
               {/* Active Requests */}
-              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Requests</p>
-                  <span className="material-icons-round text-xl text-emerald-600 dark:text-emerald-400">track_changes</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Active Requests</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-emerald-600 dark:text-emerald-400">track_changes</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.activeRequests}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Looking for suppliers</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{stats.activeRequests}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 sm:mt-2 hidden sm:block">Looking for suppliers</p>
               </div>
 
               {/* Connected Suppliers */}
-              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Suppliers</p>
-                  <span className="material-icons-round text-xl text-green-600 dark:text-green-400">group</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Suppliers</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-green-600 dark:text-green-400">group</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.connectedSuppliers}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Verified connections</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{stats.connectedSuppliers}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 sm:mt-2 hidden sm:block">Verified connections</p>
               </div>
 
               {/* Total Spending */}
-              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spending</p>
-                  <span className="material-icons-round text-xl text-purple-600 dark:text-purple-400">attach_money</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Spending</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-purple-600 dark:text-purple-400">attach_money</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.totalSpending}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">This month (estimated)</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.totalSpending}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 sm:mt-2 hidden sm:block">This month (estimated)</p>
               </div>
 
               {/* Average Price */}
-              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Price/kg</p>
-                  <span className="material-icons-round text-xl text-orange-600 dark:text-orange-400">trending_up</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Avg Price/kg</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-orange-600 dark:text-orange-400">trending_up</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.averagePrice}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Across all purchases</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.averagePrice}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 sm:mt-2 hidden sm:block">Across all purchases</p>
               </div>
 
               {/* Pending Orders */}
-              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
+              <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Orders</p>
-                  <span className="material-icons-round text-xl text-yellow-600 dark:text-yellow-400">schedule</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Pending Orders</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-yellow-600 dark:text-yellow-400">schedule</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.pendingOrders}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Awaiting fulfillment</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">{stats.pendingOrders}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 sm:mt-2 hidden sm:block">Awaiting fulfillment</p>
               </div>
 
               {/* Completed Deals — accent gradient card */}
-              <div className="bg-gradient-to-br from-primary to-emerald-400 rounded-xl p-6 text-white shadow-lg">
+              <div className="bg-gradient-to-br from-primary to-emerald-400 rounded-xl p-4 sm:p-6 text-white shadow-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-emerald-100">Completed Deals</p>
-                  <span className="material-icons-round text-xl text-emerald-100">bar_chart</span>
+                  <p className="text-xs sm:text-sm font-medium text-emerald-100">Completed Deals</p>
+                  <span className="material-icons-round text-lg sm:text-xl text-emerald-100">bar_chart</span>
                 </div>
-                <p className="text-3xl font-extrabold">{stats.completedDeals}</p>
-                <p className="text-xs text-emerald-100 mt-2">Successful transactions</p>
+                <p className="text-xl sm:text-3xl font-extrabold">{stats.completedDeals}</p>
+                <p className="text-xs text-emerald-100 mt-1 sm:mt-2 hidden sm:block">Successful transactions</p>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4 mb-8">
               {[
                 { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => navigate('/dashboard/enterprise/marketplace') },
                 { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
@@ -160,11 +160,11 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                 <button
                   key={title}
                   onClick={action}
-                  className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 hover:shadow-lg transition text-left"
+                  className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-4 sm:p-6 hover:shadow-lg transition text-left"
                 >
-                  <span className={`material-icons-round text-3xl ${color} mb-3 block`}>{icon}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{desc}</p>
+                  <span className={`material-icons-round text-2xl sm:text-3xl ${color} mb-2 sm:mb-3 block`}>{icon}</span>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm sm:text-base">{title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">{desc}</p>
                 </button>
               ))}
             </div>
@@ -181,7 +181,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                     key={request.id}
                     className="border border-gray-200 dark:border-white/10 rounded-xl p-4 hover:shadow-md transition-colors"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 items-center">
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">{request.wasteType}</h4>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -252,7 +252,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                     {tier.name}
                   </h3>
                   <div className="mb-4">
-                    <p className="text-4xl font-extrabold text-primary">RM{tier.basePrice}</p>
+                    <p className="text-2xl sm:text-4xl font-extrabold text-primary">RM{tier.basePrice}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400"> (base price)</p>
                   </div>
 
