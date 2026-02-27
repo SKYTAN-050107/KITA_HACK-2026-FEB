@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  ChevronLeft,
-  Send,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  MessageCircle,
-} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import useDarkMode from '../../hooks/useDarkMode';
 
@@ -156,7 +148,7 @@ const OfferDetail = () => {
       case 'pending':
         return (
           <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 flex items-center gap-3">
-            <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            <span className="material-icons-round text-2xl text-yellow-600 dark:text-yellow-400">schedule</span>
             <div>
               <p className="font-medium text-yellow-900 dark:text-yellow-200">
                 Offer Pending
@@ -172,7 +164,7 @@ const OfferDetail = () => {
       case 'negotiating':
         return (
           <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 flex items-center gap-3">
-            <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <span className="material-icons-round text-2xl text-blue-600 dark:text-blue-400">chat</span>
             <div>
               <p className="font-medium text-blue-900 dark:text-blue-200">
                 In Negotiation
@@ -186,7 +178,7 @@ const OfferDetail = () => {
       case 'accepted':
         return (
           <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <span className="material-icons-round text-2xl text-green-600 dark:text-green-400">check_circle</span>
             <div>
               <p className="font-medium text-green-900 dark:text-green-200">
                 Offer Accepted!
@@ -199,13 +191,13 @@ const OfferDetail = () => {
         );
       case 'completed':
         return (
-          <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4 flex items-center gap-3">
-            <CheckCircle className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+          <div className="bg-emerald-50/50 dark:bg-white/5 border border-emerald-900/10 dark:border-white/10 rounded-xl p-4 flex items-center gap-3">
+            <span className="material-icons-round text-2xl text-emerald-800/60 dark:text-emerald-100/60">check_circle</span>
             <div>
-              <p className="font-medium text-gray-900 dark:text-gray-200">
+              <p className="font-medium text-emerald-950 dark:text-emerald-200">
                 Transaction Completed
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                 This exchange has been successfully completed
               </p>
             </div>
@@ -214,7 +206,7 @@ const OfferDetail = () => {
       case 'cancelled':
         return (
           <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center gap-3">
-            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+            <span className="material-icons-round text-2xl text-red-600 dark:text-red-400">error</span>
             <div>
               <p className="font-medium text-red-900 dark:text-red-200">
                 Offer Cancelled
@@ -234,8 +226,8 @@ const OfferDetail = () => {
     return (
       <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center transition-colors">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary rounded-full animate-spin mb-3"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading offer details...</p>
+          <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
+          <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading offer details...</p>
         </div>
       </div>
     );
@@ -245,13 +237,13 @@ const OfferDetail = () => {
     return (
       <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center transition-colors">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
+          <span className="material-icons-round text-5xl text-red-500 mx-auto mb-3">error</span>
           <p className="text-red-600 dark:text-red-400 text-lg mb-4">
             {error || 'Offer not found'}
           </p>
           <button
             onClick={() => navigate(-1)}
-            className="px-6 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+            className="px-6 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
           >
             Go Back
           </button>
@@ -268,16 +260,16 @@ const OfferDetail = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <span className="material-icons-round text-xl">chevron_left</span>
               Back
             </button>
             <div className="flex-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+              <h1 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white">
                 Offer #{offerId.substring(0, 8)}
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                 {isSeller ? 'You are the seller' : 'You are the buyer'}
               </p>
             </div>
@@ -291,12 +283,12 @@ const OfferDetail = () => {
 
         {/* Offer Summary */}
         <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
-          <h2 className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+          <h2 className="text-lg font-extrabold tracking-tight text-emerald-950 dark:text-white mb-4">
             Offer Details
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wide">
                 Price
               </p>
               <p className="text-xl font-extrabold text-primary">
@@ -304,26 +296,26 @@ const OfferDetail = () => {
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wide">
                 Quantity
               </p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-emerald-950 dark:text-white">
                 {offer.quantity} {offer.unit}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wide">
                 Status
               </p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
+              <p className="text-lg font-semibold text-emerald-950 dark:text-white capitalize">
                 {offer.status}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 uppercase tracking-wide">
                 Date
               </p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-emerald-950 dark:text-white">
                 {new Date(
                   offer.timeline?.createdAt?.toDate?.() || offer.timeline?.createdAt
                 ).toLocaleDateString()}
@@ -335,7 +327,7 @@ const OfferDetail = () => {
         {/* Action Buttons */}
         {(offer.status === 'pending' || offer.status === 'negotiating') && (
           <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
-            <h3 className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+            <h3 className="text-lg font-extrabold tracking-tight text-emerald-950 dark:text-white mb-4">
               Actions
             </h3>
             <div className="flex flex-wrap gap-3">
@@ -344,7 +336,7 @@ const OfferDetail = () => {
                   <button
                     onClick={() => handleOfferAction('accept')}
                     disabled={actionLoading}
-                    className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
+                    className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
                   >
                     Accept Offer
                   </button>
@@ -369,7 +361,7 @@ const OfferDetail = () => {
                   <button
                     onClick={() => handleOfferAction('accept')}
                     disabled={actionLoading}
-                    className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
+                    className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
                   >
                     Accept Counter
                   </button>
@@ -386,7 +378,7 @@ const OfferDetail = () => {
                 <button
                   onClick={() => handleOfferAction('complete')}
                   disabled={actionLoading}
-                  className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
+                  className="px-5 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
                 >
                   Mark as Completed
                 </button>
@@ -397,7 +389,7 @@ const OfferDetail = () => {
             {showCounterForm && (
               <div className="mt-4 flex items-center gap-3">
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-800/50 dark:text-emerald-100/50 font-medium">
                     $
                   </span>
                   <input
@@ -405,13 +397,13 @@ const OfferDetail = () => {
                     value={counterPrice}
                     onChange={(e) => setCounterPrice(e.target.value)}
                     placeholder="Enter counter price"
-                    className="w-full pl-8 pr-4 py-2.5 bg-white/70 dark:bg-white/10 border border-white/40 dark:border-white/10 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                    className="w-full pl-8 pr-4 py-2.5 bg-white/70 dark:bg-white/10 border border-white/40 dark:border-white/10 rounded-xl text-emerald-950 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                   />
                 </div>
                 <button
                   onClick={handleCounterOffer}
                   disabled={actionLoading || !counterPrice}
-                  className="px-5 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
+                  className="px-5 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
                 >
                   Send Counter
                 </button>
@@ -423,7 +415,7 @@ const OfferDetail = () => {
         {/* Message Thread */}
         <div className="flex-1 bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 flex flex-col min-h-[300px] transition-colors">
           <div className="p-4 border-b border-white/40 dark:border-white/10">
-            <h3 className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white">
+            <h3 className="text-lg font-extrabold tracking-tight text-emerald-950 dark:text-white">
               Messages
             </h3>
           </div>
@@ -442,7 +434,7 @@ const OfferDetail = () => {
                       className={`max-w-[70%] rounded-2xl px-4 py-3 ${
                         isMe
                           ? 'bg-gradient-to-r from-primary to-emerald-400 text-white'
-                          : 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white'
+                          : 'bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white'
                       }`}
                     >
                       {msg.type === 'counter_offer' && (
@@ -453,7 +445,7 @@ const OfferDetail = () => {
                       <p className="text-sm">{msg.text}</p>
                       <p
                         className={`text-xs mt-1 ${
-                          isMe ? 'text-white/60' : 'text-gray-500 dark:text-gray-500'
+                          isMe ? 'text-white/60' : 'text-emerald-800/50 dark:text-emerald-100/40'
                         }`}
                       >
                         {new Date(
@@ -465,8 +457,8 @@ const OfferDetail = () => {
                 );
               })
             ) : (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-500">
-                <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <div className="text-center py-8 text-emerald-800/50 dark:text-emerald-100/40">
+                <span className="material-icons-round text-3xl mx-auto mb-2 opacity-50">chat</span>
                 <p>No messages yet. Start the conversation!</p>
               </div>
             )}
@@ -482,15 +474,15 @@ const OfferDetail = () => {
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 px-4 py-2.5 bg-white/70 dark:bg-white/10 border border-white/40 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                  className="flex-1 px-4 py-2.5 bg-white/70 dark:bg-white/10 border border-white/40 dark:border-white/10 rounded-xl text-emerald-950 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={sendingMessage || !messageText.trim()}
-                  className="px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-white rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
+                  className="px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg disabled:opacity-50"
                 >
-                  <Send className="w-5 h-5" />
+                  <span className="material-icons-round text-xl">send</span>
                 </button>
               </div>
             </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, Share2, Heart, ChevronLeft, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import useDarkMode from '../../hooks/useDarkMode';
 
@@ -93,8 +92,8 @@ const ListingDetail = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background-light dark:bg-background-dark">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary rounded-full animate-spin mb-3"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading listing...</p>
+          <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
+          <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading listing...</p>
         </div>
       </div>
     );
@@ -106,14 +105,14 @@ const ListingDetail = () => {
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => navigate('/dashboard/marketplace')}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
+            className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white mb-6 transition-colors"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <span className="material-icons-round text-base">chevron_left</span>
             Back to Marketplace
           </button>
           <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 text-red-800 dark:text-red-200">
             <div className="flex gap-3">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span className="material-icons-round text-xl flex-shrink-0 mt-0.5">error</span>
               <div>
                 <p className="font-medium">Error loading listing</p>
                 <p className="text-sm mt-1">{error || 'Listing not found'}</p>
@@ -132,16 +131,16 @@ const ListingDetail = () => {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate('/dashboard/marketplace')}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <span className="material-icons-round text-xl">chevron_left</span>
             Back
           </button>
           {isSeller && (
             <div className="flex gap-2">
               <button
                 onClick={handleEdit}
-                className="px-4 py-2 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 transition"
+                className="px-4 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition"
               >
                 Edit
               </button>
@@ -161,7 +160,7 @@ const ListingDetail = () => {
           {/* Left: Images & Details */}
           <div className="lg:col-span-2">
             {/* Main Image */}
-            <div className="bg-gray-200 dark:bg-white/5 rounded-xl overflow-hidden mb-4 aspect-square lg:aspect-auto lg:h-96">
+            <div className="bg-emerald-100/50 dark:bg-white/5 rounded-xl overflow-hidden mb-4 aspect-square lg:aspect-auto lg:h-96">
               {listing.photos && listing.photos[selectedPhoto] ? (
                 <img
                   src={listing.photos[selectedPhoto]}
@@ -169,8 +168,8 @@ const ListingDetail = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-white/10">
-                  <span className="text-gray-600 dark:text-gray-400">No image</span>
+                <div className="w-full h-full flex items-center justify-center bg-emerald-200 dark:bg-white/10">
+                  <span className="text-emerald-800/60 dark:text-emerald-100/60">No image</span>
                 </div>
               )}
             </div>
@@ -185,7 +184,7 @@ const ListingDetail = () => {
                     className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition ${
                       selectedPhoto === index
                         ? 'border-primary'
-                        : 'border-gray-300 dark:border-white/20'
+                        : 'border-emerald-900/10 dark:border-white/20'
                     }`}
                   >
                     <img src={photo} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
@@ -197,11 +196,11 @@ const ListingDetail = () => {
             {/* Details */}
             <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
               <div className="mb-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Waste Type</p>
-                <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
+                <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1">Waste Type</p>
+                <h1 className="text-3xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-2">
                   {listing.description || listing.wasteType.replace(/_/g, ' ')}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-emerald-800/60 dark:text-emerald-100/60">
                   {listing.wasteType.replace(/_/g, ' ')}
                 </p>
               </div>
@@ -209,26 +208,26 @@ const ListingDetail = () => {
               {/* Condition Badge */}
               {listing.condition && (
                 <div className="mb-6">
-                  <span className="inline-block bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white text-sm font-medium px-3 py-1 rounded-xl">
+                  <span className="inline-block bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium px-3 py-1 rounded-xl">
                     Condition: {listing.condition}
                   </span>
                 </div>
               )}
 
               {/* Quantity & Specs */}
-              <div className="mb-6 pb-6 border-b border-gray-200 dark:border-white/10">
+              <div className="mb-6 pb-6 border-b border-emerald-900/10 dark:border-white/10">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                    <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1">
                       Quantity Available
                     </p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="text-lg font-semibold text-emerald-950 dark:text-white">
                       {listing.quantity} {listing.unit}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Listed On</p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1">Listed On</p>
+                    <p className="text-lg font-semibold text-emerald-950 dark:text-white">
                       {new Date(
                         listing.createdAt?.toDate?.() || listing.createdAt
                       ).toLocaleDateString()}
@@ -240,8 +239,8 @@ const ListingDetail = () => {
               {/* Description */}
               {listing.description && (
                 <div className="mb-6">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Description</h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <h3 className="font-semibold text-emerald-950 dark:text-white mb-2">Description</h3>
+                  <p className="text-emerald-800/60 dark:text-emerald-100/60 leading-relaxed">
                     {listing.description}
                   </p>
                 </div>
@@ -250,7 +249,7 @@ const ListingDetail = () => {
               {/* Tags */}
               {listing.tags && listing.tags.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Tags</h3>
+                  <h3 className="font-semibold text-emerald-950 dark:text-white mb-2">Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {listing.tags.map((tag) => (
                       <span
@@ -266,8 +265,8 @@ const ListingDetail = () => {
 
               {/* Location */}
               {listing.location && (
-                <div className="flex gap-2 text-gray-600 dark:text-gray-400">
-                  <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <div className="flex gap-2 text-emerald-800/60 dark:text-emerald-100/60">
+                  <span className="material-icons-round text-xl flex-shrink-0 mt-0.5">location_on</span>
                   <div>
                     <p className="text-sm font-medium">{listing.location.address}</p>
                     <p className="text-sm">{listing.location.city}</p>
@@ -286,49 +285,46 @@ const ListingDetail = () => {
                 <p className="text-4xl font-extrabold text-primary mb-1">
                   ${listing.pricePerUnit}
                 </p>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                <p className="text-emerald-800/60 dark:text-emerald-100/60 text-sm">
                   per {listing.unit} (Total: ${listing.totalPrice})
                 </p>
               </div>
 
               {/* Currency & Status */}
-              <div className="mb-6 pb-6 border-b border-gray-200 dark:border-white/10">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="mb-6 pb-6 border-b border-emerald-900/10 dark:border-white/10">
+                <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                   Currency:{' '}
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="font-medium text-emerald-950 dark:text-white">
                     {listing.currency}
                   </span>
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mt-2">
                   Status:{' '}
                   <span className="font-medium text-primary capitalize">{listing.status}</span>
                 </p>
               </div>
 
               {/* Seller Info */}
-              <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 mb-6">
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Sold by</p>
+              <div className="bg-emerald-50/50 dark:bg-white/5 rounded-xl p-4 mb-6">
+                <p className="text-xs text-emerald-800/60 dark:text-emerald-100/60 mb-3">Sold by</p>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-white/20 flex-shrink-0"></div>
+                  <div className="w-10 h-10 rounded-full bg-emerald-200 dark:bg-white/20 flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 dark:text-white text-sm">
+                    <p className="font-semibold text-emerald-950 dark:text-white text-sm">
                       {listing.sellerProfile?.name}
                     </p>
                     {listing.sellerProfile?.rating > 0 && (
                       <div className="flex items-center gap-1 mt-1">
                         <div className="flex">
                           {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${
+                            <span key={i} className={`material-icons-round text-sm ${
                                 i < Math.round(listing.sellerProfile.rating)
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300 dark:text-gray-600'
-                              }`}
-                            />
+                                  ? 'text-yellow-400'
+                                  : 'text-emerald-300 dark:text-emerald-800'
+                              }`}>star</span>
                           ))}
                         </div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                        <span className="text-xs text-emerald-800/60 dark:text-emerald-100/60">
                           {listing.sellerProfile.rating.toFixed(1)}(
                           {listing.sellerProfile.reviewCount})
                         </span>
@@ -342,21 +338,21 @@ const ListingDetail = () => {
               {!isSeller && (
                 <button
                   onClick={handleMakeOffer}
-                  className="w-full py-3 bg-gradient-to-r from-primary to-emerald-400 text-white font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition mb-3 shadow-lg"
+                  className="w-full py-3 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition mb-3 shadow-lg"
                 >
                   Make an Offer
                 </button>
               )}
 
               {isSeller && (
-                <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
+                <div className="text-center text-emerald-800/60 dark:text-emerald-100/60 text-sm">
                   This is your listing
                 </div>
               )}
 
               {/* Share Button */}
-              <button className="w-full py-3 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 transition flex items-center justify-center gap-2">
-                <Share2 className="w-4 h-4" />
+              <button className="w-full py-3 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition flex items-center justify-center gap-2">
+                <span className="material-icons-round text-base">share</span>
                 Share
               </button>
             </div>

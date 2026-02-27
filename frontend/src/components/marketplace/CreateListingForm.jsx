@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, Upload, X, MapPin, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import useDarkMode from '../../hooks/useDarkMode';
 
@@ -201,7 +200,7 @@ const CreateListingForm = ({ listingId = null }) => {
 
   /* ── Shared input classes ─────────────────────────────────────── */
   const inputCls =
-    'w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors';
+    'w-full px-4 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors';
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
@@ -210,12 +209,12 @@ const CreateListingForm = ({ listingId = null }) => {
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <span className="material-icons-round text-xl">chevron_left</span>
             Back
           </button>
-          <h1 className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          <h1 className="text-xl font-extrabold tracking-tight text-emerald-950 dark:text-white">
             {listingId ? 'Edit Listing' : 'Create Listing'}
           </h1>
           <div className="w-5"></div>
@@ -225,7 +224,7 @@ const CreateListingForm = ({ listingId = null }) => {
       <div className="max-w-2xl mx-auto px-4 py-8">
         {error && (
           <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+            <span className="material-icons-round text-xl text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5">error</span>
             <div>
               <p className="font-medium text-red-900 dark:text-red-200">{error}</p>
             </div>
@@ -238,13 +237,13 @@ const CreateListingForm = ({ listingId = null }) => {
         >
           {/* Photos Section */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Photos</h3>
+            <h3 className="text-lg font-semibold text-emerald-950 dark:text-white mb-4">Photos</h3>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {formData.photos.map((photo, index) => (
                 <div
                   key={index}
-                  className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-white/5 group"
+                  className="relative aspect-square rounded-xl overflow-hidden bg-white/50 dark:bg-white/5 group"
                 >
                   <img src={photo} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
                   <button
@@ -252,7 +251,7 @@ const CreateListingForm = ({ listingId = null }) => {
                     onClick={() => removePhoto(index)}
                     className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                   >
-                    <X className="w-4 h-4" />
+                    <span className="material-icons-round text-base">close</span>
                   </button>
                 </div>
               ))}
@@ -262,10 +261,10 @@ const CreateListingForm = ({ listingId = null }) => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={photoUploading}
-                  className="aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-white/20 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-white/5 transition disabled:opacity-50"
+                  className="aspect-square rounded-xl border-2 border-dashed border-emerald-900/10 dark:border-white/20 flex flex-col items-center justify-center gap-2 hover:bg-primary/5 dark:hover:bg-white/5 transition disabled:opacity-50"
                 >
-                  <Upload className="w-6 h-6 text-gray-400 dark:text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="material-icons-round text-2xl text-emerald-800/40 dark:text-emerald-100/40">upload</span>
+                  <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                     {photoUploading ? 'Uploading...' : 'Add Photo'}
                   </span>
                 </button>
@@ -281,20 +280,20 @@ const CreateListingForm = ({ listingId = null }) => {
               className="hidden"
             />
 
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
               Upload up to 5 photos. First photo will be the thumbnail.
             </p>
           </div>
 
           {/* Waste Details */}
-          <div className="mb-8 pb-8 border-b border-gray-200 dark:border-white/10">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className="mb-8 pb-8 border-b border-emerald-900/10 dark:border-white/10">
+            <h3 className="text-lg font-semibold text-emerald-950 dark:text-white mb-4">
               Waste Details
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Waste Type *
                 </label>
                 <select
@@ -318,7 +317,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Condition *
                 </label>
                 <select
@@ -334,7 +333,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Quantity *
                 </label>
                 <input
@@ -350,7 +349,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Unit *
                 </label>
                 <select
@@ -368,7 +367,7 @@ const CreateListingForm = ({ listingId = null }) => {
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                 Description
               </label>
               <textarea
@@ -383,12 +382,12 @@ const CreateListingForm = ({ listingId = null }) => {
           </div>
 
           {/* Pricing */}
-          <div className="mb-8 pb-8 border-b border-gray-200 dark:border-white/10">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pricing</h3>
+          <div className="mb-8 pb-8 border-b border-emerald-900/10 dark:border-white/10">
+            <h3 className="text-lg font-semibold text-emerald-950 dark:text-white mb-4">Pricing</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Price per {formData.unit || 'unit'} *
                 </label>
                 <input
@@ -404,7 +403,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Currency
                 </label>
                 <select
@@ -422,7 +421,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Total Price
                 </label>
                 <input
@@ -433,19 +432,19 @@ const CreateListingForm = ({ listingId = null }) => {
                       ? `${formData.currency} ${(formData.pricePerUnit * formData.quantity).toFixed(2)}`
                       : 'Calculate'
                   }
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400"
+                  className="w-full px-4 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-emerald-50/50 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-100/60"
                 />
               </div>
             </div>
           </div>
 
           {/* Location */}
-          <div className="mb-8 pb-8 border-b border-gray-200 dark:border-white/10">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Location</h3>
+          <div className="mb-8 pb-8 border-b border-emerald-900/10 dark:border-white/10">
+            <h3 className="text-lg font-semibold text-emerald-950 dark:text-white mb-4">Location</h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   Address *
                 </label>
                 <input
@@ -460,7 +459,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                   City *
                 </label>
                 <input
@@ -475,7 +474,7 @@ const CreateListingForm = ({ listingId = null }) => {
               </div>
 
               {formData.location.latitude && formData.location.longitude && (
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                   📍 Coordinates: {formData.location.latitude.toFixed(4)},{' '}
                   {formData.location.longitude.toFixed(4)}
                 </p>
@@ -485,7 +484,7 @@ const CreateListingForm = ({ listingId = null }) => {
 
           {/* Tags */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-lg font-semibold text-emerald-950 dark:text-white mb-4">
               Tags (Optional)
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -496,8 +495,8 @@ const CreateListingForm = ({ listingId = null }) => {
                   onClick={() => toggleTag(tag)}
                   className={`px-4 py-2 rounded-xl font-medium transition ${
                     formData.tags.includes(tag)
-                      ? 'bg-gradient-to-r from-primary to-emerald-400 text-white'
-                      : 'bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20'
+                      ? 'bg-gradient-to-r from-primary to-emerald-400 text-emerald-950'
+                      : 'bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white hover:bg-primary/10 dark:hover:bg-white/20'
                   }`}
                 >
                   {tag}
@@ -511,14 +510,14 @@ const CreateListingForm = ({ listingId = null }) => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex-1 px-6 py-3 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-white font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition"
+              className="flex-1 px-6 py-3 border border-emerald-900/10 dark:border-white/20 text-emerald-950 dark:text-white font-medium rounded-xl hover:bg-primary/5 dark:hover:bg-white/5 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-white font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition disabled:opacity-50 shadow-lg"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition disabled:opacity-50 shadow-lg"
             >
               {submitting ? 'Saving...' : listingId ? 'Update Listing' : 'Create Listing'}
             </button>

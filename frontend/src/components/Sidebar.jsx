@@ -20,6 +20,13 @@ const NAV_ITEMS = [
   { label: 'Settings', icon: 'settings', path: '/dashboard/settings' },
 ];
 
+// Enterprise-specific nav items
+const ENTERPRISE_NAV_ITEMS = [
+  { label: 'Overview', icon: 'bar_chart', path: '/dashboard/enterprise', end: true },
+  { label: 'Pricing Tiers', icon: 'attach_money', path: '/dashboard/enterprise/pricing' },
+  { label: 'Analytics', icon: 'pie_chart', path: '/dashboard/enterprise/analytics' },
+];
+
 const EXPANDED_WIDTH = 256;
 const COLLAPSED_WIDTH = 72;
 
@@ -30,6 +37,15 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useDarkMode();
+
+  // Detect enterprise context from URL
+  const isEnterprise = location.pathname.startsWith('/dashboard/enterprise');
+  const navItems = isEnterprise ? ENTERPRISE_NAV_ITEMS : NAV_ITEMS;
+
+  // Enterprise mock user from localStorage
+  const enterpriseUser = isEnterprise
+    ? JSON.parse(localStorage.getItem('mockUser') || '{}')
+    : null;
 
   // Auto-dismiss mobile drawer on nav
   useEffect(() => {
@@ -49,6 +65,13 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   }, [isMobile, mobileOpen, onMobileClose]);
 
   const handleLogout = async () => {
+    if (isEnterprise) {
+      localStorage.removeItem('mockUser');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userType');
+      navigate('/');
+      return;
+    }
     navigate('/');
     try {
       await logout();
@@ -60,8 +83,10 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
   const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   /* ─── Shared nav content (used by both desktop & mobile) ─── */
+  const brandPath = isEnterprise ? '/dashboard/enterprise' : '/dashboard';
+
   const renderBrand = () => (
-    <NavLink to="/dashboard" className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} mb-10 group`}>
+    <NavLink to={brandPath} className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'} mb-10 group`}>
       <div className="relative w-12 h-12 flex-shrink-0 transition-all duration-300 group-hover:scale-105">
         <img
           src="/logo.jpg"
@@ -84,7 +109,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
 
   const renderNav = (showLabels = true) => (
     <nav className="flex-1 space-y-2">
-      {NAV_ITEMS.map((item) => (
+      {navItems.map((item) => (
         <NavLink
           key={item.path}
           to={item.path}
@@ -157,7 +182,9 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
       <div className={`flex items-center ${showLabels ? 'gap-3' : 'justify-center'}`}>
         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-emerald-400 p-0.5 shadow-lg shadow-primary/30 flex-shrink-0">
           <div className="w-full h-full bg-emerald-50 dark:bg-emerald-950 rounded-full flex items-center justify-center border-[3px] border-emerald-50 dark:border-emerald-950 transition-colors duration-500 overflow-hidden">
-            {user?.photoURL ? (
+            {isEnterprise ? (
+              <span className="material-icons-round text-primary text-base">domain</span>
+            ) : user?.photoURL ? (
               <img src={user.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             ) : (
               <span className="material-icons-round text-primary text-base">person</span>
@@ -166,8 +193,12 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
         </div>
         {showLabels && (
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-emerald-950 dark:text-white truncate transition-colors duration-500">{user?.displayName || 'User'}</p>
-            <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 transition-colors duration-500">Eco Warrior</p>
+            <p className="text-sm font-bold text-emerald-950 dark:text-white truncate transition-colors duration-500">
+              {isEnterprise ? (enterpriseUser?.displayName || 'Enterprise') : (user?.displayName || 'User')}
+            </p>
+            <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 transition-colors duration-500">
+              {isEnterprise ? 'Enterprise' : 'Eco Warrior'}
+            </p>
           </div>
         )}
       </div>

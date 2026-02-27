@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useDarkMode from '../../hooks/useDarkMode';
@@ -11,10 +11,10 @@ import useDarkMode from '../../hooks/useDarkMode';
  * Adapted to project's emerald / glassmorphism / dark-mode design.
  */
 
-const EnterpriseDashboard = () => {
+const EnterpriseDashboard = ({ tab = 'overview' }) => {
   const navigate = useNavigate();
   const { isDark } = useDarkMode();
-  const [activeTab, setActiveTab] = useState('overview');
+  const activeTab = tab;
 
   /* ── Mock data (unchanged) ────────────────────────────────────── */
 
@@ -63,15 +63,6 @@ const EnterpriseDashboard = () => {
     { month: 'Jun', spent: 2200, orders: 6 },
   ];
 
-  /* ── Handlers ─────────────────────────────────────────────────── */
-
-  const handleLogout = () => {
-    localStorage.removeItem('mockUser');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userType');
-    navigate('/');
-  };
-
   /* ── Render ───────────────────────────────────────────────────── */
 
   return (
@@ -90,36 +81,6 @@ const EnterpriseDashboard = () => {
             Manage your bulk waste procurement and supplier relationships.
           </p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleLogout}
-          className="bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-emerald-900/10 dark:border-white/10 shadow-lg backdrop-blur-md hover:dark:bg-white/10"
-        >
-          Logout
-        </motion.button>
-      </div>
-
-      {/* ── Tab Navigation ── */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {[
-          { key: 'overview', label: 'Overview', icon: 'bar_chart' },
-          { key: 'pricing', label: 'Pricing Tiers', icon: 'attach_money' },
-          { key: 'analytics', label: 'Analytics', icon: 'pie_chart' },
-        ].map(({ key, label, icon }) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
-              activeTab === key
-                ? 'bg-primary/15 text-primary border border-primary/20'
-                : 'text-emerald-800/70 dark:text-emerald-100/60 hover:bg-primary/5 dark:hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            <span className="material-icons-round text-lg">{icon}</span>
-            {label}
-          </button>
-        ))}
       </div>
 
       {/* ── Post Request Button ── */}
@@ -207,7 +168,7 @@ const EnterpriseDashboard = () => {
                 { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => alert('Mock: Bulk supplier search form') },
                 { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
                 { icon: 'inventory_2', color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
-                { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => setActiveTab('analytics') },
+                { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => navigate('/dashboard/enterprise/analytics') },
               ].map(({ icon, color, title, desc, action }) => (
                 <button
                   key={title}

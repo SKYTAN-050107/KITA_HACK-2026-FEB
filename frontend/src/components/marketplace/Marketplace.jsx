@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { MapPin, Star, TrendingUp, Filter, Search, ChevronRight } from 'lucide-react';
 import useDarkMode from '../../hooks/useDarkMode';
 
 const Marketplace = () => {
@@ -111,10 +110,10 @@ const Marketplace = () => {
       {/* Header */}
       <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-2">
             Marketplace
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-emerald-800/60 dark:text-emerald-100/60">
             Buy and sell valuable waste with confidence
           </p>
         </div>
@@ -129,7 +128,7 @@ const Marketplace = () => {
               className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
                 activeTab === 'listings'
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
               }`}
             >
               Available Items ({listings.length})
@@ -139,7 +138,7 @@ const Marketplace = () => {
               className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
                 activeTab === 'requests'
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
               }`}
             >
               Buyer Requests ({buyerRequests.length})
@@ -154,16 +153,16 @@ const Marketplace = () => {
           <div className="flex gap-3 flex-wrap items-center">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-300 dark:border-white/20 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-primary/5 dark:hover:bg-white/5 transition"
             >
-              <Filter className="w-4 h-4" />
+              <span className="material-icons-round text-base">filter_list</span>
               Filters
             </button>
 
             {(filters.wasteType || filters.minPrice || filters.maxPrice) && (
               <button
                 onClick={clearFilters}
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline"
+                className="text-sm text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white underline"
               >
                 Clear filters
               </button>
@@ -176,13 +175,13 @@ const Marketplace = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Waste Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                     Waste Type
                   </label>
                   <select
                     value={filters.wasteType}
                     onChange={(e) => handleFilterChange('wasteType', e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                   >
                     <option value="">All types</option>
                     <option value="plastic_bottle">Plastic Bottles</option>
@@ -198,41 +197,41 @@ const Marketplace = () => {
 
                 {/* Min Price */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                     Min Price ($)
                   </label>
                   <input
                     type="number"
                     value={filters.minPrice}
                     onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                     placeholder="0"
                   />
                 </div>
 
                 {/* Max Price */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                     Max Price ($)
                   </label>
                   <input
                     type="number"
                     value={filters.maxPrice}
                     onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                     placeholder="999"
                   />
                 </div>
 
                 {/* Sort */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
                     Sort By
                   </label>
                   <select
                     value={filters.sortBy}
                     onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                    className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                   >
                     <option value="newest">Newest First</option>
                     <option value="price-asc">Price: Low to High</option>
@@ -251,8 +250,8 @@ const Marketplace = () => {
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <div className="inline-block w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary rounded-full animate-spin mb-3"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+              <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
+              <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading...</p>
             </div>
           </div>
         ) : error ? (
@@ -263,8 +262,8 @@ const Marketplace = () => {
           <div>
             {listings.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">No listings found</p>
-                <p className="text-gray-500 dark:text-gray-500">
+                <p className="text-emerald-800/60 dark:text-emerald-100/60 text-lg mb-4">No listings found</p>
+                <p className="text-emerald-800/50 dark:text-emerald-100/40">
                   Try adjusting your filters or check back later
                 </p>
               </div>
@@ -276,7 +275,7 @@ const Marketplace = () => {
                     className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 overflow-hidden hover:shadow-lg transition"
                   >
                     {/* Image */}
-                    <div className="w-full h-48 bg-gray-200 dark:bg-white/5 relative overflow-hidden">
+                    <div className="w-full h-48 bg-emerald-100/50 dark:bg-white/5 relative overflow-hidden">
                       {listing.photos && listing.photos[0] ? (
                         <img
                           src={listing.photos[0]}
@@ -285,11 +284,11 @@ const Marketplace = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Search className="w-12 h-12 text-gray-400 dark:text-gray-600" />
+                          <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">search</span>
                         </div>
                       )}
                       {listing.condition && (
-                        <div className="absolute top-2 right-2 bg-gray-900/80 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                        <div className="absolute top-2 right-2 bg-emerald-950/80 text-white text-xs font-medium px-2 py-1 rounded-lg">
                           {listing.condition}
                         </div>
                       )}
@@ -297,13 +296,13 @@ const Marketplace = () => {
 
                     {/* Content */}
                     <div className="p-4">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                      <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1">
                         {listing.wasteType.replace(/_/g, ' ')}
                       </p>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                      <h3 className="font-semibold text-emerald-950 dark:text-white mb-2 line-clamp-2">
                         {listing.description || listing.wasteType}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-3">
                         {listing.quantity} {listing.unit}
                       </p>
 
@@ -311,26 +310,26 @@ const Marketplace = () => {
                       <div className="mb-3">
                         <p className="text-2xl font-extrabold text-primary">
                           ${listing.pricePerUnit}{' '}
-                          <span className="text-sm text-gray-600 dark:text-gray-400 font-normal">
+                          <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
                             /{listing.unit}
                           </span>
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                        <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">
                           Total: ${listing.totalPrice}
                         </p>
                       </div>
 
                       {/* Seller Profile */}
-                      <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200 dark:border-white/10">
-                        <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-white/20"></div>
+                      <div className="flex items-center gap-2 mb-3 pb-3 border-b border-emerald-900/10 dark:border-white/10">
+                        <div className="w-8 h-8 rounded-full bg-emerald-200 dark:bg-white/20"></div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          <p className="text-sm font-medium text-emerald-950 dark:text-white truncate">
                             {listing.sellerProfile?.name}
                           </p>
                           {listing.sellerProfile?.rating > 0 && (
                             <div className="flex items-center gap-1">
-                              <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                              <span className="text-xs text-gray-600 dark:text-gray-400">
+                              <span className="material-icons-round text-sm text-yellow-400">star</span>
+                              <span className="text-xs text-emerald-800/60 dark:text-emerald-100/60">
                                 {listing.sellerProfile.rating.toFixed(1)}
                                 ({listing.sellerProfile.reviewCount})
                               </span>
@@ -341,8 +340,8 @@ const Marketplace = () => {
 
                       {/* Location */}
                       {listing.location?.city && (
-                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-4">
-                          <MapPin className="w-3 h-3" />
+                        <div className="flex items-center gap-1 text-xs text-emerald-800/60 dark:text-emerald-100/60 mb-4">
+                          <span className="material-icons-round text-sm">location_on</span>
                           {listing.location.city}
                         </div>
                       )}
@@ -351,13 +350,13 @@ const Marketplace = () => {
                       <div className="flex gap-2">
                         <Link
                           to={`/dashboard/marketplace/listings/${listing.listingId}`}
-                          className="flex-1 px-3 py-2 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-white/20 transition text-center"
+                          className="flex-1 px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
                         >
                           View
                         </Link>
                         <button
                           onClick={() => handleMakeOffer(listing, 'listing')}
-                          className="flex-1 px-3 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white text-sm font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
+                          className="flex-1 px-3 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 text-sm font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
                         >
                           Offer
                         </button>
@@ -372,10 +371,10 @@ const Marketplace = () => {
           <div>
             {buyerRequests.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">
+                <p className="text-emerald-800/60 dark:text-emerald-100/60 text-lg mb-4">
                   No buyer requests found
                 </p>
-                <p className="text-gray-500 dark:text-gray-500">
+                <p className="text-emerald-800/50 dark:text-emerald-100/40">
                   Check back later for opportunities to sell
                 </p>
               </div>
@@ -389,20 +388,20 @@ const Marketplace = () => {
                     {/* Buyer Profile */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                        <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-1">
                           {request.buyerProfile?.verificationStatus === 'verified' ? (
                             <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-lg text-xs font-medium">
                               ✓ Verified Buyer
                             </span>
                           ) : null}
                         </p>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                        <h3 className="font-semibold text-emerald-950 dark:text-white">
                           {request.buyerProfile?.companyName || request.buyerProfile?.name}
                         </h3>
                         {request.buyerProfile?.rating > 0 && (
                           <div className="flex items-center gap-1 mt-1">
-                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
+                            <span className="material-icons-round text-sm text-yellow-400">star</span>
+                            <span className="text-xs text-emerald-800/60 dark:text-emerald-100/60">
                               {request.buyerProfile.rating.toFixed(1)}
                               ({request.buyerProfile.reviewCount})
                             </span>
@@ -412,20 +411,20 @@ const Marketplace = () => {
                     </div>
 
                     {/* Details */}
-                    <div className="mb-4 pb-4 border-b border-gray-200 dark:border-white/10">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <div className="mb-4 pb-4 border-b border-emerald-900/10 dark:border-white/10">
+                      <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-2">
                         Looking for:{' '}
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-emerald-950 dark:text-white">
                           {request.wasteType.replace(/_/g, ' ')}
                         </span>
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-2">
                         Quantity needed:{' '}
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-emerald-950 dark:text-white">
                           {request.quantityNeeded} {request.unit}
                         </span>
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60">
                         {request.description}
                       </p>
                     </div>
@@ -434,13 +433,13 @@ const Marketplace = () => {
                     <div className="mb-4">
                       <p className="text-2xl font-extrabold text-primary mb-2">
                         ${request.priceOffered}{' '}
-                        <span className="text-sm text-gray-600 dark:text-gray-400 font-normal">
+                        <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
                           /{request.unit}
                         </span>
                       </p>
                       {request.location?.city && (
-                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
-                          <MapPin className="w-3 h-3" />
+                        <div className="flex items-center gap-1 text-xs text-emerald-800/60 dark:text-emerald-100/60">
+                          <span className="material-icons-round text-sm">location_on</span>
                           {request.location.city}
                         </div>
                       )}
@@ -449,7 +448,7 @@ const Marketplace = () => {
                     {/* Deadline */}
                     {request.deadline && (
                       <div className="flex items-center gap-1 text-xs text-red-600 dark:text-red-400 mb-4">
-                        <TrendingUp className="w-3 h-3" />
+                        <span className="material-icons-round text-sm">trending_up</span>
                         Deadline: {new Date(request.deadline).toLocaleDateString()}
                       </div>
                     )}
@@ -457,7 +456,7 @@ const Marketplace = () => {
                     {/* Action */}
                     <button
                       onClick={() => handleMakeOffer(request, 'request')}
-                      className="w-full px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
+                      className="w-full px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
                     >
                       Respond with Your Waste
                     </button>

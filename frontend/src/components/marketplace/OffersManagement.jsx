@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, MessageCircle, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import useDarkMode from '../../hooks/useDarkMode';
 
@@ -62,11 +61,11 @@ const OffersManagement = () => {
       case 'accepted':
         return 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-900 dark:text-green-200';
       case 'completed':
-        return 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-200';
+        return 'bg-emerald-50/50 dark:bg-white/5 border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-emerald-200';
       case 'cancelled':
         return 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-900 dark:text-red-200';
       default:
-        return 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-200';
+        return 'bg-emerald-50/50 dark:bg-white/5 border-emerald-900/10 dark:border-white/10 text-emerald-950 dark:text-emerald-200';
     }
   };
 
@@ -74,13 +73,13 @@ const OffersManagement = () => {
     switch (status) {
       case 'accepted':
       case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />;
+        return <span className="material-icons-round text-xl text-green-600 dark:text-green-400">check_circle</span>;
       case 'cancelled':
-        return <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />;
+        return <span className="material-icons-round text-xl text-red-600 dark:text-red-400">cancel</span>;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+        return <span className="material-icons-round text-xl text-yellow-600 dark:text-yellow-400">schedule</span>;
       default:
-        return <MessageCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+        return <span className="material-icons-round text-xl text-blue-600 dark:text-blue-400">chat</span>;
     }
   };
 
@@ -92,16 +91,16 @@ const OffersManagement = () => {
           <div className="flex items-center gap-4 mb-4">
             <button
               onClick={() => navigate('/dashboard/marketplace')}
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="flex items-center gap-2 text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white transition-colors"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <span className="material-icons-round text-xl">chevron_left</span>
               Back
             </button>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-emerald-950 dark:text-white mb-2">
             My Offers
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-emerald-800/60 dark:text-emerald-100/60">
             Manage your buying and selling transactions
           </p>
         </div>
@@ -116,7 +115,7 @@ const OffersManagement = () => {
               className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
                 activeTab === 'received'
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
               }`}
             >
               Offers Received ({offers.filter((o) => o.sellerId === user?.uid).length})
@@ -126,7 +125,7 @@ const OffersManagement = () => {
               className={`py-4 px-1 font-medium text-sm border-b-2 transition ${
                 activeTab === 'sent'
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  : 'border-transparent text-emerald-800/60 dark:text-emerald-100/60 hover:text-emerald-950 dark:hover:text-white'
               }`}
             >
               Offers Sent ({offers.filter((o) => o.buyerId === user?.uid).length})
@@ -140,8 +139,8 @@ const OffersManagement = () => {
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <div className="inline-block w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary rounded-full animate-spin mb-3"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading offers...</p>
+              <div className="inline-block w-8 h-8 border-4 border-emerald-300 dark:border-emerald-800 border-t-primary rounded-full animate-spin mb-3"></div>
+              <p className="text-emerald-800/60 dark:text-emerald-100/60">Loading offers...</p>
             </div>
           </div>
         ) : error ? (
@@ -150,8 +149,8 @@ const OffersManagement = () => {
           </div>
         ) : offers.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">No offers yet</p>
-            <p className="text-gray-500 dark:text-gray-500 mb-6">
+            <p className="text-emerald-800/60 dark:text-emerald-100/60 text-lg mb-4">No offers yet</p>
+            <p className="text-emerald-800/50 dark:text-emerald-100/40 mb-6">
               {activeTab === 'received'
                 ? 'Buyers will see your listings and make offers'
                 : 'Browse the marketplace to make offers on items'}
@@ -159,7 +158,7 @@ const OffersManagement = () => {
             {activeTab === 'sent' && (
               <button
                 onClick={() => navigate('/dashboard/marketplace')}
-                className="inline-block px-6 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-medium rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
+                className="inline-block px-6 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
               >
                 Browse Marketplace
               </button>
@@ -193,13 +192,13 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
     switch (status) {
       case 'accepted':
       case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />;
+        return <span className="material-icons-round text-xl text-green-600 dark:text-green-400">check_circle</span>;
       case 'cancelled':
-        return <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />;
+        return <span className="material-icons-round text-xl text-red-600 dark:text-red-400">cancel</span>;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+        return <span className="material-icons-round text-xl text-yellow-600 dark:text-yellow-400">schedule</span>;
       default:
-        return <MessageCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+        return <span className="material-icons-round text-xl text-blue-600 dark:text-blue-400">chat</span>;
     }
   };
 
@@ -212,11 +211,11 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
       case 'accepted':
         return 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800';
       case 'completed':
-        return 'bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-white/10';
+        return 'bg-white/50 dark:bg-white/5 text-emerald-800 dark:text-emerald-200 border-emerald-900/10 dark:border-white/10';
       case 'cancelled':
         return 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800';
       default:
-        return 'bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-white/10';
+        return 'bg-white/50 dark:bg-white/5 text-emerald-800 dark:text-emerald-200 border-emerald-900/10 dark:border-white/10';
     }
   };
 
@@ -238,7 +237,7 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
         <div className="flex-1">
           {/* Header: Item & Price */}
           <div className="flex items-baseline gap-3 mb-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
+            <h3 className="font-semibold text-emerald-950 dark:text-white text-lg">
               {isReceived
                 ? `Offer from ${offer.buyerId.substring(0, 8)}`
                 : `Offer to ${offer.sellerId.substring(0, 8)}`}
@@ -247,7 +246,7 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
           </div>
 
           {/* Details */}
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-sm text-emerald-800/60 dark:text-emerald-100/60 mb-3">
             {offer.quantity} {offer.unit}
             {offer.listingId && ' • From listing'}
             {offer.requestId && ' • For buyer request'}
@@ -265,8 +264,8 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
             </div>
 
             {messageCount > 0 && (
-              <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                <MessageCircle className="w-4 h-4" />
+              <div className="flex items-center gap-1 text-sm text-emerald-800/60 dark:text-emerald-100/60">
+                <span className="material-icons-round text-base">chat</span>
                 {messageCount} message{messageCount !== 1 ? 's' : ''}
               </div>
             )}
@@ -274,7 +273,7 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
         </div>
 
         {/* Timeline */}
-        <div className="text-right text-xs text-gray-500 dark:text-gray-500 whitespace-nowrap">
+        <div className="text-right text-xs text-emerald-800/50 dark:text-emerald-100/40 whitespace-nowrap">
           <p>
             {new Date(
               offer.timeline?.createdAt?.toDate?.() || offer.timeline?.createdAt
@@ -288,15 +287,15 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
 
       {/* Last Message Preview */}
       {lastMessage && (
-        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 text-sm">
-          <p className="text-gray-700 dark:text-gray-300">
-            <span className="font-medium text-gray-900 dark:text-white">
+        <div className="bg-emerald-50/50 dark:bg-white/5 rounded-xl p-3 text-sm">
+          <p className="text-emerald-800/70 dark:text-emerald-200/70">
+            <span className="font-medium text-emerald-950 dark:text-white">
               {lastMessage.sender === userId ? 'You' : 'Them'}:
             </span>{' '}
             {lastMessage.text.substring(0, 50)}
             {lastMessage.text.length > 50 ? '...' : ''}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+          <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40 mt-1">
             {new Date(
               lastMessage.timestamp?.toDate?.() || lastMessage.timestamp
             ).toLocaleString()}

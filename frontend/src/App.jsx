@@ -43,6 +43,8 @@ function App() {
         <Route element={<EnterpriseProtectedRoute />}>
           <Route path="/dashboard/enterprise" element={<DashboardLayout />}>
             <Route index element={<EnterpriseDashboard />} />
+            <Route path="pricing" element={<EnterpriseDashboard tab="pricing" />} />
+            <Route path="analytics" element={<EnterpriseDashboard tab="analytics" />} />
           </Route>
         </Route>
 
