@@ -37,14 +37,14 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<RoleSelector mode="login" LoginComponent={AuthPage} />} />
         <Route path="/signup" element={<RoleSelector mode="signup" SignupComponent={() => <AuthPage defaultMode="signup" />} />} />
-
-        {/* Enterprise routes (public, mock auth) */}
         <Route path="/login/enterprise" element={<EnterpriseLogin />} />
-        <Route path="/dashboard/enterprise" element={
-          <EnterpriseProtectedRoute>
-            <EnterpriseDashboard />
-          </EnterpriseProtectedRoute>
-        } />
+
+        {/* Enterprise dashboard — uses DashboardLayout (same sidebar+navbar as normal user) */}
+        <Route element={<EnterpriseProtectedRoute />}>
+          <Route path="/dashboard/enterprise" element={<DashboardLayout />}>
+            <Route index element={<EnterpriseDashboard />} />
+          </Route>
+        </Route>
 
         {/* Protected dashboard routes */}
         <Route element={<ProtectedRoute />}>

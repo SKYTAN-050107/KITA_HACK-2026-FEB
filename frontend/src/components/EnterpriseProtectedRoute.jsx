@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
 /**
  * EnterpriseProtectedRoute.jsx
@@ -7,6 +7,10 @@ import { Navigate } from 'react-router-dom';
  * Guards enterprise dashboard pages.
  * Uses localStorage mock auth (separate from your real user auth).
  * Does NOT interfere with your existing user auth/ProtectedRoute.
+ *
+ * Supports both patterns:
+ *   <Route element={<EnterpriseProtectedRoute />}>  (Outlet)
+ *   <EnterpriseProtectedRoute>{children}</EnterpriseProtectedRoute>
  */
 
 const EnterpriseProtectedRoute = ({ children }) => {
@@ -18,7 +22,7 @@ const EnterpriseProtectedRoute = ({ children }) => {
     return <Navigate to="/login/enterprise" replace />;
   }
 
-  return children;
+  return children || <Outlet />;
 };
 
 export default EnterpriseProtectedRoute;

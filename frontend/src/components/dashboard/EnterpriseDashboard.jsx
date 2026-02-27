@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import {
-  LogOut, Plus, Settings, TrendingUp, PieChart, Users,
-  DollarSign, Package, Clock, Bell, BarChart3, Target,
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import useDarkMode from '../../hooks/useDarkMode';
 
 /**
@@ -16,8 +13,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 
 const EnterpriseDashboard = () => {
   const navigate = useNavigate();
-  const { isDark: darkMode } = useDarkMode();
-  const [showMenu, setShowMenu] = useState(false);
+  const { isDark } = useDarkMode();
   const [activeTab, setActiveTab] = useState('overview');
 
   /* ── Mock data (unchanged) ────────────────────────────────────── */
@@ -79,111 +75,65 @@ const EnterpriseDashboard = () => {
   /* ── Render ───────────────────────────────────────────────────── */
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <header className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border-b border-white/40 dark:border-white/10 sticky top-0 z-20 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          {/* Logo & Branding */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/')}
-              className="text-2xl font-extrabold tracking-tight text-primary hover:text-emerald-500 flex items-center gap-2 transition-colors"
-            >
-              <Package className="w-8 h-8" />
-              KITA_HACK
-            </button>
-            <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-semibold rounded-full">
-              Enterprise
-            </span>
-          </div>
-
-          {/* Main Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {[
-              { key: 'overview', label: 'Overview', Icon: BarChart3 },
-              { key: 'pricing', label: 'Pricing Tiers', Icon: DollarSign },
-              { key: 'analytics', label: 'Analytics', Icon: PieChart },
-            ].map(({ key, label, Icon }) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
-                  activeTab === key
-                    ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-
-            {/* User Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setShowMenu(!showMenu)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
-              >
-                <div className="w-8 h-8 bg-emerald-200 dark:bg-emerald-800 rounded-full flex items-center justify-center text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                  {mockUser.displayName.charAt(0)}
-                </div>
-                <span className="hidden sm:inline text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {mockUser.displayName}
-                </span>
-              </button>
-
-              {/* Dropdown */}
-              {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-xl shadow-lg border border-white/40 dark:border-white/10 py-2 z-30">
-                  <Link
-                    to="/dashboard/settings"
-                    className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                    Settings
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+    <motion.div
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {/* ── Header — matching Dashboard.jsx ── */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-4xl font-extrabold text-emerald-950 dark:text-white mb-1 tracking-tight transition-colors duration-500">
+            Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-primary dark:from-emerald-400 dark:to-primary">{mockUser.companyName}</span> 🏢
+          </h1>
+          <p className="text-emerald-800/60 dark:text-emerald-100/60 font-medium transition-colors duration-500">
+            Manage your bulk waste procurement and supplier relationships.
+          </p>
         </div>
-      </header>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleLogout}
+          className="bg-white/50 dark:bg-white/5 text-emerald-900/90 dark:text-emerald-100/90 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-emerald-900/10 dark:border-white/10 shadow-lg backdrop-blur-md hover:dark:bg-white/10"
+        >
+          Logout
+        </motion.button>
+      </div>
 
-      {/* ── Main Content ────────────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Welcome */}
-        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
-              Welcome, {mockUser.companyName}! 🏢
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Manage your bulk waste procurement and supplier relationships.
-            </p>
-          </div>
+      {/* ── Tab Navigation ── */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {[
+          { key: 'overview', label: 'Overview', icon: 'bar_chart' },
+          { key: 'pricing', label: 'Pricing Tiers', icon: 'attach_money' },
+          { key: 'analytics', label: 'Analytics', icon: 'pie_chart' },
+        ].map(({ key, label, icon }) => (
           <button
-            onClick={() => alert('Mock: Post a new buyer request form would open')}
-            className="px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-white font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition flex items-center gap-2 shadow-lg"
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+              activeTab === key
+                ? 'bg-primary/15 text-primary border border-primary/20'
+                : 'text-emerald-800/70 dark:text-emerald-100/60 hover:bg-primary/5 dark:hover:bg-white/5 border border-transparent'
+            }`}
           >
-            <Plus className="w-5 h-5" />
-            Post Buyer Request
+            <span className="material-icons-round text-lg">{icon}</span>
+            {label}
           </button>
-        </div>
+        ))}
+      </div>
+
+      {/* ── Post Request Button ── */}
+      <div className="flex justify-end mb-6">
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => alert('Mock: Post a new buyer request form would open')}
+          className="px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all border border-emerald-50 dark:border-white/20 flex items-center gap-2 cursor-pointer"
+        >
+          <span className="material-icons-round text-lg">add</span>
+          Post Buyer Request
+        </motion.button>
+      </div>
 
         {/* ═══════════ OVERVIEW TAB ═══════════ */}
         {activeTab === 'overview' && (
@@ -194,7 +144,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Requests</p>
-                  <Target className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="material-icons-round text-xl text-emerald-600 dark:text-emerald-400">track_changes</span>
                 </div>
                 <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.activeRequests}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Looking for suppliers</p>
@@ -204,7 +154,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Suppliers</p>
-                  <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <span className="material-icons-round text-xl text-green-600 dark:text-green-400">group</span>
                 </div>
                 <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.connectedSuppliers}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Verified connections</p>
@@ -214,7 +164,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spending</p>
-                  <DollarSign className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <span className="material-icons-round text-xl text-purple-600 dark:text-purple-400">attach_money</span>
                 </div>
                 <p className="text-3xl font-extrabold text-gray-900 dark:text-white">${stats.totalSpending}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">This month (estimated)</p>
@@ -224,7 +174,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Price/kg</p>
-                  <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  <span className="material-icons-round text-xl text-orange-600 dark:text-orange-400">trending_up</span>
                 </div>
                 <p className="text-3xl font-extrabold text-gray-900 dark:text-white">${stats.averagePrice}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Across all purchases</p>
@@ -234,7 +184,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Orders</p>
-                  <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                  <span className="material-icons-round text-xl text-yellow-600 dark:text-yellow-400">schedule</span>
                 </div>
                 <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{stats.pendingOrders}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Awaiting fulfillment</p>
@@ -244,7 +194,7 @@ const EnterpriseDashboard = () => {
               <div className="bg-gradient-to-br from-primary to-emerald-400 rounded-xl p-6 text-white shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-emerald-100">Completed Deals</p>
-                  <BarChart3 className="w-5 h-5 text-emerald-100" />
+                  <span className="material-icons-round text-xl text-emerald-100">bar_chart</span>
                 </div>
                 <p className="text-3xl font-extrabold">{stats.completedDeals}</p>
                 <p className="text-xs text-emerald-100 mt-2">Successful transactions</p>
@@ -254,17 +204,17 @@ const EnterpriseDashboard = () => {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {[
-                { Icon: Users, color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => alert('Mock: Bulk supplier search form') },
-                { Icon: DollarSign, color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
-                { Icon: Package, color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
-                { Icon: PieChart, color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => setActiveTab('analytics') },
-              ].map(({ Icon, color, title, desc, action }) => (
+                { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => alert('Mock: Bulk supplier search form') },
+                { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
+                { icon: 'inventory_2', color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
+                { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => setActiveTab('analytics') },
+              ].map(({ icon, color, title, desc, action }) => (
                 <button
                   key={title}
                   onClick={action}
                   className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 p-6 hover:shadow-lg transition text-left"
                 >
-                  <Icon className={`w-8 h-8 ${color} mb-3`} />
+                  <span className={`material-icons-round text-3xl ${color} mb-3 block`}>{icon}</span>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{title}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{desc}</p>
                 </button>
@@ -378,7 +328,7 @@ const EnterpriseDashboard = () => {
 
                   <button
                     onClick={() => alert(`Mock: Edit ${tier.name} pricing tier`)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-white font-semibold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition"
+                    className="w-full px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all border border-emerald-50 dark:border-white/20 cursor-pointer"
                   >
                     Edit Tier
                   </button>
@@ -489,8 +439,7 @@ const EnterpriseDashboard = () => {
             </div>
           </div>
         )}
-      </main>
-    </div>
+    </motion.div>
   );
 };
 

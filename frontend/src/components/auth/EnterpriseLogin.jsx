@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ChevronLeft, AlertCircle, Eye, EyeOff, Building2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import useDarkMode from '../../hooks/useDarkMode';
 
 /**
@@ -13,7 +13,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 
 const EnterpriseLogin = () => {
   const navigate = useNavigate();
-  const { isDark: darkMode } = useDarkMode();
+  const { isDark, toggleDarkMode } = useDarkMode();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -77,145 +77,200 @@ const EnterpriseLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8 px-4 transition-colors">
-      {/* Back button */}
-      <div className="max-w-md mx-auto">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
+    <div className="min-h-screen relative overflow-hidden font-sans flex items-center justify-center p-4 bg-background-light dark:bg-emerald-950 transition-colors duration-500">
+      {/* Back Arrow — matching AuthPage */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.4, type: 'spring' }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => navigate('/login')}
+        className="fixed top-4 left-4 sm:top-6 sm:left-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-emerald-800 dark:text-emerald-200 p-2 sm:p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
+        aria-label="Back to login"
+      >
+        <span className="material-icons-round text-xl">arrow_back</span>
+      </motion.button>
+
+      {/* Dark Mode Toggle — matching AuthPage */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5, type: 'spring' }}
+        whileHover={{ scale: 1.1, rotate: 15 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={toggleDarkMode}
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-white/60 dark:bg-white/10 backdrop-blur-xl text-primary p-2 sm:p-3 rounded-full border border-emerald-900/10 dark:border-white/20 shadow-lg cursor-pointer transition-colors duration-500"
+        aria-label="Toggle dark mode"
+      >
+        <motion.span
+          key={isDark ? 'dark' : 'light'}
+          initial={{ rotate: -90, opacity: 0 }}
+          animate={{ rotate: 0, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="material-icons-round text-xl"
         >
-          <ChevronLeft className="w-5 h-5" />
-          Back
-        </button>
+          {isDark ? 'light_mode' : 'dark_mode'}
+        </motion.span>
+      </motion.button>
+
+      {/* Ambient Lighting Orbs — matching AuthPage */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-radial from-emerald-400/20 dark:from-emerald-400/20 to-transparent blur-[120px] rounded-full mix-blend-multiply dark:mix-blend-screen transition-colors duration-500"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.7, 0.5] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-radial from-emerald-600/20 dark:from-emerald-600/20 to-transparent blur-[120px] rounded-full mix-blend-multiply dark:mix-blend-screen transition-colors duration-500"
+        />
       </div>
 
-      {/* Form Card — glassmorphism */}
-      <div className="max-w-md mx-auto bg-white/60 dark:bg-white/10 backdrop-blur-2xl rounded-[2rem] shadow-lg border border-white/40 dark:border-white/10 p-8">
-        {/* Header with Icon */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Building2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
-            Enterprise Login
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Buy waste in bulk with verified suppliers
-          </p>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-            <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Company Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="company@example.com"
-              className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-            />
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        className="w-full max-w-md relative z-10"
+      >
+        <div className="bg-white/60 dark:bg-white/10 backdrop-blur-2xl border border-emerald-900/10 dark:border-white/20 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-950/80 transition-colors duration-500">
+          {/* Header — same layout as AuthPage */}
+          <div className="text-center mb-6 sm:mb-10">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.5 }}
+              className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 cursor-pointer"
+            >
+              <img src="/logo.jpg" alt="RecycleNow Logo" className="w-full h-full object-contain filter drop-shadow-lg rounded-2xl" />
+            </motion.div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950 dark:text-white mb-2 tracking-tight transition-colors duration-500">
+              Enterprise Login
+            </h1>
+            <p className="text-emerald-900/70 dark:text-emerald-100/70 text-sm font-medium transition-colors duration-500">
+              Buy waste in bulk with verified suppliers
+            </p>
+            <span className="inline-block mt-3 px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold uppercase tracking-widest rounded-full border border-primary/20 dark:border-primary/30">
+              Enterprise Portal
+            </span>
           </div>
 
-          {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          {/* Error Banner — matching AuthPage */}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -10, height: 0 }}
+                className="mb-6 bg-red-500/10 dark:bg-red-500/20 border border-red-500/20 dark:border-red-500/30 rounded-xl px-4 py-3 flex items-start gap-3"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+                <span className="material-icons-round text-red-500 text-lg mt-0.5 flex-shrink-0">error</span>
+                <p className="text-red-700 dark:text-red-300 text-sm font-medium flex-1">{error}</p>
+                <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 cursor-pointer flex-shrink-0">
+                  <span className="material-icons-round text-base">close</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Form — matching AuthPage */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <motion.div whileHover={{ scale: 1.02 }} className="space-y-2">
+              <label className="text-xs font-bold text-emerald-900/80 dark:text-emerald-200/80 uppercase tracking-widest ml-1 transition-colors duration-500">Company Email</label>
+              <div className="relative group">
+                <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="company@example.com"
+                  className="relative w-full bg-white/50 dark:bg-black/20 border border-emerald-900/10 dark:border-white/10 rounded-xl px-4 py-3.5 text-emerald-950 dark:text-white placeholder-emerald-900/40 dark:placeholder-emerald-200/30 focus:outline-none focus:border-primary/50 focus:bg-white/80 dark:focus:bg-black/40 transition-all font-medium duration-500"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.02 }} className="space-y-2">
+              <label className="text-xs font-bold text-emerald-900/80 dark:text-emerald-200/80 uppercase tracking-widest ml-1 transition-colors duration-500">Password</label>
+              <div className="relative group">
+                <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"></div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="••••••••"
+                  className="relative w-full bg-white/50 dark:bg-black/20 border border-emerald-900/10 dark:border-white/10 rounded-xl px-4 py-3.5 pr-12 text-emerald-950 dark:text-white placeholder-emerald-900/40 dark:placeholder-emerald-200/30 focus:outline-none focus:border-primary/50 focus:bg-white/80 dark:focus:bg-black/40 transition-all font-medium duration-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-emerald-900/40 dark:text-emerald-200/40 hover:text-primary transition-colors cursor-pointer"
+                >
+                  <span className="material-icons-round text-lg">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.button
+              whileHover={{ scale: loading ? 1 : 1.03 }}
+              whileTap={{ scale: loading ? 1 : 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 dark:hover:shadow-primary/40 transition-all border border-emerald-50 dark:border-white/20 mt-4 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <motion.span
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="material-icons-round text-lg"
+                  >refresh</motion.span>
+                  Signing In…
+                </>
+              ) : (
+                'Sign In as Enterprise →'
+              )}
+            </motion.button>
+          </form>
+
+          {/* Divider — matching AuthPage */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-emerald-900/10 dark:border-white/10 transition-colors duration-500"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-transparent px-4 text-emerald-900/40 dark:text-emerald-200/40 text-xs font-bold uppercase tracking-widest transition-colors duration-500">Demo Access</span>
             </div>
           </div>
 
-          {/* Forgot Password */}
-          <div className="text-right">
-            <Link to="/forgot-password" className="text-primary hover:underline text-sm">
-              Forgot password?
-            </Link>
+          {/* Demo Notice */}
+          <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 rounded-xl px-4 py-3 mb-6">
+            <div className="flex items-start gap-3">
+              <span className="material-icons-round text-primary text-lg mt-0.5 flex-shrink-0">info</span>
+              <div>
+                <p className="text-emerald-900/80 dark:text-emerald-100/80 text-sm font-bold mb-1 transition-colors duration-500">🔓 Demo Mode</p>
+                <p className="text-emerald-900/60 dark:text-emerald-100/60 text-xs font-medium transition-colors duration-500">
+                  Try logging in with any company email and password. This is a prototype to showcase enterprise features.
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Submit Button — project gradient */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full px-4 py-3 bg-gradient-to-r from-primary to-emerald-400 text-white font-extrabold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition disabled:opacity-50 mt-6 shadow-lg"
-          >
-            {loading ? 'Logging in...' : 'Login as Enterprise →'}
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300 dark:border-white/20"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white/60 dark:bg-white/10 text-gray-600 dark:text-gray-400">
-              Demo Access
-            </span>
+          {/* Footer — matching AuthPage */}
+          <div className="text-center">
+            <p className="text-emerald-900/60 dark:text-emerald-100/60 text-sm font-medium transition-colors duration-500">
+              Looking for a regular account?{' '}
+              <button
+                onClick={() => navigate('/login')}
+                className="text-primary font-bold hover:text-emerald-700 dark:hover:text-white transition-colors ml-1 cursor-pointer"
+              >
+                User login
+              </button>
+            </p>
           </div>
         </div>
-
-        {/* Demo Notice */}
-        <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 text-sm text-emerald-900 dark:text-emerald-100 mb-6">
-          <p className="font-medium mb-2">🔓 Demo Mode</p>
-          <p>
-            Try logging in with any company email and password. This is a prototype
-            to showcase enterprise features.
-          </p>
-        </div>
-
-        {/* Coming Soon Notice */}
-        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-sm text-amber-900 dark:text-amber-100 mb-6">
-          <p className="font-medium mb-2">⏰ Enterprise Signups Coming Soon</p>
-          <p>
-            Official enterprise registration and verification will be available
-            soon. For early access, contact our team.
-          </p>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="space-y-3 text-center text-gray-600 dark:text-gray-400 text-sm">
-          <p>
-            Looking for a regular account?{' '}
-            <Link to="/login" className="text-primary font-medium hover:underline">
-              User login
-            </Link>
-          </p>
-          <p>
-            Not a buyer yet?{' '}
-            <Link to="/" className="text-primary font-medium hover:underline">
-              Back to home
-            </Link>
-          </p>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
