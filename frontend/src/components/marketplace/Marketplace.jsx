@@ -184,7 +184,7 @@ const Marketplace = () => {
           </p>
         </div>
 
-        {/* Upload Photo Button */}
+        {/* Upload Item Button */}
         <div className="ml-auto flex items-center gap-3">
           {uploadedPhoto && (
             <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
@@ -201,7 +201,7 @@ const Marketplace = () => {
             className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
           >
             <span className="material-icons-round text-lg">add_a_photo</span>
-            Upload Photo
+            Upload Item
           </button>
         </div>
       </div>
@@ -219,16 +219,6 @@ const Marketplace = () => {
               Available Items ({allListings.length})
             </button>
             <button
-              onClick={() => setActiveTab('requests')}
-              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
-                activeTab === 'requests'
-                  ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
-                  : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
-              }`}
-            >
-              Buyer Requests ({allRequests.length})
-            </button>
-            <button
               onClick={() => setActiveTab('offered')}
               className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
                 activeTab === 'offered'
@@ -237,6 +227,16 @@ const Marketplace = () => {
               }`}
             >
               Offered Items ({DEMO_OFFERED.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 ${
+                activeTab === 'requests'
+                  ? 'bg-primary/15 dark:bg-primary/20 text-primary border-primary/40 shadow-md'
+                  : 'bg-white/40 dark:bg-white/5 text-emerald-800/60 dark:text-emerald-200/40 border-emerald-900/10 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10'
+              }`}
+            >
+              Buyer Requests ({allRequests.length})
             </button>
       </div>
 
