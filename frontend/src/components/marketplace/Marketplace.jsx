@@ -290,7 +290,7 @@ const Marketplace = () => {
                 {/* Min Price */}
                 <div>
                   <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
-                    Min Price ($)
+                    Min Price (RM)
                   </label>
                   <input
                     type="number"
@@ -304,7 +304,7 @@ const Marketplace = () => {
                 {/* Max Price */}
                 <div>
                   <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">
-                    Max Price ($)
+                    Max Price (RM)
                   </label>
                   <input
                     type="number"
@@ -392,13 +392,13 @@ const Marketplace = () => {
                       {/* Price */}
                       <div className="mb-3">
                         <p className="text-2xl font-extrabold text-primary">
-                          ${listing.pricePerUnit}{' '}
+                          RM{listing.pricePerUnit}{' '}
                           <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
                             /{listing.unit}
                           </span>
                         </p>
                         <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">
-                          Total: ${listing.totalPrice}
+                          Total: RM{listing.totalPrice}
                         </p>
                       </div>
 
@@ -511,7 +511,7 @@ const Marketplace = () => {
                     {/* Price & Location */}
                     <div className="mb-4">
                       <p className="text-2xl font-extrabold text-primary mb-2">
-                        ${request.priceOffered}{' '}
+                        RM{request.priceOffered}{' '}
                         <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
                           /{request.unit}
                         </span>
@@ -591,13 +591,13 @@ const Marketplace = () => {
                     {/* Price */}
                     <div className="mb-3">
                       <p className="text-2xl font-extrabold text-primary">
-                        ${item.pricePerUnit}{' '}
+                        RM{item.pricePerUnit}{' '}
                         <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">
                           /{item.unit}
                         </span>
                       </p>
                       <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">
-                        Total: ${item.totalPrice}
+                        Total: RM{item.totalPrice}
                       </p>
                     </div>
 

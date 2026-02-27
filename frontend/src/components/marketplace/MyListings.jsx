@@ -219,13 +219,13 @@ const MyListings = () => {
                       <div>
                         <p className="text-emerald-800/60 dark:text-emerald-100/60">Price</p>
                         <p className="font-semibold text-primary text-lg">
-                          ${listing.pricePerUnit}/{listing.unit}
+                          RM{listing.pricePerUnit}/{listing.unit}
                         </p>
                       </div>
                       <div>
                         <p className="text-emerald-800/60 dark:text-emerald-100/60">Total</p>
                         <p className="font-semibold text-emerald-950 dark:text-white">
-                          ${listing.totalPrice}
+                          RM{listing.totalPrice}
                         </p>
                       </div>
                       {listing.location?.city && (

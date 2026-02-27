@@ -290,7 +290,7 @@ const OfferDetail = () => {
                 Price
               </p>
               <p className="text-xl font-extrabold text-primary">
-                ${offer.offeredPrice}
+                RM{offer.offeredPrice}
               </p>
             </div>
             <div>
@@ -388,7 +388,7 @@ const OfferDetail = () => {
               <div className="mt-4 flex items-center gap-3">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-800/50 dark:text-emerald-100/50 font-medium">
-                    $
+                    RM
                   </span>
                   <input
                     type="number"

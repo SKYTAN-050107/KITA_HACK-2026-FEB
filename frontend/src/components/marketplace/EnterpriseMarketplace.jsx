@@ -137,17 +137,6 @@ const EnterpriseMarketplace = () => {
 
         {/* Upload Photo Button */}
         <div className="ml-auto flex items-center gap-3">
-          {uploadedPhoto && (
-            <img src={uploadedPhoto} alt="Uploaded" className="w-12 h-12 rounded-xl object-cover border-2 border-primary/30 shadow" />
-          )}
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-bold rounded-xl hover:from-emerald-500 hover:to-emerald-300 transition shadow-lg"
-          >
-            <span className="material-icons-round text-lg">add_a_photo</span>
-            Upload Photo
-          </button>
         </div>
       </div>
 
@@ -211,12 +200,12 @@ const EnterpriseMarketplace = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Min Price ($)</label>
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Min Price (RM)</label>
                 <input type="number" value={filters.minPrice} onChange={(e) => handleFilterChange('minPrice', e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors" placeholder="0" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Max Price ($)</label>
+                <label className="block text-sm font-medium text-emerald-800/70 dark:text-emerald-200/70 mb-2">Max Price (RM)</label>
                 <input type="number" value={filters.maxPrice} onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-emerald-900/10 dark:border-white/20 bg-white/80 dark:bg-white/5 text-emerald-950 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors" placeholder="999" />
               </div>
@@ -276,10 +265,10 @@ const EnterpriseMarketplace = () => {
 
                     <div className="mb-3">
                       <p className="text-2xl font-extrabold text-primary">
-                        ${listing.pricePerUnit}{' '}
+                        RM{listing.pricePerUnit}{' '}
                         <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">/{listing.unit}</span>
                       </p>
-                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">Total: ${listing.totalPrice}</p>
+                      <p className="text-xs text-emerald-800/50 dark:text-emerald-100/40">Total: RM{listing.totalPrice}</p>
                     </div>
 
                     <div className="flex items-center gap-2 mb-3 pb-3 border-b border-emerald-900/10 dark:border-white/10">
@@ -362,7 +351,7 @@ const EnterpriseMarketplace = () => {
 
                   <div className="mb-4">
                     <p className="text-2xl font-extrabold text-primary mb-2">
-                      ${request.priceOffered}{' '}
+                      RM{request.priceOffered}{' '}
                       <span className="text-sm text-emerald-800/60 dark:text-emerald-100/60 font-normal">/{request.unit}</span>
                     </p>
                     {request.location?.city && (

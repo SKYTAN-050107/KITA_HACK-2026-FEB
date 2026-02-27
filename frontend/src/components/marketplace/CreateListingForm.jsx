@@ -20,7 +20,7 @@ const CreateListingForm = ({ listingId = null }) => {
     description: '',
     photos: [],
     pricePerUnit: '',
-    currency: 'USD',
+    currency: 'MYR',
     location: {
       latitude: null,
       longitude: null,
@@ -421,7 +421,7 @@ const CreateListingForm = ({ listingId = null }) => {
                   onChange={handleInputChange}
                   className={inputCls}
                 >
-                  <option value="USD">USD ($)</option>
+                  <option value="MYR">MYR (RM)</option>
                   <option value="EUR">EUR (€)</option>
                   <option value="GBP">GBP (£)</option>
                   <option value="GHS">GHS (₵)</option>

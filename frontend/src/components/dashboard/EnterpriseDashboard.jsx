@@ -49,9 +49,9 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
   ];
 
   const activeRequests = [
-    { id: 1, wasteType: 'Plastic Bottles (PET)', quantity: 500, unit: 'kg', budget: '$9,500', posted: '2 days ago', responses: 12, status: 'Active' },
-    { id: 2, wasteType: 'Aluminum Cans', quantity: 2000, unit: 'kg', budget: '$32,000', posted: '5 days ago', responses: 28, status: 'Active' },
-    { id: 3, wasteType: 'Paper & Cardboard', quantity: 1000, unit: 'kg', budget: '$5,000', posted: '1 week ago', responses: 15, status: 'Pending Fulfillment' },
+    { id: 1, wasteType: 'Plastic Bottles (PET)', quantity: 500, unit: 'kg', budget: 'RM9,500', posted: '2 days ago', responses: 12, status: 'Active' },
+    { id: 2, wasteType: 'Aluminum Cans', quantity: 2000, unit: 'kg', budget: 'RM32,000', posted: '5 days ago', responses: 28, status: 'Active' },
+    { id: 3, wasteType: 'Paper & Cardboard', quantity: 1000, unit: 'kg', budget: 'RM5,000', posted: '1 week ago', responses: 15, status: 'Pending Fulfillment' },
   ];
 
   const monthlySpending = [
@@ -83,20 +83,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
         </div>
       </div>
 
-      {/* ── Post Request Button ── */}
-      <div className="flex justify-end mb-6">
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => alert('Mock: Post a new buyer request form would open')}
-          className="px-6 py-3 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all border border-emerald-50 dark:border-white/20 flex items-center gap-2 cursor-pointer"
-        >
-          <span className="material-icons-round text-lg">add</span>
-          Post Buyer Request
-        </motion.button>
-      </div>
-
-        {/* ═══════════ OVERVIEW TAB ═══════════ */}
+        {/* ═══════════ OVERVIEW TAB ═══════════ */}}
         {activeTab === 'overview' && (
           <>
             {/* Stats Grid */}
@@ -127,7 +114,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spending</p>
                   <span className="material-icons-round text-xl text-purple-600 dark:text-purple-400">attach_money</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">${stats.totalSpending}</p>
+                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.totalSpending}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">This month (estimated)</p>
               </div>
 
@@ -137,7 +124,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Price/kg</p>
                   <span className="material-icons-round text-xl text-orange-600 dark:text-orange-400">trending_up</span>
                 </div>
-                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">${stats.averagePrice}</p>
+                <p className="text-3xl font-extrabold text-gray-900 dark:text-white">RM{stats.averagePrice}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">Across all purchases</p>
               </div>
 
@@ -165,7 +152,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {[
-                { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => alert('Mock: Bulk supplier search form') },
+                { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => navigate('/dashboard/enterprise/find-suppliers') },
                 { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
                 { icon: 'inventory_2', color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
                 { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => navigate('/dashboard/enterprise/analytics') },
@@ -265,7 +252,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                     {tier.name}
                   </h3>
                   <div className="mb-4">
-                    <p className="text-4xl font-extrabold text-primary">${tier.basePrice}</p>
+                    <p className="text-4xl font-extrabold text-primary">RM{tier.basePrice}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">/kg (base price)</p>
                   </div>
 
@@ -335,7 +322,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                         ></div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900 dark:text-white">${data.spent}</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">RM{data.spent}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-500">{data.orders} orders</p>
                       </div>
                     </div>
@@ -393,7 +380,7 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
                       <p className="font-medium text-gray-900 dark:text-white">{item.type}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{item.qty} kg purchased</p>
                     </div>
-                    <p className="font-bold text-primary">${item.spend}</p>
+                    <p className="font-bold text-primary">RM{item.spend}</p>
                   </div>
                 ))}
               </div>

@@ -242,7 +242,7 @@ const OfferCard = ({ offer, isReceived, userId, onNavigate }) => {
                 ? `Offer from ${offer.buyerId.substring(0, 8)}`
                 : `Offer to ${offer.sellerId.substring(0, 8)}`}
             </h3>
-            <p className="text-2xl font-extrabold text-primary">${offer.offeredPrice}</p>
+            <p className="text-2xl font-extrabold text-primary">RM{offer.offeredPrice}</p>
           </div>
 
           {/* Details */}

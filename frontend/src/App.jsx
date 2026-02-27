@@ -18,6 +18,7 @@ import DashboardLayout from './components/DashboardLayout';
 import EnterpriseLogin from './components/auth/EnterpriseLogin';
 import EnterpriseSignup from './components/auth/EnterpriseSignup';
 import EnterpriseDashboard from './components/dashboard/EnterpriseDashboard';
+import FindSuppliers from './components/dashboard/FindSuppliers';
 import EnterpriseProtectedRoute from './components/EnterpriseProtectedRoute';
 
 // Marketplace
@@ -48,6 +49,7 @@ function App() {
             <Route path="pricing" element={<EnterpriseDashboard tab="pricing" />} />
             <Route path="analytics" element={<EnterpriseDashboard tab="analytics" />} />
             <Route path="marketplace" element={<EnterpriseMarketplace />} />
+            <Route path="find-suppliers" element={<FindSuppliers />} />
           </Route>
         </Route>
 

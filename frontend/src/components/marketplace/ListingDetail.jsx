@@ -285,10 +285,10 @@ const ListingDetail = () => {
               {/* Price */}
               <div className="mb-6">
                 <p className="text-4xl font-extrabold text-primary mb-1">
-                  ${listing.pricePerUnit}
+                  RM{listing.pricePerUnit}
                 </p>
                 <p className="text-emerald-800/60 dark:text-emerald-100/60 text-sm">
-                  per {listing.unit} (Total: ${listing.totalPrice})
+                  per {listing.unit} (Total: RM{listing.totalPrice})
                 </p>
               </div>
 
