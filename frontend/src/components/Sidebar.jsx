@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: 'Map', icon: 'map', path: '/dashboard/map' },
   { label: 'History', icon: 'history', path: '/dashboard/history' },
   { label: 'Guidelines', icon: 'menu_book', path: '/dashboard/guidelines' },
+  { label: 'Marketplace', icon: 'storefront', path: '/dashboard/marketplace' },
   { label: 'Settings', icon: 'settings', path: '/dashboard/settings' },
 ];
 
