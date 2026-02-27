@@ -425,7 +425,7 @@ const MapPage = () => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="absolute bottom-0 left-0 right-0 sm:right-20 flex justify-center sm:justify-start p-2 sm:p-8 z-40">
+            <div className="absolute bottom-0 left-0 right-14 sm:right-20 flex justify-center sm:justify-start p-2 sm:p-8 z-40">
                 <div className="w-full max-w-sm sm:max-w-none bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 shadow-2xl">
                     <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-6">
                         <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
