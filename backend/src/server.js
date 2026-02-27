@@ -52,6 +52,9 @@ if (process.env.NODE_ENV === 'development') {
 // ── Public Routes (no auth required) ──
 app.use('/api/scan', require('./routes/scanRoutes'));
 
+const { publicRouter: marketplacePublic, protectedRouter: marketplaceProtected } = require('./routes/marketplaceRoutes');
+app.use('/api/marketplace', marketplacePublic);
+
 // ── Auth Route (does its own token verification) ──
 app.use('/api/v1', require('./routes/authRoutes'));
 
@@ -63,6 +66,7 @@ app.use('/api/v1', authMiddleware, require('./routes/checkinRoutes'));
 app.use('/api/v1', authMiddleware, require('./routes/weeklyRoutes'));
 app.use('/api/v1', authMiddleware, require('./routes/nearbyRoutes'));
 app.use('/api/v1', authMiddleware, require('./routes/guidelinesRoutes'));
+app.use('/api/v1/marketplace', authMiddleware, marketplaceProtected);
 
 // ── Root route ──
 app.get('/', (req, res) => {
