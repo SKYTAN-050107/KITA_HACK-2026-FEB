@@ -309,12 +309,11 @@ const EnterpriseMarketplace = () => {
                 <div key={listing.listingId} className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-xl border border-white/40 dark:border-white/10 overflow-hidden hover:shadow-lg transition">
                   {/* Image */}
                   <div className="w-full h-48 bg-emerald-100/50 dark:bg-white/5 relative overflow-hidden">
-                    {listing.photos && listing.photos[0] ? (
-                      <img src={listing.photos[0]} alt={listing.wasteType} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">search</span>
-                      </div>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">search</span>
+                    </div>
+                    {listing.photos && listing.photos[0] && (
+                      <img src={listing.photos[0]} alt={listing.wasteType} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
                     )}
                     {listing.condition && (
                       <div className="absolute top-2 right-2 bg-emerald-950/80 text-white text-xs font-medium px-2 py-1 rounded-lg">
@@ -506,7 +505,7 @@ const EnterpriseMarketplace = () => {
 
                   {request.photos && request.photos[0] && (
                     <div className="mb-4 rounded-xl overflow-hidden h-48 bg-emerald-100/50 dark:bg-white/5">
-                      <img src={request.photos[0]} alt={request.wasteType} className="w-full h-full object-cover" />
+                      <img src={request.photos[0]} alt={request.wasteType} className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.parentElement.style.display = 'none'; }} />
                     </div>
                   )}
 
@@ -560,16 +559,16 @@ const EnterpriseMarketplace = () => {
                 >
                   {/* Image */}
                   <div className="w-full h-48 bg-emerald-100/50 dark:bg-white/5 relative overflow-hidden">
-                    {item.photos && item.photos[0] ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">inventory_2</span>
+                    </div>
+                    {item.photos && item.photos[0] && (
                       <img
                         src={item.photos[0]}
                         alt={item.wasteType}
-                        className="w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        onError={(e) => { e.target.style.display = 'none'; }}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-icons-round text-5xl text-emerald-800/40 dark:text-emerald-100/40">inventory_2</span>
-                      </div>
                     )}
                     {item.condition && (
                       <div className="absolute top-2 right-2 bg-emerald-950/80 text-white text-xs font-medium px-2 py-1 rounded-lg">
