@@ -8,7 +8,7 @@
 
 ### 🎬 Demo Video
 
-<a href="https://drive.google.com/file/d/1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6/view?usp=sharing>
+<a href="https://drive.google.com/file/d/1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6/view?usp=sharing">
   <img src="https://drive.google.com/thumbnail?id=1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6&sz=w1280" alt="RecycleNow Demo Video" width="720" />
 </a>
 
