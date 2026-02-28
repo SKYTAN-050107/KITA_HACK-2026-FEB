@@ -7,7 +7,7 @@ import useDarkMode from '../../hooks/useDarkMode';
  * EnterpriseDashboard.jsx
  *
  * Separate dashboard for enterprise / institutional buyers.
- * Features: Buyer requests, suppliers, custom pricing, analytics.
+ * Features: Buyer requests, suppliers, analytics.
  * Adapted to project's emerald / glassmorphism / dark-mode design.
  */
 
@@ -32,21 +32,6 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
     pendingOrders: 8,
     completedDeals: 156,
   };
-
-  const pricingTiers = [
-    {
-      id: 1, name: 'Standard', basePrice: 20,
-      discount: '0%', features: ['Regular delivery', 'Email support', 'Basic reporting'], active: true,
-    },
-    {
-      id: 2, name: 'Bulk', basePrice: 50,
-      discount: '25%', features: ['Priority delivery', 'Phone support', 'Weekly reports', 'Volume tracking'], active: true,
-    },
-    {
-      id: 3, name: 'Premium', basePrice: 100,
-      discount: '40%', features: ['Express delivery', '24/7 support', 'Custom analytics', 'Dedicated account manager'], active: true,
-    },
-  ];
 
   const activeRequests = [
     { id: 1, wasteType: 'Plastic Bottles (PET)', quantity: 500, unit: 'kg', budget: 'RM9,500', posted: '2 days ago', responses: 12, status: 'Active' },
@@ -150,10 +135,9 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
               {[
                 { icon: 'group', color: 'text-emerald-600 dark:text-emerald-400', title: 'Find Suppliers', desc: 'Search and connect with waste suppliers', action: () => navigate('/dashboard/enterprise/marketplace') },
-                { icon: 'attach_money', color: 'text-green-600 dark:text-green-400', title: 'Manage Pricing', desc: 'Set volume discounts and pricing tiers', action: () => alert('Mock: Custom pricing management panel') },
                 { icon: 'inventory_2', color: 'text-purple-600 dark:text-purple-400', title: 'Manage Inventory', desc: 'Track stock and fulfillment status', action: () => alert('Mock: Inventory management and tracking') },
                 { icon: 'pie_chart', color: 'text-indigo-600 dark:text-indigo-400', title: 'View Analytics', desc: 'Advanced spending and performance reports', action: () => navigate('/dashboard/enterprise/analytics') },
               ].map(({ icon, color, title, desc, action }) => (
@@ -220,81 +204,6 @@ const EnterpriseDashboard = ({ tab = 'overview' }) => {
               </div>
             </div>
           </>
-        )}
-
-        {/* ═══════════ PRICING TIERS TAB ═══════════ */}
-        {activeTab === 'pricing' && (
-          <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6">
-              Custom Pricing Tiers
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
-              Set up different pricing tiers based on volume. Suppliers can choose
-              the tier that matches their business.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {pricingTiers.map((tier) => (
-                <div
-                  key={tier.id}
-                  className={`rounded-xl border-2 p-6 backdrop-blur-xl transition-colors ${
-                    tier.id === 2
-                      ? 'border-emerald-500 bg-emerald-50/60 dark:bg-emerald-900/20'
-                      : 'border-white/40 dark:border-white/10 bg-white/60 dark:bg-white/10'
-                  }`}
-                >
-                  {tier.id === 2 && (
-                    <div className="mb-4 inline-block bg-gradient-to-r from-primary to-emerald-400 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      RECOMMENDED
-                    </div>
-                  )}
-                  <h3 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
-                    {tier.name}
-                  </h3>
-                  <div className="mb-4">
-                    <p className="text-2xl sm:text-4xl font-extrabold text-primary">RM{tier.basePrice}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400"> (base price)</p>
-                  </div>
-
-                  <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-3 mb-4">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    </p>
-                    <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                      Discount: {tier.discount}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2 mb-6">
-                    {tier.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <span className="text-green-600 dark:text-green-400 font-bold mt-0.5">✓</span>
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => alert(`Mock: Edit ${tier.name} pricing tier`)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-primary to-emerald-400 text-emerald-950 font-extrabold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all border border-emerald-50 dark:border-white/20 cursor-pointer"
-                  >
-                    Edit Tier
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6 transition-colors">
-              <h3 className="font-semibold text-emerald-900 dark:text-emerald-100 mb-2">
-                💡 Pricing Tips
-              </h3>
-              <ul className="text-sm text-emerald-900 dark:text-emerald-100 space-y-2">
-                <li>• Set competitive prices to attract more suppliers</li>
-                <li>• Bulk discounts encourage larger order quantities</li>
-                <li>• Monitor market rates and adjust tiers monthly</li>
-                <li>• Premium tier should include exclusive benefits</li>
-              </ul>
-            </div>
-          </div>
         )}
 
         {/* ═══════════ ANALYTICS TAB ═══════════ */}

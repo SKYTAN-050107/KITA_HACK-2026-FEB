@@ -52,7 +52,7 @@ RecycleNow is a full-stack Progressive Web App that helps users classify waste i
 | Scan History | ✅ Live | Full history with image grid, expandable details, disposal status tracking (pending → recycled/donated/disposed) |
 | Gamification System | ✅ Live | Points, streaks, daily check-in bonuses, milestone rewards — drives consistent eco-actions |
 | Waste Marketplace | ✅ Live | List recyclable materials for sale, browse listings, make offers, negotiate with built-in messaging |
-| Enterprise Portal | ✅ Live | Separate mock-auth dashboard for institutional buyers — bulk purchasing, supplier discovery, pricing tiers |
+| Enterprise Portal | ✅ Live | Separate mock-auth dashboard for institutional buyers — bulk purchasing, supplier discovery, analytics |
 | PWA Support | ✅ Live | Installable on mobile devices, offline-capable with Workbox service worker caching |
 | User Authentication | ✅ Live | Firebase Auth with email/password and Google OAuth sign-in |
 | Guidelines Education | ✅ Live | Structured waste type rules with country-specific and universal recycling guidance |
@@ -149,7 +149,7 @@ The marketplace enables peer-to-peer trading of recyclable materials:
 ### Enterprise Portal
 
 A separate auth flow using localStorage mock credentials (`demo@company.com` / `demo123`) provides:
-- Enterprise dashboard with overview stats, pricing tiers, analytics
+- Enterprise dashboard with overview stats and analytics
 - Supplier discovery (`FindSuppliers.jsx`)
 - Bulk marketplace access with enterprise-specific UI
 
@@ -247,7 +247,7 @@ KITA_HACK-2026-FEB/
         │   │   ├── EnterpriseSignup.jsx  # Enterprise mock signup
         │   │   └── RoleSelector.jsx      # User/Enterprise role toggle
         │   ├── dashboard/
-        │   │   ├── EnterpriseDashboard.jsx  # Enterprise overview + pricing + analytics
+        │   │   ├── EnterpriseDashboard.jsx  # Enterprise overview + analytics
         │   │   └── FindSuppliers.jsx        # Supplier discovery
         │   └── marketplace/
         │       ├── CreateListingForm.jsx  # New listing creation

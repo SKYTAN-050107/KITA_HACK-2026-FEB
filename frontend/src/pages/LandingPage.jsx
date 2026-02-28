@@ -43,7 +43,6 @@ const LandingPage = () => {
                         >
                             <a href="#" className="text-emerald-800 dark:text-emerald-100/70 hover:text-primary dark:hover:text-primary transition-colors duration-500 font-bold text-sm uppercase tracking-wider">Services</a>
                             <a href="#" className="text-emerald-800 dark:text-emerald-100/70 hover:text-primary dark:hover:text-primary transition-colors duration-500 font-bold text-sm uppercase tracking-wider">Impact</a>
-                            <a href="#" className="text-emerald-800 dark:text-emerald-100/70 hover:text-primary dark:hover:text-primary transition-colors duration-500 font-bold text-sm uppercase tracking-wider">Pricing</a>
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
