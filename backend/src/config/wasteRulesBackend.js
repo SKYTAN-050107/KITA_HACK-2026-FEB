@@ -85,9 +85,9 @@ const WASTE_RULES = {
             { step: 'Remove cap and label if possible', completed: false },
             { step: 'Check plastic number (#1-#7)', completed: false },
             { step: 'Flatten to save space', completed: false },
-            { step: 'Place in Green Bin ♻️', completed: false },
+            { step: 'Place in Orange Bin ⚠️', completed: false },
         ],
-        correctBin: { id: 'green_bin', name: 'Green Recycling Bin', symbol: '♻️', color: '#16a34a' },
+        correctBin: { id: 'orange_bin', name: 'Orange Recycling Bin', symbol: '⚠️', color: '#ea580c' },
     },
     glass: {
         displayName: 'Glass',
@@ -105,9 +105,9 @@ const WASTE_RULES = {
             { step: 'Remove metal lids (recycle separately)', completed: false },
             { step: 'Sort by color: clear/green/brown', completed: false },
             { step: 'Handle carefully — do not break', completed: false },
-            { step: 'Place in Orange Bin ⚠️', completed: false },
+            { step: 'Place in Brown Bin 🟤', completed: false },
         ],
-        correctBin: { id: 'orange_bin', name: 'Orange Recycling Bin', symbol: '⚠️', color: '#ea580c' },
+        correctBin: { id: 'brown_bin', name: 'Brown Recycling Bin', symbol: '🟤', color: '#92400e' },
     },
     metal: {
         displayName: 'Metal / Aluminum',
@@ -152,10 +152,10 @@ const WASTE_RULES = {
     food_waste: {
         displayName: 'Food / Organic Waste',
         icon: '🥬',
-        category: 'General Waste',
+        category: 'Organic Waste',
         disposalMethod: 'dispose',
         shortRules: [
-            'Goes into black/grey general bin',
+            'Goes into green organic waste bin',
             'Bag securely to prevent leaks',
             'Drain excess liquid first',
             'Separate from recyclables',
@@ -165,9 +165,9 @@ const WASTE_RULES = {
             { step: 'Drain excess liquid', completed: false },
             { step: 'Bag securely', completed: false },
             { step: 'Confirm no recyclables mixed in', completed: false },
-            { step: 'Place in Black Bin 🗑️', completed: false },
+            { step: 'Place in Green Bin 🟢', completed: false },
         ],
-        correctBin: { id: 'black_bin', name: 'Black General Waste Bin', symbol: '🗑️', color: '#1f2937' },
+        correctBin: { id: 'green_bin', name: 'Green Organic Waste Bin', symbol: '🟢', color: '#16a34a' },
     },
     clothes: {
         displayName: 'Textiles / Clothing',

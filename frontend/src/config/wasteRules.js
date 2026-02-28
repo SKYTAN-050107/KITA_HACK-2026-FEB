@@ -1,10 +1,11 @@
 // src/config/wasteRules.js — Waste classification rules derived from Rules.md
 // Used by ScannerPage results modal and GuidelinesPage
 // Malaysia (Johor Bahru) bin system:
-//   🟢 Green  → Plastic
-//   🔵 Blue   → Paper / Cardboard
-//   🟠 Orange → Glass, Metal, Aluminum, E-Waste
-//   ⚫ Black  → General Waste + Food / Organic Waste
+//   � Blue   → Paper / Cardboard
+//   🟠 Orange → Metal, Aluminum, Plastic, E-Waste
+//   🟤 Brown  → Glass
+//   🟢 Green  → Food / Organic Waste
+//   ⚫ Black  → General Waste
 
 export const WASTE_RULES = {
   plastic: {
@@ -12,7 +13,7 @@ export const WASTE_RULES = {
     icon: '♻️',
     category: 'Recyclable',
     disposalMethod: 'recycle',
-    color: '#16a34a', // green
+    color: '#ea580c', // orange
     shortRules: [
       'Rinse clean, remove caps',
       'Check number (#1-#7) on bottom',
@@ -24,9 +25,9 @@ export const WASTE_RULES = {
       { step: 'Remove cap and label if possible', completed: false },
       { step: 'Check plastic number (#1-#7)', completed: false },
       { step: 'Flatten to save space', completed: false },
-      { step: 'Place in Green Bin ♻️', completed: false },
+      { step: 'Place in Orange Bin ⚠️', completed: false },
     ],
-    correctBin: { id: 'green_bin', name: 'Green Recycling Bin', symbol: '♻️', color: '#16a34a' },
+    correctBin: { id: 'orange_bin', name: 'Orange Recycling Bin', symbol: '⚠️', color: '#ea580c' },
     examples: 'Water bottles, milk jugs, detergent bottles, yogurt containers',
   },
 
@@ -35,7 +36,7 @@ export const WASTE_RULES = {
     icon: '🥛',
     category: 'Recyclable',
     disposalMethod: 'recycle',
-    color: '#ea580c', // orange
+    color: '#92400e', // brown
     shortRules: [
       'Infinitely recyclable',
       'Sort by color if required',
@@ -47,9 +48,9 @@ export const WASTE_RULES = {
       { step: 'Remove metal lids (recycle separately)', completed: false },
       { step: 'Sort by color: clear/green/brown', completed: false },
       { step: 'Handle carefully — do not break', completed: false },
-      { step: 'Place in Orange Bin ⚠️', completed: false },
+      { step: 'Place in Brown Bin 🟤', completed: false },
     ],
-    correctBin: { id: 'orange_bin', name: 'Orange Recycling Bin', symbol: '⚠️', color: '#ea580c' },
+    correctBin: { id: 'brown_bin', name: 'Brown Recycling Bin', symbol: '🟤', color: '#92400e' },
     examples: 'Bottles, jars (clear, green, brown)',
   },
 
@@ -102,11 +103,11 @@ export const WASTE_RULES = {
   food_waste: {
     displayName: 'Food / Organic Waste',
     icon: '🥬',
-    category: 'General Waste',
+    category: 'Organic Waste',
     disposalMethod: 'dispose',
-    color: '#374151', // dark grey
+    color: '#16a34a', // green
     shortRules: [
-      'Goes into black/grey general bin',
+      'Goes into green organic waste bin',
       'Bag securely to prevent leaks',
       'Drain excess liquid first',
       'Separate from recyclables',
@@ -116,9 +117,9 @@ export const WASTE_RULES = {
       { step: 'Drain excess liquid', completed: false },
       { step: 'Bag securely', completed: false },
       { step: 'Confirm no recyclables mixed in', completed: false },
-      { step: 'Place in Black Bin 🗑️', completed: false },
+      { step: 'Place in Green Bin 🟢', completed: false },
     ],
-    correctBin: { id: 'black_bin', name: 'Black General Waste Bin', symbol: '🗑️', color: '#1f2937' },
+    correctBin: { id: 'green_bin', name: 'Green Organic Waste Bin', symbol: '🟢', color: '#16a34a' },
     examples: 'Food scraps, fruit peels, cooked food, food-soiled packaging',
   },
 
@@ -193,10 +194,11 @@ export const WASTE_RULES = {
 
 // Malaysia (Johor Bahru) bin system
 export const MALAYSIA_BINS = {
-  green_bin:  { name: 'Green Recycling Bin',      color: '#16a34a', symbol: '♻️', accepts: 'Plastics #1-#7 (rinsed and clean)' },
   blue_bin:   { name: 'Blue Recycling Bin',        color: '#3b82f6', symbol: '📄', accepts: 'Paper, cardboard, clean cartons' },
-  orange_bin: { name: 'Orange Special Waste Bin',  color: '#ea580c', symbol: '⚠️', accepts: 'Glass, metals, aluminum cans, e-waste' },
-  black_bin:  { name: 'Black General Waste Bin',   color: '#1f2937', symbol: '🗑️', accepts: 'General waste, food waste, diapers, hygiene products, non-recyclables' },
+  orange_bin: { name: 'Orange Recycling Bin',      color: '#ea580c', symbol: '⚠️', accepts: 'Metals, aluminum cans, plastics, e-waste' },
+  brown_bin:  { name: 'Brown Recycling Bin',       color: '#92400e', symbol: '🟤', accepts: 'Glass bottles, glass jars' },
+  green_bin:  { name: 'Green Organic Waste Bin',   color: '#16a34a', symbol: '🟢', accepts: 'Food waste, organic waste' },
+  black_bin:  { name: 'Black General Waste Bin',   color: '#1f2937', symbol: '🗑️', accepts: 'General waste, diapers, hygiene products, non-recyclables' },
 };
 
 export default WASTE_RULES;

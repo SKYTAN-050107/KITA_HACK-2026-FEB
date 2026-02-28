@@ -1,30 +1,31 @@
 // backend/src/config/binRules.js
 // Malaysia (Johor Bahru) 4-bin system — aligned with frontend wasteRules.js
-//   🟢 Green  → Plastic
-//   🔵 Blue   → Paper / Cardboard
-//   🟠 Orange → Glass, Metal, Aluminum, E-Waste
-//   ⚫ Black  → General Waste + Food / Organic Waste
+//   � Blue   → Paper / Cardboard
+//   🟠 Orange → Metal, Aluminum, Plastic, E-Waste
+//   🟤 Brown  → Glass
+//   🟢 Green  → Food / Organic Waste
+//   ⚫ Black  → General Waste
 
 const BIN_RULES = {
   green_bin: {
     id: 'green_bin',
-    name: 'Green Recycling Bin',
+    name: 'Green Organic Waste Bin',
     color: '#16a34a',
-    symbol: '♻️',
-    description: 'Plastics – rinsed and clean',
+    symbol: '🟢',
+    description: 'Food and organic waste',
     accepts: [
-      'plastic'
+      'food_waste'
     ],
     rejects: [
+      'plastic',
       'glass',
       'metal',
       'paper',
-      'food_waste',
       'clothes',
       'electronics',
       'general_waste'
     ],
-    tips: 'Rinse containers, remove caps & labels. Check recycling number (#1-#7).'
+    tips: 'Bag food waste securely. Drain excess liquid. Separate from recyclables.'
   },
 
   blue_bin: {
@@ -50,23 +51,44 @@ const BIN_RULES = {
 
   orange_bin: {
     id: 'orange_bin',
-    name: 'Orange Special Waste Bin',
+    name: 'Orange Recycling Bin',
     color: '#ea580c',
     symbol: '⚠️',
-    description: 'Glass, metals, aluminum cans, e-waste',
+    description: 'Metals, aluminum cans, plastics, e-waste',
     accepts: [
-      'glass',
       'metal',
+      'plastic',
       'electronics'
     ],
     rejects: [
-      'plastic',
+      'glass',
       'paper',
       'food_waste',
       'clothes',
       'general_waste'
     ],
-    tips: 'Handle glass carefully. Remove batteries from devices. Rinse metal cans.'
+    tips: 'Remove batteries from devices. Rinse metal cans. Rinse plastic containers and remove caps.'
+  },
+
+  brown_bin: {
+    id: 'brown_bin',
+    name: 'Brown Recycling Bin',
+    color: '#92400e',
+    symbol: '🟤',
+    description: 'Glass bottles and jars',
+    accepts: [
+      'glass'
+    ],
+    rejects: [
+      'plastic',
+      'metal',
+      'paper',
+      'food_waste',
+      'clothes',
+      'electronics',
+      'general_waste'
+    ],
+    tips: 'Handle glass carefully. Rinse out contents. Remove metal lids. Sort by color if required.'
   },
 
   black_bin: {
@@ -74,19 +96,19 @@ const BIN_RULES = {
     name: 'Black General Waste Bin',
     color: '#1f2937',
     symbol: '🗑️',
-    description: 'General waste and food/organic waste',
+    description: 'General waste and non-recyclables',
     accepts: [
-      'general_waste',
-      'food_waste'
+      'general_waste'
     ],
     rejects: [
       'plastic',
       'glass',
       'metal',
       'paper',
+      'food_waste',
       'electronics'
     ],
-    tips: 'Last resort — try to recycle or donate first. Bag food waste securely.'
+    tips: 'Last resort — try to recycle or donate first. Bag waste securely.'
   }
 };
 
