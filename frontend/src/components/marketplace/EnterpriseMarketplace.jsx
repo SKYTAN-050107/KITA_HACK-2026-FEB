@@ -350,8 +350,8 @@ const EnterpriseMarketplace = () => {
                     )}
 
                     <div className="flex gap-2">
-                      <button className="flex-1 px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center">
-                        View
+                      <button className="flex-1 px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl border border-emerald-900/20 dark:border-white/20 hover:bg-primary/10 dark:hover:bg-white/20 transition text-center">
+                        View Details
                       </button>
                       <button
                         onClick={() => handleMakeOffer(listing, 'listing')}
@@ -631,7 +631,7 @@ const EnterpriseMarketplace = () => {
                     {/* Actions */}
                     <div>
                       <button
-                        className="w-full px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
+                        className="w-full px-3 py-2 bg-white/50 dark:bg-white/5 text-emerald-950 dark:text-white text-sm font-medium rounded-xl border border-emerald-900/20 dark:border-white/20 hover:bg-primary/10 dark:hover:bg-white/20 transition text-center"
                       >
                         View Details
                       </button>
