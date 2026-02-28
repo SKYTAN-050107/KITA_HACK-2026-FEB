@@ -4,6 +4,21 @@
 
 # RecycleNow
 
+<div align="center">
+
+### 🎬 Demo Video
+
+<a href="https://drive.google.com/file/d/1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6/view?usp=sharing>
+  <img src="https://drive.google.com/thumbnail?id=1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6&sz=w1280" alt="RecycleNow Demo Video" width="720" />
+</a>
+
+<p><strong>▶ Click the image above to watch the full demo</strong></p>
+
+[![Watch Demo](https://img.shields.io/badge/▶_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1Aop0Po43aa61ZFw_CWnWOvCiL1AVHQ_6/view?usp=sharing)
+
+</div>
+
+
 **AI-Powered Smart Waste Management & Recycling Marketplace**
 
 > Scan. Sort. Sustain. — Making responsible waste disposal effortless through computer vision and community-driven recycling.
