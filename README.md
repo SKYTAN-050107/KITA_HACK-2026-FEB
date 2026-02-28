@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="RecycleNow Logo" width="250"/>
+</p>
+
 # RecycleNow
 
 **AI-Powered Smart Waste Management & Recycling Marketplace**
