@@ -6,7 +6,7 @@
 
 Built for **KITA HACK** organized by **Google Developer Group Malaysia**.
 
-RecycleNow is a full-stack Progressive Web App that helps users classify waste instantly using computer vision, find nearby recycling centres, trade recyclable materials on a marketplace, and build sustainable habits through gamification — all aligned with **UN SDG 12: Responsible Consumption and Production**.
+RecycleNow is a full-stack Progressive Web App that helps users classify waste instantly using computer vision, find nearby recycling centres, trade recyclable materials on a marketplace, and build sustainable habits through gamification — all aligned with **UN SDG 4: Quality Education & SDG 12: Responsible Consumption and Production**.
 
 ---
 
@@ -499,17 +499,33 @@ Designing Firestore security rules that enforce user-level isolation (users can 
 
 The Google Maps integration on mobile devices required extensive iteration. Google Maps renders its own UI controls (zoom, street view, locate) that conflict with overlay UI elements. The bottom action card, quick-filter buttons, and search bar all needed precise `z-index` layering and responsive positioning (`right-14 sm:right-20`) to avoid blocking native map controls on small screens while maintaining desktop layout integrity.
 
-### 5. PWA Service Worker Cache Invalidation
+### 5. Getting People to Actually Change Behaviour, Not Just Scan
 
-The VitePWA plugin with Workbox `autoUpdate` strategy caused stale content issues during rapid iteration. The Firebase Hosting configuration needed explicit `no-cache` headers for `/service-worker.js` and `/sw.js` to ensure users always get the latest version. Workbox runtime caching also required careful strategy selection to avoid caching API responses that should always be fresh.
+The hardest problem wasn't technical — it was behavioural. Most Malaysians know recycling is important, but knowing doesn't mean doing. We had to design a system that creates a habit loop: scan → learn → act → reward. The gamification engine (streaks, points, daily check-ins) was built specifically to bridge the gap between awareness and consistent action. Even then, we debated whether points feel meaningful enough to change someone's Tuesday night routine.
 
-### 6. Dual Authentication Coexistence
+### 6. Waste Classification in the Real World is Messy
 
-Supporting both Firebase Auth (real users) and localStorage mock auth (enterprise demo) required two completely independent route guard components (`ProtectedRoute` vs `EnterpriseProtectedRoute`) and separate route trees, ensuring neither system interferes with the other while sharing the same `DashboardLayout` shell.
+Training a model in a lab is clean. Real waste isn't. A crushed plastic bottle looks different from a whole one. A dirty glass jar gets misclassified. We had to handle low-confidence predictions gracefully — rather than showing a wrong answer confidently, the app degrades to asking the user to try again or pick manually. Technically this involved threshold filtering on Vertex AI confidence scores; socially it meant not eroding user trust with bad AI guesses.
 
-### 7. Image Fallbacks in Production
+### 7. Malaysia Has No Standardised Recycling Infrastructure
 
-Demo/marketplace listing images that worked during local development returned 404s in production Firebase Hosting. This required implementing `onError` fallback handlers on all `<img>` tags with absolute-positioned fallback icons, and restructuring API error handling to silently degrade rather than blocking the entire UI with error states.
+Unlike countries with colour-coded bin systems enforced nationally, Malaysia's recycling rules vary by state, district, and even housing area. What goes in the blue bin in Johor Bahru might be rejected in Kuala Lumpur. Building `binRules.js` and `wasteRulesBackend.js` meant making judgment calls on ambiguous guidance, and we had to frame disposal instructions as "general best practice" rather than ground truth — because the ground truth differs street by street.
+
+### 8. Low Trust in Peer-to-Peer Waste Trading
+
+The marketplace idea sounds simple: one person's recyclable waste is another person's raw material. In practice, people don't naturally trust strangers on a platform they've never heard of, especially for a transaction as niche as selling used cardboard or scrap metal. We designed the offer and negotiation flow with messaging threads and status tracking to build transactional confidence, but trust at scale is a long-term social problem that features alone can't solve.
+
+### 9. Reaching Users Who Aren't Already Eco-Conscious
+
+Apps about recycling tend to attract people who already recycle. Our real target — the person who doesn't think twice before throwing everything into one bin — is the hardest to reach and the least likely to download an eco app voluntarily. The landing page, onboarding, and scanner-first UX were all designed to lower the entry barrier: no lecture, no guilt, just point your camera and get an answer. Technically this drove the decision to make `/api/scan` a public endpoint with no login required.
+
+### 10. Enterprise Adoption Requires a Different Language
+
+Individual users care about habits and impact. Enterprise buyers — factories, recycling companies, procurement teams — care about volume, price, and reliability. Building the enterprise portal meant designing two completely different products that share the same backend. The dual auth architecture (Firebase vs localStorage mock) exists partly for technical separation, but it reflects a real product truth: a small business buyer and a student recycler have almost nothing in common in terms of what they need from the app.
+
+### 11. Keeping the App Useful Offline in Low-Connectivity Areas
+
+Recycling centres and waste collection points are often in industrial or semi-rural areas with poor mobile signal. A map app that fails without internet is useless exactly when someone needs it most. The PWA service worker and Workbox caching strategy were built to ensure previously loaded centre data and guidelines remain accessible offline — because the social problem of inaccessible infrastructure is made worse, not better, by digital tools that add their own accessibility barriers.
 
 ---
 
