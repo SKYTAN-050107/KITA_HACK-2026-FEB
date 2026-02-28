@@ -67,17 +67,31 @@ RecycleNow is a full-stack Progressive Web App that helps users classify waste i
 |-------|------------|
 | Frontend | React 19, Vite 7, JSX, React Router 7 |
 | Styling | Tailwind CSS 4, glassmorphism design system, Framer Motion animations |
-| Maps | Google Maps API (`@react-google-maps/api`), Places Autocomplete |
+| Maps | Google Maps API (`@react-google-maps/api`) + Places Autocomplete |
 | Charts | Recharts |
-| Icons | Google Material Symbols (font-based) + Lucide React |
+| Icons | Google Fonts (`Material Symbols`) + Lucide React |
 | Backend | Node.js, Express 4, Multer (file uploads), Express Rate Limit |
-| AI/ML | Google Cloud Vertex AI — AutoML Image Classification endpoint |
+| AI/ML | Google Cloud Vertex AI (AI Platform) — AutoML Image Classification endpoint |
 | Database | Cloud Firestore (NoSQL) — users, scans, checkins, listings, requests, offers |
-| Storage | Firebase Storage (Cloud Storage bucket) — scan images, listing photos |
+| Storage | Google Cloud Storage via Firebase Storage — scan images, listing photos |
 | Auth | Firebase Authentication (Email/Password + Google OAuth), Enterprise mock auth (localStorage) |
-| Hosting | Firebase Hosting (frontend SPA), Docker → Cloud Run / GCE (backend) |
+| Hosting | Firebase Hosting (frontend SPA), Docker deployment for backend |
 | PWA | VitePWA plugin with Workbox caching strategy |
 | Forms | React Hook Form + Zod schema validation |
+
+### Google Ecosystem (Core Infrastructure)
+
+- **Google Maps API**: powers map rendering, nearby centre discovery, Places search, and route guidance UX.
+- **Firebase Hosting**: serves the production frontend SPA with HTTPS and rewrite rules.
+- **Vertex AI**: runs the AutoML image classification model for real-time waste type prediction.
+- **Google Cloud AI Platform**: model serving layer behind the deployed Vertex AI endpoint.
+- **Google Cloud Storage**: object storage layer used for scan and marketplace images.
+- **Cloud Firestore**: primary NoSQL database for users, scans, check-ins, listings, and offers.
+- **Firebase Storage**: developer-friendly storage interface backed by Google Cloud Storage.
+- **Firebase Authentication**: secure user sign-in (email/password + Google OAuth).
+- **Google Fonts (Material Symbols)**: consistent iconography across scanner, dashboard, and map flows.
+- **Firebase Admin SDK**: backend-side token verification and privileged Firestore/Storage access.
+- **Firebase JavaScript SDK**: frontend integration for auth state, Firestore reads/writes, and storage access.
 
 ---
 
